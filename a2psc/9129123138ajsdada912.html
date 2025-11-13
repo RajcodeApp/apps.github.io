@@ -371,16 +371,16 @@
         <div class="text-xs text-slate-500 mt-1">Follow-up</div>
       </div>
 
-      <!-- NEW: Gaji TC Card -->
+      <!-- UPDATED: Gaji TC Card -->
       <div class="stat-card rounded-xl p-4 shadow-lg">
         <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
           <span>💸</span> Gaji TC
         </div>
         <div id="statTcSalary" class="text-2xl font-bold text-cyan-400">Rp 0</div>
-        <div class="text-xs text-slate-500 mt-1">Sales × $2.5 × 16K</div>
+        <div class="text-xs text-slate-500 mt-1">TC × $2.5 × 16K</div>
       </div>
 
-      <!-- NEW: Bonus Card -->
+      <!-- Bonus Card -->
       <div class="stat-card rounded-xl p-4 shadow-lg">
         <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
           <span>🎁</span> Bonus
@@ -406,6 +406,16 @@
         <div class="min-w-[180px]">
           <label class="text-xs text-slate-400 mb-1 block">📅 Bulan</label>
           <select id="monthSelector" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
+          </select>
+        </div>
+
+        <!-- NEW: Period Filter -->
+        <div class="min-w-[130px]">
+          <label class="text-xs text-slate-400 mb-1 block">📆 Periode</label>
+          <select id="periodFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
+            <option value="">Semua</option>
+            <option value="P1">P1 (1-15)</option>
+            <option value="P2">P2 (16-30)</option>
           </select>
         </div>
 
@@ -440,6 +450,7 @@
         <div class="text-slate-400">
           <span id="recordCount">0 records</span>
           <span id="selectedMonth" class="text-amber-400 font-semibold ml-2"></span>
+          <span id="selectedPeriod" class="text-cyan-400 font-semibold ml-2"></span>
         </div>
         <div class="flex gap-2">
           <button id="bulkDeleteBtn" class="px-3 py-1.5 rounded-lg bg-red-900/30 text-red-400 text-xs hidden border border-red-800/50 hover:bg-red-900/50 transition-colors">
@@ -854,11 +865,19 @@
       return new Intl.NumberFormat('id-ID').format(num);
     }
 
+    // NEW: Get period from date
+    function getPeriodFromDate(dateStr) {
+      if (!dateStr) return '';
+      const day = parseInt(dateStr.split('-')[2]);
+      return day <= 15 ? 'P1' : 'P2';
+    }
+
     /***************
      SALARY & BONUS CALCULATIONS
     ***************/
-    function calculateTcSalary(totalSales) {
-      return totalSales * SALES_COMMISSION_USD * DOLLAR_RATE;
+    function calculateTcSalary(totalTC) {
+      // UPDATED: Based on Total TC, not Sales
+      return totalTC * SALES_COMMISSION_USD * DOLLAR_RATE;
     }
 
     function calculateBonus(totalRevenue, conversionRate) {
@@ -1027,6 +1046,7 @@
      UI BINDINGS
     ***************/
     const monthSelector = document.getElementById('monthSelector');
+    const periodFilter = document.getElementById('periodFilter');
     const tbody = document.getElementById('tbody');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
@@ -1065,11 +1085,19 @@
       const v = monthSelector.value;
       if (!v) { 
         document.getElementById('selectedMonth').textContent = ''; 
-        return; 
+      } else {
+        const [y,m] = v.split('-');
+        document.getElementById('selectedMonth').textContent = 
+          `— ${new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
       }
-      const [y,m] = v.split('-');
-      document.getElementById('selectedMonth').textContent = 
-        `— ${new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
+
+      // Update period label
+      const p = periodFilter.value;
+      if (!p) {
+        document.getElementById('selectedPeriod').textContent = '';
+      } else {
+        document.getElementById('selectedPeriod').textContent = `— ${p}`;
+      }
     }
 
     function refreshCourseFilter() {
@@ -1119,8 +1147,8 @@
       const conversionRate = tcTotal === 0 ? 0 : (sales / tcTotal) * 100;
       const aov = sales === 0 ? 0 : (totalRevenue / sales);
 
-      // Calculate TC Salary
-      const tcSalary = calculateTcSalary(sales);
+      // Calculate TC Salary - UPDATED: based on TC Total
+      const tcSalary = calculateTcSalary(tcTotal);
 
       // Calculate Bonus - GUNAKAN CONVERSION RATE (dalam persen)
       const bonusData = calculateBonus(totalRevenue, conversionRate);
@@ -1176,20 +1204,35 @@
     function renderTable() {
       const data = loadAllData();
       const selectedMonth = monthSelector.value;
+      const selectedPeriod = periodFilter.value;
       const q = (searchInput.value || '').toLowerCase().trim();
       const status = statusFilter.value;
       const course = courseFilter.value;
       
-      let filtered = data.filter(r => 
-        (!selectedMonth || r.monthKey === selectedMonth) &&
-        (!q || 
-          (r.childName||'').toLowerCase().includes(q) || 
-          (r.note||'').toLowerCase().includes(q) || 
-          (r.course||'').toLowerCase().includes(q)
-        ) &&
-        (!status || r.buyOrNot === status) &&
-        (!course || r.course === course)
-      );
+      let filtered = data.filter(r => {
+        // Month filter
+        if (selectedMonth && r.monthKey !== selectedMonth) return false;
+        
+        // Period filter (P1/P2)
+        if (selectedPeriod) {
+          const recordPeriod = getPeriodFromDate(r.date);
+          if (recordPeriod !== selectedPeriod) return false;
+        }
+        
+        // Search filter
+        if (q) {
+          const searchable = `${r.childName||''} ${r.note||''} ${r.course||''}`.toLowerCase();
+          if (!searchable.includes(q)) return false;
+        }
+        
+        // Status filter
+        if (status && r.buyOrNot !== status) return false;
+        
+        // Course filter
+        if (course && r.course !== course) return false;
+        
+        return true;
+      });
 
       // Sort
       filtered = sortData(filtered, currentSort.field, currentSort.direction);
@@ -1232,6 +1275,7 @@
       }
 
       document.getElementById('recordCount').textContent = `${filtered.length} records`;
+      updateSelectedMonthLabel();
 
       // Empty state
       if (filtered.length === 0) {
@@ -1412,7 +1456,18 @@
     function exportCSV(forAll = false) {
       const data = loadAllData();
       const selectedMonth = monthSelector.value;
-      const filtered = data.filter(r => forAll || r.monthKey === selectedMonth);
+      const selectedPeriod = periodFilter.value;
+      
+      let filtered = data.filter(r => {
+        if (!forAll) {
+          if (selectedMonth && r.monthKey !== selectedMonth) return false;
+          if (selectedPeriod) {
+            const recordPeriod = getPeriodFromDate(r.date);
+            if (recordPeriod !== selectedPeriod) return false;
+          }
+        }
+        return true;
+      });
       
       if (filtered.length === 0) {
         showToast('Tidak Ada Data', 'Tidak ada data untuk diexport', '⚠️');
@@ -1429,7 +1484,13 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const filename = forAll ? 'mrj_all_data' : `mrj_${selectedMonth}`;
+      
+      let filename = 'mrj_all_data';
+      if (!forAll) {
+        filename = `mrj_${selectedMonth}`;
+        if (selectedPeriod) filename += `_${selectedPeriod}`;
+      }
+      
       a.download = `${filename}.csv`;
       a.click();
       URL.revokeObjectURL(url);
@@ -1605,6 +1666,11 @@
       // Month selector
       monthSelector.addEventListener('change', () => {
         updateSelectedMonthLabel();
+        renderTable();
+      });
+
+      // Period filter
+      periodFilter.addEventListener('change', () => {
         renderTable();
       });
 
