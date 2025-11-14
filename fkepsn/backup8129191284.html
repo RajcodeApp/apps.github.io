@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Informasi - Tim Akademik Algonova Indonesia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .preview-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 20px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* Tab Switcher */
+        .tab-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #f5f5f5;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-generate {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-print {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-reset {
+            background: #f56565;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-reset:hover {
+            background: #e53e3e;
+        }
+
+        /* Letter Styles */
+        .letter {
+            background: white;
+            position: relative;
+        }
+
+        .letter-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .company-info {
+            text-align: center;
+            color: #333;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+
+        .company-address {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .letter-meta {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .letter-meta div {
+            display: contents;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .meta-value {
+            color: #666;
+        }
+
+        .letter-recipient {
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .recipient-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .letter-body {
+            text-align: justify;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .letter-body p {
+            margin-bottom: 15px;
+        }
+
+        /* Penting: untuk mempertahankan line breaks */
+        #previewMessage {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        .signature-date {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .signature-image {
+            width: 180px;
+            height: auto;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 3px;
+            margin-top: -10px;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .letter-footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-section {
+                position: static;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .form-section {
+                display: none;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+
+            .preview-section {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .letter-footer {
+                page-break-inside: avoid;
+            }
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .alert-info {
+            background: #e6f2ff;
+            color: #0066cc;
+            border-left: 4px solid #0066cc;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(102, 126, 234, 0.05);
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .icon {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <h1>📧 Buat Surat Informasi</h1>
+            <p class="subtitle">Tim Akademik Algonova Indonesia</p>
+
+            <!-- Tab Switcher -->
+            <div class="tab-switcher">
+                <button class="tab-btn active" onclick="switchTab('student')" id="studentTab">
+                    <span class="icon">👨‍🎓</span> Untuk Siswa
+                </button>
+                <button class="tab-btn" onclick="switchTab('tutor')" id="tutorTab">
+                    <span class="icon">👨‍🏫</span> Untuk Tutor/Karyawan
+                </button>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>ℹ️ Informasi:</strong> Pilih jenis surat di atas, lalu isi formulir. Nomor surat akan di-generate otomatis.
+            </div>
+
+            <form id="letterForm">
+                <!-- Student Form -->
+                <div id="studentForm" class="form-content">
+                    <div class="form-group">
+                        <label for="parentName">Nama Orang Tua / Wali *</label>
+                        <input 
+                            type="text" 
+                            id="parentName" 
+                            placeholder="Contoh: Bapak/Ibu Ahmad Suryanto"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentName">Nama Anak / Siswa *</label>
+                        <input 
+                            type="text" 
+                            id="studentName" 
+                            placeholder="Contoh: Rizky Ahmad Pratama"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentSubject">Perihal / Subjek Surat *</label>
+                        <input 
+                            type="text" 
+                            id="studentSubject" 
+                            placeholder="Contoh: Undangan Pertemuan Orang Tua"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentMessage">Isi Pesan / Informasi *</label>
+                        <textarea 
+                            id="studentMessage" 
+                            placeholder="Tulis pesan atau informasi yang ingin disampaikan...&#10;&#10;Tekan Enter untuk membuat baris baru."
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="studentCharCount">0</span> karakter
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tutor/Karyawan Form -->
+                <div id="tutorForm" class="form-content hidden">
+                    <div class="form-group">
+                        <label for="tutorName">Nama Tutor / Karyawan *</label>
+                        <input 
+                            type="text" 
+                            id="tutorName" 
+                            placeholder="Contoh: Bapak/Ibu Siti Nurhaliza, S.Pd"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tutorPosition">Posisi / Jabatan</label>
+                        <input 
+                            type="text" 
+                            id="tutorPosition" 
+                            placeholder="Contoh: Tutor Coding Senior"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tutorSubject">Perihal / Subjek Surat *</label>
+                        <input 
+                            type="text" 
+                            id="tutorSubject" 
+                            placeholder="Contoh: Undangan Rapat Koordinasi Tutor"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tutorMessage">Isi Pesan / Informasi *</label>
+                        <textarea 
+                            id="tutorMessage" 
+                            placeholder="Tulis pesan atau informasi yang ingin disampaikan...&#10;&#10;Tekan Enter untuk membuat baris baru."
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="tutorCharCount">0</span> karakter
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="form-group">
+                    <label for="signerName">Nama Penandatangan</label>
+                    <input 
+                        type="text" 
+                        id="signerName" 
+                        placeholder="Contoh: Dr. Maria Indah, S.Pd"
+                        value="Dr. Maria Indah, S.Pd"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="signerTitle">Jabatan Penandatangan</label>
+                    <input 
+                        type="text" 
+                        id="signerTitle" 
+                        placeholder="Contoh: Kepala Tim Akademik"
+                        value="Kepala Tim Akademik"
+                    >
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn-generate">
+                        ✨ Generate Surat
+                    </button>
+                    <button type="button" class="btn-print" onclick="printLetter()">
+                        🖨️ Cetak Surat
+                    </button>
+                    <button type="reset" class="btn-reset">
+                        🔄 Reset Form
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div class="letter" id="letterPreview">
+                <div class="watermark">ALGONOVA</div>
+                
+                <div class="letter-header">
+                    <div class="logo-container">
+                        <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="Logo Algonova" class="logo">
+                    </div>
+                    <div class="company-info">
+                        <div class="company-name">ALGONOVA INDONESIA</div>
+                        <div class="company-address">
+                            Tim Akademik<br>
+                            Graha Pos Indonesia, Gd Jl. Banda No.30 Lt.1 Blok C, Citarum,<br>
+                            Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115<br>
+                            Email: algo-indonesia@algoritmika.org | Telp: +62895001976114<br>
+                            Website: www.algonova.id
+                        </div>
+                    </div>
+                </div>
+
+                <div class="letter-meta">
+                    <div>
+                        <span class="meta-label">Nomor</span>
+                        <span class="meta-value">: <span id="previewLetterNo">-</span></span>
+                    </div>
+                    <div>
+                        <span class="meta-label">Perihal</span>
+                        <span class="meta-value">: <span id="previewSubject">-</span></span>
+                    </div>
+                    <div>
+                        <span class="meta-label">Tanggal</span>
+                        <span class="meta-value">: <span id="previewDate">-</span></span>
+                    </div>
+                </div>
+
+                <div class="letter-recipient">
+                    <div class="recipient-label" id="previewRecipient">
+                        Kepada Yth.<br>
+                        <span id="previewRecipientName">-</span><br>
+                        <span id="previewRecipientDetail"></span>
+                        Di tempat
+                    </div>
+                </div>
+
+                <div class="letter-body">
+                    <p>Dengan hormat,</p>
+                    <p id="previewMessage">Silakan pilih jenis surat dan isi formulir di samping untuk membuat surat informasi.</p>
+                    <p>
+                        Demikian surat informasi ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.
+                    </p>
+                </div>
+
+                <div class="signature-section">
+                    <div class="signature-date" id="previewSignatureDate">Bandung, -</div>
+                    <div style="display: inline-block; text-align: center;">
+                        <img src="https://raw.githubusercontent.com/RajcodeApp/apps.github.io/refs/heads/main/cpp/Algottd3.png" alt="Tanda Tangan" class="signature-image">
+                        <div class="signature-name" id="previewSignerName">-</div>
+                        <div class="signature-title" id="previewSignerTitle">-</div>
+                    </div>
+                </div>
+
+                <div class="letter-footer">
+                    Dokumen ini dibuat secara elektronik dan sah tanpa tanda tangan basah<br>
+                    © 2025 Algonova Indonesia - Tim Akademik
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'student';
+
+        // Switch Tab Function
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.getElementById('studentTab').classList.remove('active');
+            document.getElementById('tutorTab').classList.remove('active');
+            
+            if (tab === 'student') {
+                document.getElementById('studentTab').classList.add('active');
+                document.getElementById('studentForm').classList.remove('hidden');
+                document.getElementById('tutorForm').classList.add('hidden');
+            } else {
+                document.getElementById('tutorTab').classList.add('active');
+                document.getElementById('tutorForm').classList.remove('hidden');
+                document.getElementById('studentForm').classList.add('hidden');
+            }
+
+            // Reset preview
+            resetPreview();
+        }
+
+        // Generate Letter Number
+        function generateLetterNumber() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const random = Math.floor(Math.random() * 9000) + 1000;
+            return `${random}/ALG-AKD/${month}/${year}`;
+        }
+
+        // Format Date
+        function formatDate(date) {
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            return `${day} ${month} ${year}`;
+        }
+
+        // Character Counter for Student
+        document.getElementById('studentMessage').addEventListener('input', function() {
+            document.getElementById('studentCharCount').textContent = this.value.length;
+        });
+
+        // Character Counter for Tutor
+        document.getElementById('tutorMessage').addEventListener('input', function() {
+            document.getElementById('tutorCharCount').textContent = this.value.length;
+        });
+
+        // Form Submit Handler
+        document.getElementById('letterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const signerName = document.getElementById('signerName').value;
+            const signerTitle = document.getElementById('signerTitle').value;
+            const letterNo = generateLetterNumber();
+            const currentDate = new Date();
+            const formattedDate = formatDate(currentDate);
+
+            let subject, message, recipientName, recipientDetail;
+
+            if (currentTab === 'student') {
+                const parentName = document.getElementById('parentName').value;
+                const studentName = document.getElementById('studentName').value;
+                subject = document.getElementById('studentSubject').value;
+                message = document.getElementById('studentMessage').value;
+
+                if (!parentName || !studentName || !subject || !message) {
+                    alert('⚠️ Mohon lengkapi semua field yang bertanda *');
+                    return;
+                }
+
+                recipientName = parentName;
+                recipientDetail = `Orang Tua/Wali dari <strong>${studentName}</strong><br>`;
+            } else {
+                const tutorName = document.getElementById('tutorName').value;
+                const tutorPosition = document.getElementById('tutorPosition').value;
+                subject = document.getElementById('tutorSubject').value;
+                message = document.getElementById('tutorMessage').value;
+
+                if (!tutorName || !subject || !message) {
+                    alert('⚠️ Mohon lengkapi semua field yang bertanda *');
+                    return;
+                }
+
+                recipientName = tutorName;
+                recipientDetail = tutorPosition ? `${tutorPosition}<br>` : '';
+            }
+
+            // Update Preview - PERBAIKAN DI SINI
+            document.getElementById('previewLetterNo').textContent = letterNo;
+            document.getElementById('previewSubject').textContent = subject;
+            document.getElementById('previewDate').textContent = formattedDate;
+            document.getElementById('previewRecipientName').textContent = recipientName;
+            document.getElementById('previewRecipientDetail').innerHTML = recipientDetail;
+            
+            // Gunakan textContent untuk mempertahankan line breaks dengan CSS white-space: pre-wrap
+            document.getElementById('previewMessage').textContent = message;
+            
+            document.getElementById('previewSignerName').textContent = signerName;
+            document.getElementById('previewSignerTitle').textContent = signerTitle;
+            document.getElementById('previewSignatureDate').textContent = `Bandung, ${formattedDate}`;
+
+            // Scroll to preview on mobile
+            if (window.innerWidth <= 968) {
+                document.querySelector('.preview-section').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
+
+            // Show success message
+            alert('✅ Surat berhasil di-generate! Anda dapat mencetak atau menyimpannya.');
+        });
+
+        // Reset Preview Function
+        function resetPreview() {
+            document.getElementById('previewLetterNo').textContent = '-';
+            document.getElementById('previewSubject').textContent = '-';
+            document.getElementById('previewDate').textContent = '-';
+            document.getElementById('previewRecipientName').textContent = '-';
+            document.getElementById('previewRecipientDetail').innerHTML = '';
+            document.getElementById('previewMessage').textContent = 'Silakan pilih jenis surat dan isi formulir di samping untuk membuat surat informasi.';
+            document.getElementById('previewSignerName').textContent = '-';
+            document.getElementById('previewSignerTitle').textContent = '-';
+            document.getElementById('previewSignatureDate').textContent = 'Bandung, -';
+        }
+
+        // Reset Form Handler
+        document.getElementById('letterForm').addEventListener('reset', function() {
+            setTimeout(() => {
+                resetPreview();
+                document.getElementById('studentCharCount').textContent = '0';
+                document.getElementById('tutorCharCount').textContent = '0';
+            }, 10);
+        });
+
+        // Print Function
+        function printLetter() {
+            const previewLetterNo = document.getElementById('previewLetterNo').textContent;
+            
+            if (previewLetterNo === '-') {
+                alert('⚠️ Silakan generate surat terlebih dahulu!');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // Initialize date on load
+        window.addEventListener('load', function() {
+            const currentDate = formatDate(new Date());
+            document.getElementById('previewDate').textContent = currentDate;
+        });
+    </script>
+</body>
+</html>
