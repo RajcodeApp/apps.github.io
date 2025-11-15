@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengajuan Beasiswa - Algonova</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-container h1 {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            color: white;
+            font-weight: 500;
+            opacity: 0.7;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-tabs button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tabs button.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Card */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            margin-top: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, #667eea, #764ba2) 1;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .course-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeInModal 0.3s;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            animation: slideDown 0.4s;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+            animation: scaleIn 0.5s;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .trace-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin: 25px 0;
+            letter-spacing: 3px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .note {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Tracking Result */
+        .tracking-result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .result-header h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        .detail-item .label {
+            display: block;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .detail-item .value {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Status Badge */
+        .status-pending {
+            background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .status-approved {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .status-rejected {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 18px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #fadbd8 0%, #f8d7da 100%);
+            color: #c0392b;
+            border-left: 5px solid #e74c3c;
+        }
+
+        /* Stats Container */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-card.approved {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+        }
+
+        .stat-card.rejected {
+            background: linear-gradient(135deg, #e74c3c 0%, #ec7063 100%);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .stat-card.total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-section label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-section select {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-section select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        table tbody tr {
+            transition: all 0.3s;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Approval Section */
+        .approval-section {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 3px solid #e0e0e0;
+        }
+
+        .approval-section h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .catatan-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 5px solid #f39c12;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.2);
+        }
+
+        .catatan-section h4 {
+            color: #856404;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2196f3;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            color: #0d47a1;
+            margin: 5px 0;
+        }
+
+        .price-highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-tabs button {
+                flex: 1;
+                min-width: 90px;
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+
+            table th,
+            table td {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .trace-number {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="Algonova Logo">
+                <h1>Sistem Beasiswa</h1>
+            </div>
+            <ul class="nav-tabs">
+                <button class="active" onclick="openTab('pengajuan')">📝 Pengajuan</button>
+                <button onclick="openTab('tracking')">🔍 Tracking</button>
+                <button onclick="openTab('admin')">👨‍💼 Admin</button>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- TAB PENGAJUAN -->
+        <div id="pengajuan" class="tab-content active">
+            <div class="card">
+                <h2>📝 Form Pengajuan Beasiswa</h2>
+                
+                <div class="info-box">
+                    <h3>ℹ️ Informasi Penting</h3>
+                    <p>Setelah submit, Anda akan mendapatkan <strong>Nomor Trace</strong> untuk tracking status pengajuan.</p>
+                    <p>Harga beasiswa akan ditentukan oleh admin saat proses approval.</p>
+                </div>
+
+                <form id="beasiswaForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="namaAnak">Nama Anak <span class="required">*</span></label>
+                            <input type="text" id="namaAnak" placeholder="Masukkan nama lengkap anak" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
+                            <input type="date" id="tanggalLahir" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="namaOrangTua">Nama Orang Tua <span class="required">*</span></label>
+                            <input type="text" id="namaOrangTua" placeholder="Masukkan nama orang tua/wali" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nomorAmo">Nomor AMO/Data <span class="required">*</span></label>
+                            <input type="text" id="nomorAmo" placeholder="Masukkan nomor AMO/Data" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="course">Course/Program <span class="required">*</span></label>
+                            <select id="course" required>
+                                <option value="">-- Pilih Course --</option>
+                                <option value="Coding Knight (5–6 tahun)">Coding Knight (5–6 tahun)</option>
+                                <option value="Digital Literasi (7 tahun)">Digital Literasi (7 tahun)</option>
+                                <option value="Visual Programming (8–12 tahun)">Visual Programming (8–12 tahun)</option>
+                                <option value="Graphic Design Junior (8–10 tahun)">Graphic Design Junior (8–10 tahun)</option>
+                                <option value="Graphic Design Senior (11–14 tahun)">Graphic Design Senior (11–14 tahun)</option>
+                                <option value="Game Design (10–14 tahun)">Game Design (10–14 tahun)</option>
+                                <option value="Python Start (13–14 tahun)">Python Start (13–14 tahun)</option>
+                                <option value="Python Pro (15–17 tahun)">Python Pro (15–17 tahun)</option>
+                                <option value="Math Explorers (6–8 tahun)">Math Explorers (6–8 tahun)</option>
+                                <option value="Math Masters (9–13 tahun)">Math Masters (9–13 tahun)</option>
+                                <option value="Course AI (12–15 tahun)">Course AI (12–15 tahun)</option>
+                                <option value="Math Tutoring (5-16 tahun)">Math Tutoring (5-16 tahun)</option>
+                            </select>
+                            <div class="course-info">Pilih course sesuai dengan usia anak</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="validDate">Valid Date (Berlaku Sampai) <span class="required">*</span></label>
+                            <input type="date" id="validDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="alasan">Alasan Pengajuan Beasiswa</label>
+                        <textarea id="alasan" rows="5" placeholder="Jelaskan alasan pengajuan beasiswa, kondisi ekonomi keluarga, prestasi anak, atau informasi relevan lainnya..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">✨ Submit Pengajuan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB TRACKING -->
+        <div id="tracking" class="tab-content">
+            <div class="card">
+                <h2>🔍 Tracking Pengajuan Beasiswa</h2>
+                
+                <div class="info-box">
+                    <h3>ℹ️ Cara Tracking</h3>
+                    <p>Masukkan nomor trace yang Anda terima saat pengajuan beasiswa.</p>
+                    <p>Format: <strong>BSW-MRJ-SPS-XXXXXXX</strong></p>
+                </div>
+
+                <form id="trackingForm">
+                    <div class="form-group">
+                        <label for="trackingNumber">Nomor Trace</label>
+                        <input type="text" id="trackingNumber" placeholder="Contoh: BSW-MRJ-SPS-1234567" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">🔎 Cek Status</button>
+                </form>
+
+                <div id="trackingResult" class="tracking-result" style="display: none;">
+                    <div class="result-header">
+                        <h3>📋 Detail Pengajuan</h3>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">Nomor Trace</span>
+                            <span class="value" id="resultTrace"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Nama Anak</span>
+                            <span class="value" id="resultNama"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Tanggal Lahir</span>
+                            <span class="value" id="resultTanggal"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Nama Orang Tua</span>
+                            <span class="value" id="resultOrangTua"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Nomor AMO</span>
+                            <span class="value" id="resultAmo"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Course</span>
+                            <span class="value" id="resultCourse"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Harga Beasiswa</span>
+                            <span class="value" id="resultHarga"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Valid Date</span>
+                            <span class="value" id="resultValid"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Tanggal Pengajuan</span>
+                            <span class="value" id="resultTanggalPengajuan"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Status</span>
+                            <span class="value" id="resultStatus"></span>
+                        </div>
+                    </div>
+                    
+                    <div id="resultCatatan" class="catatan-section" style="display: none;">
+                        <h4>📝 Catatan Admin:</h4>
+                        <p id="catatanText"></p>
+                    </div>
+                </div>
+
+                <div id="notFound" class="alert alert-error" style="display: none;">
+                    ❌ Nomor trace tidak ditemukan. Periksa kembali nomor Anda.
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB ADMIN -->
+        <div id="admin" class="tab-content">
+            <div class="card">
+                <h2>👨‍💼 Dashboard Admin - Approval Beasiswa</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPending">0</div>
+                        <div class="stat-label">⏳ Pending</div>
+                    </div>
+                    <div class="stat-card approved">
+                        <div class="stat-number" id="totalApproved">0</div>
+                        <div class="stat-label">✓ Disetujui</div>
+                    </div>
+                    <div class="stat-card rejected">
+                        <div class="stat-number" id="totalRejected">0</div>
+                        <div class="stat-label">✗ Ditolak</div>
+                    </div>
+                    <div class="stat-card total">
+                        <div class="stat-number" id="totalAll">0</div>
+                        <div class="stat-label">📊 Total</div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label for="filterStatus">🔍 Filter Status:</label>
+                    <select id="filterStatus" onchange="filterData()">
+                        <option value="all">Semua</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Disetujui</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>No Trace</th>
+                                <th>Nama Anak</th>
+                                <th>Course</th>
+                                <th>Beasiswa</th>
+                                <th>Valid Date</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Tidak ada data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Success -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSuccessModal()">&times;</span>
+            <div class="success-icon">✓</div>
+            <h2>🎉 Pengajuan Berhasil!</h2>
+            <p>Nomor Trace Anda:</p>
+            <div class="trace-number" id="traceNumber"></div>
+            <p class="note">💡 Simpan nomor trace ini untuk tracking status pengajuan beasiswa Anda</p>
+            <button class="btn btn-primary" onclick="closeSuccessModal()">OK, Mengerti</button>
+        </div>
+    </div>
+
+    <!-- Modal Detail Admin -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeDetailModal()">&times;</span>
+            <h2>📄 Detail Pengajuan Beasiswa</h2>
+            
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Nomor Trace</span>
+                    <span class="value" id="detailTrace"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nama Anak</span>
+                    <span class="value" id="detailNama"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Tanggal Lahir</span>
+                    <span class="value" id="detailTanggal"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nama Orang Tua</span>
+                    <span class="value" id="detailOrangTua"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nomor AMO</span>
+                    <span class="value" id="detailAmo"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Course</span>
+                    <span class="value" id="detailCourse"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Valid Date</span>
+                    <span class="value" id="detailValid"></span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="label">Alasan Pengajuan</span>
+                    <span class="value" id="detailAlasan"></span>
+                </div>
+            </div>
+
+            <div class="approval-section">
+                <h3>✅ Approval Section</h3>
+                
+                <div class="form-group">
+                    <label for="hargaBeasiswaApproval">💰 Harga Beasiswa yang Diberikan <span class="required">*</span></label>
+                    <input type="text" id="hargaBeasiswaApproval" placeholder="Contoh: Rp 1.500.000 atau 1500000" required>
+                    <div class="course-info">Masukkan nominal beasiswa yang akan diberikan (bisa angka saja atau dengan format Rp)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="catatan">📝 Catatan Admin</label>
+                    <textarea id="catatan" rows="3" placeholder="Tambahkan catatan untuk pemohon beasiswa..."></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="approve()">✓ Setujui Beasiswa</button>
+                    <button class="btn btn-danger" onclick="reject()">✗ Tolak Beasiswa</button>
+                    <button class="btn btn-secondary" onclick="closeDetailModal()">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== TAB NAVIGATION =====
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.nav-tabs button');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'admin') {
+                loadAdminData();
+                updateStats();
+            }
+        }
+
+        // ===== PENGAJUAN BEASISWA =====
+        function generateTraceNumber() {
+            // Generate random 7 digit number
+            const randomNum = Math.floor(1000000 + Math.random() * 9000000);
+            return `BSW-MRJ-SPS-${randomNum}`;
+        }
+
+        document.getElementById('beasiswaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const traceNumber = generateTraceNumber();
+            const formData = {
+                traceNumber: traceNumber,
+                namaAnak: document.getElementById('namaAnak').value,
+                tanggalLahir: document.getElementById('tanggalLahir').value,
+                namaOrangTua: document.getElementById('namaOrangTua').value,
+                nomorAmo: document.getElementById('nomorAmo').value,
+                course: document.getElementById('course').value,
+                validDate: document.getElementById('validDate').value,
+                alasan: document.getElementById('alasan').value,
+                tanggalPengajuan: new Date().toISOString(),
+                status: 'pending',
+                hargaBeasiswa: '-',
+                catatan: ''
+            };
+            
+            let beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            beasiswa.push(formData);
+            localStorage.setItem('beasiswa', JSON.stringify(beasiswa));
+            
+            document.getElementById('traceNumber').textContent = traceNumber;
+            document.getElementById('successModal').style.display = 'block';
+            
+            this.reset();
+        });
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // ===== TRACKING =====
+        document.getElementById('trackingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const trackingNumber = document.getElementById('trackingNumber').value.trim();
+            const beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            
+            const found = beasiswa.find(item => item.traceNumber === trackingNumber);
+            
+            if (found) {
+                document.getElementById('trackingResult').style.display = 'block';
+                document.getElementById('notFound').style.display = 'none';
+                
+                document.getElementById('resultTrace').textContent = found.traceNumber;
+                document.getElementById('resultNama').textContent = found.namaAnak;
+                document.getElementById('resultTanggal').textContent = formatDate(found.tanggalLahir);
+                document.getElementById('resultOrangTua').textContent = found.namaOrangTua;
+                document.getElementById('resultAmo').textContent = found.nomorAmo;
+                document.getElementById('resultCourse').textContent = found.course;
+                
+                // Format harga beasiswa
+                const hargaDisplay = found.hargaBeasiswa && found.hargaBeasiswa !== '-' 
+                    ? `<span class="price-highlight">${formatRupiah(found.hargaBeasiswa)}</span>`
+                    : '<span style="color: #999;">Belum ditentukan</span>';
+                document.getElementById('resultHarga').innerHTML = hargaDisplay;
+                
+                document.getElementById('resultValid').textContent = formatDate(found.validDate);
+                document.getElementById('resultTanggalPengajuan').textContent = formatDateTime(found.tanggalPengajuan);
+                document.getElementById('resultStatus').innerHTML = getStatusBadge(found.status);
+                
+                if (found.catatan && found.catatan.trim() !== '') {
+                    document.getElementById('resultCatatan').style.display = 'block';
+                    document.getElementById('catatanText').textContent = found.catatan;
+                } else {
+                    document.getElementById('resultCatatan').style.display = 'none';
+                }
+            } else {
+                document.getElementById('trackingResult').style.display = 'none';
+                document.getElementById('notFound').style.display = 'block';
+            }
+        });
+
+        // ===== ADMIN =====
+        let currentEditTrace = null;
+
+        function loadAdminData() {
+            const beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            const filterStatus = document.getElementById('filterStatus').value;
+            
+            let filteredData = beasiswa;
+            if (filterStatus !== 'all') {
+                filteredData = beasiswa.filter(item => item.status === filterStatus);
+            }
+            
+            const tableBody = document.getElementById('tableBody');
+            
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data</td></tr>';
+                return;
+            }
+            
+            tableBody.innerHTML = '';
+            filteredData.reverse().forEach(item => {
+                const hargaDisplay = item.hargaBeasiswa && item.hargaBeasiswa !== '-' 
+                    ? formatRupiah(item.hargaBeasiswa)
+                    : '-';
+                    
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${item.traceNumber}</strong></td>
+                    <td>${item.namaAnak}</td>
+                    <td>${item.course}</td>
+                    <td><strong>${hargaDisplay}</strong></td>
+                    <td>${formatDate(item.validDate)}</td>
+                    <td>${getStatusBadge(item.status)}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="openDetailModal('${item.traceNumber}')">
+                            👁️ Detail
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateStats() {
+            const beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            
+            const pending = beasiswa.filter(item => item.status === 'pending').length;
+            const approved = beasiswa.filter(item => item.status === 'approved').length;
+            const rejected = beasiswa.filter(item => item.status === 'rejected').length;
+            
+            document.getElementById('totalPending').textContent = pending;
+            document.getElementById('totalApproved').textContent = approved;
+            document.getElementById('totalRejected').textContent = rejected;
+            document.getElementById('totalAll').textContent = beasiswa.length;
+        }
+
+        function filterData() {
+            loadAdminData();
+        }
+
+        function openDetailModal(traceNumber) {
+            const beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            const item = beasiswa.find(b => b.traceNumber === traceNumber);
+            
+            if (!item) return;
+            
+            currentEditTrace = traceNumber;
+            
+            document.getElementById('detailTrace').textContent = item.traceNumber;
+            document.getElementById('detailNama').textContent = item.namaAnak;
+            document.getElementById('detailTanggal').textContent = formatDate(item.tanggalLahir);
+            document.getElementById('detailOrangTua').textContent = item.namaOrangTua;
+            document.getElementById('detailAmo').textContent = item.nomorAmo;
+            document.getElementById('detailCourse').textContent = item.course;
+            document.getElementById('detailValid').textContent = formatDate(item.validDate);
+            document.getElementById('detailAlasan').textContent = item.alasan || '-';
+            document.getElementById('hargaBeasiswaApproval').value = item.hargaBeasiswa !== '-' ? item.hargaBeasiswa : '';
+            document.getElementById('catatan').value = item.catatan || '';
+            
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+            currentEditTrace = null;
+        }
+
+        function approve() {
+            if (!currentEditTrace) return;
+            
+            const hargaBeasiswa = document.getElementById('hargaBeasiswaApproval').value.trim();
+            
+            if (!hargaBeasiswa) {
+                alert('⚠️ Harap masukkan harga beasiswa yang akan diberikan!');
+                document.getElementById('hargaBeasiswaApproval').focus();
+                return;
+            }
+            
+            if (confirm('✅ Apakah Anda yakin ingin menyetujui pengajuan beasiswa ini?')) {
+                updateStatus('approved', hargaBeasiswa);
+            }
+        }
+
+        function reject() {
+            if (!currentEditTrace) return;
+            
+            if (confirm('❌ Apakah Anda yakin ingin menolak pengajuan beasiswa ini?')) {
+                updateStatus('rejected', '-');
+            }
+        }
+
+        function updateStatus(status, hargaBeasiswa) {
+            const beasiswa = JSON.parse(localStorage.getItem('beasiswa')) || [];
+            const catatan = document.getElementById('catatan').value;
+            
+            const index = beasiswa.findIndex(item => item.traceNumber === currentEditTrace);
+            if (index !== -1) {
+                beasiswa[index].status = status;
+                beasiswa[index].hargaBeasiswa = hargaBeasiswa;
+                beasiswa[index].catatan = catatan;
+                beasiswa[index].tanggalUpdate = new Date().toISOString();
+                
+                localStorage.setItem('beasiswa', JSON.stringify(beasiswa));
+                
+                closeDetailModal();
+                loadAdminData();
+                updateStats();
+                
+                const message = status === 'approved' 
+                    ? '✅ Pengajuan beasiswa berhasil disetujui dengan nominal ' + formatRupiah(hargaBeasiswa) + '!'
+                    : '❌ Pengajuan beasiswa berhasil ditolak!';
+                alert(message);
+            }
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-pending">⏳ Pending</span>',
+                'approved': '<span class="status-approved">✓ Disetujui</span>',
+                'rejected': '<span class="status-rejected">✗ Ditolak</span>'
+            };
+            return badges[status] || status;
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function formatDateTime(dateString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function formatRupiah(angka) {
+            // Hilangkan karakter non-digit
+            const number = angka.toString().replace(/[^0-9]/g, '');
+            
+            if (!number) return 'Rp 0';
+            
+            // Format dengan titik sebagai pemisah ribuan
+            const formatted = number.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
+            return 'Rp ' + formatted;
+        }
+
+        // Close modal ketika klik di luar
+        window.onclick = function(event) {
+            const successModal = document.getElementById('successModal');
+            const detailModal = document.getElementById('detailModal');
+            
+            if (event.target == successModal) {
+                closeSuccessModal();
+            }
+            if (event.target == detailModal) {
+                closeDetailModal();
+            }
+        }
+
+        // Set minimum date untuk valid date (hari ini)
+        document.getElementById('validDate').min = new Date().toISOString().split('T')[0];
+
+        // Load admin data on page load
+        window.onload = function() {
+            updateStats();
+        }
+    </script>
+</body>
+</html>
