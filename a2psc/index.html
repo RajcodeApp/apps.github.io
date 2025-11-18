@@ -3,88 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Raj Sales Tracker Pro - Premium Dashboard</title>
+  <title>Mi Raj Sales Tracker Pro</title>
   <meta name="theme-color" content="#0f172a">
   
   <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
-      background: #0a0e1a;
+      background: #0a0e17;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(251, 191, 36, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
-      color: #f1f5f9;
+        radial-gradient(at 0% 0%, rgba(251, 191, 36, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+      color: #e2e8f0;
       min-height: 100vh;
-      overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Premium Glass Card */
+    /* Glass Card */
     .glass-card {
-      background: linear-gradient(135deg, 
-        rgba(30, 41, 59, 0.7) 0%, 
-        rgba(15, 23, 42, 0.8) 100%);
+      background: rgba(15, 23, 42, 0.6);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 24px;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), transparent 40%, rgba(139, 92, 246, 0.15));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .glass-card:hover::before {
-      opacity: 1;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .glass-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(251, 191, 36, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border-color: rgba(251, 191, 36, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
-    /* Premium Stat Card */
+    /* Stat Card */
     .stat-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
       backdrop-filter: blur(12px);
       border: 1px solid rgba(251, 191, 36, 0.15);
-      border-radius: 20px;
-      padding: 1.75rem;
+      border-radius: 10px;
+      padding: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
     }
 
     .stat-card::before {
@@ -94,500 +67,284 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.12), transparent);
-      transition: left 0.6s ease;
+      background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
+      transition: left 0.5s;
     }
 
     .stat-card:hover::before {
       left: 100%;
     }
 
-    .stat-card::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 20px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), transparent 50%, rgba(251, 191, 36, 0.4));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
     .stat-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      border-color: rgba(251, 191, 36, 0.4);
-      box-shadow: 
-        0 24px 48px rgba(0, 0, 0, 0.5),
-        0 0 80px rgba(251, 191, 36, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+      border-color: rgba(251, 191, 36, 0.3);
+      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.15);
     }
 
-    .stat-card:hover::after {
-      opacity: 1;
-    }
-
-    /* PREMIUM TABLE DESIGN */
-    .premium-table-container {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.7) 100%);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .premium-table-container::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), transparent);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      border-radius: 16px;
-      margin-top: 1.5rem;
+    /* Premium Table */
+    .table-container {
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }
 
     .premium-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      font-size: 0.9375rem;
-    }
-
-    .premium-table thead {
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      font-size: 13px;
     }
 
     .premium-table thead tr {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
-      backdrop-filter: blur(12px);
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(8px);
     }
 
     .premium-table th {
-      padding: 1.25rem 1.5rem;
+      padding: 10px 12px;
       text-align: left;
-      font-size: 0.75rem;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      color: #94a3b8;
-      letter-spacing: 0.1em;
-      border-bottom: 2px solid rgba(251, 191, 36, 0.2);
+      color: #64748b;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(251, 191, 36, 0.15);
       white-space: nowrap;
-      position: relative;
       user-select: none;
-    }
-
-    .premium-table th::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #fbbf24, #f59e0b);
-      transition: width 0.3s ease;
-    }
-
-    .premium-table th:hover::after {
-      width: 100%;
     }
 
     .premium-table th[data-sort] {
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: color 0.2s;
     }
 
     .premium-table th[data-sort]:hover {
       color: #fbbf24;
-      transform: translateY(-1px);
     }
 
     .premium-table tbody tr {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.4) 100%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-
-    .premium-table tbody tr::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, #fbbf24, #f59e0b);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      background: rgba(15, 23, 42, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      transition: all 0.2s ease;
     }
 
     .premium-table tbody tr:hover {
-      background: linear-gradient(90deg, 
-        rgba(251, 191, 36, 0.08) 0%, 
-        rgba(251, 191, 36, 0.04) 50%,
-        transparent 100%);
-      transform: translateX(4px);
-      box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    .premium-table tbody tr:hover::before {
-      opacity: 1;
+      background: linear-gradient(90deg, rgba(251, 191, 36, 0.06), transparent);
+      transform: translateX(2px);
     }
 
     .premium-table td {
-      padding: 1.5rem 1.5rem;
-      color: #e2e8f0;
-      vertical-align: middle;
+      padding: 12px;
+      color: #cbd5e1;
+      font-size: 13px;
     }
 
-    .premium-table td:first-child {
-      padding-left: 2rem;
-    }
-
-    /* Premium Checkbox */
-    .premium-checkbox {
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(148, 163, 184, 0.3);
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.3s ease;
-      background: rgba(15, 23, 42, 0.5);
-    }
-
-    .premium-checkbox:hover {
-      border-color: rgba(251, 191, 36, 0.5);
-      background: rgba(251, 191, 36, 0.05);
-    }
-
-    .premium-checkbox:checked {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      border-color: #fbbf24;
-    }
-
-    .premium-checkbox:checked::after {
-      content: '✓';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #0f172a;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    /* Premium Badge */
-    .premium-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-size: 0.8125rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .premium-badge::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .premium-badge:hover::before {
-      opacity: 1;
-    }
-
-    .badge-buy {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.25));
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-    }
-
-    .badge-not {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.25));
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
-    }
-
-    .badge-pending {
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.25));
-      color: #fbbf24;
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
-    }
-
-    /* Premium Buttons */
+    /* Buttons */
     .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.2s ease;
       cursor: pointer;
       border: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.625rem;
+      gap: 6px;
       white-space: nowrap;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .btn:hover::before {
-      opacity: 1;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #0f172a;
-      box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(251, 191, 36, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
     }
 
     .btn-secondary {
       background: rgba(51, 65, 85, 0.6);
-      color: #f1f5f9;
+      color: #e2e8f0;
       border: 1px solid rgba(148, 163, 184, 0.2);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
     .btn-secondary:hover {
-      background: rgba(71, 85, 105, 0.8);
-      border-color: rgba(148, 163, 184, 0.4);
-      transform: translateY(-2px);
+      background: rgba(71, 85, 105, 0.7);
+      border-color: rgba(148, 163, 184, 0.3);
     }
 
     .btn-danger {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.25));
+      background: rgba(239, 68, 68, 0.15);
       color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     .btn-danger:hover {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.35));
-      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.25);
     }
 
     .btn-action {
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
       background: rgba(51, 65, 85, 0.4);
-      color: #cbd5e1;
-      transition: all 0.3s ease;
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s;
     }
 
     .btn-action:hover {
-      background: rgba(71, 85, 105, 0.6);
-      border-color: rgba(251, 191, 36, 0.3);
-      color: #fbbf24;
-      transform: translateY(-1px);
+      background: rgba(71, 85, 105, 0.5);
+      color: #e2e8f0;
     }
 
     .btn-action.edit:hover {
       background: rgba(59, 130, 246, 0.15);
-      border-color: rgba(59, 130, 246, 0.4);
+      border-color: rgba(59, 130, 246, 0.3);
       color: #3b82f6;
-    }
-
-    .btn-action.duplicate:hover {
-      background: rgba(139, 92, 246, 0.15);
-      border-color: rgba(139, 92, 246, 0.4);
-      color: #8b5cf6;
     }
 
     .btn-action.delete:hover {
       background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.4);
+      border-color: rgba(239, 68, 68, 0.3);
       color: #ef4444;
     }
 
-    /* Premium Input Fields */
+    /* Input Fields */
     input, select, textarea {
       width: 100%;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1.5px solid rgba(148, 163, 184, 0.15);
-      border-radius: 12px;
-      padding: 0.875rem 1.125rem;
-      color: #f1f5f9;
-      font-size: 0.9375rem;
-      transition: all 0.3s ease;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #e2e8f0;
+      font-size: 13px;
+      transition: all 0.2s;
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: #fbbf24;
-      background: rgba(15, 23, 42, 0.8);
-      box-shadow: 
-        0 0 0 4px rgba(251, 191, 36, 0.1),
-        0 8px 24px rgba(251, 191, 36, 0.15);
-      transform: translateY(-1px);
+      background: rgba(15, 23, 42, 0.7);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
     }
 
     input::placeholder, textarea::placeholder {
-      color: rgba(148, 163, 184, 0.4);
+      color: #475569;
     }
 
-    /* Premium Level Badge */
-    .level-badge {
+    /* Badge */
+    .badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.5rem 1.125rem;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 800;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      position: relative;
-      overflow: hidden;
+      letter-spacing: 0.025em;
     }
 
-    .level-badge::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    .badge-buy {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.25);
     }
 
-    .level-badge:hover::before {
-      opacity: 1;
+    .badge-not {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
-    .level-1 { 
-      background: linear-gradient(135deg, #64748b, #475569); 
-      color: #f1f5f9;
-      box-shadow: 0 4px 16px rgba(100, 116, 139, 0.3);
+    .badge-pending {
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.25);
     }
-    .level-2 { 
-      background: linear-gradient(135deg, #06b6d4, #0891b2); 
-      color: #f0f9ff;
-      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+
+    /* Level Badge */
+    .level-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    .level-3 { 
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed); 
-      color: #faf5ff;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
-    }
-    .level-4 { 
-      background: linear-gradient(135deg, #f59e0b, #d97706); 
-      color: #fffbeb;
-      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
-    }
-    .level-5 { 
-      background: linear-gradient(135deg, #ef4444, #dc2626); 
-      color: #fef2f2;
-      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
-    }
+
+    .level-1 { background: #64748b; color: #f1f5f9; }
+    .level-2 { background: #06b6d4; color: #f0f9ff; }
+    .level-3 { background: #8b5cf6; color: #faf5ff; }
+    .level-4 { background: #f59e0b; color: #fffbeb; }
+    .level-5 { background: #ef4444; color: #fef2f2; }
 
     /* Progress Bar */
     .progress-bar {
-      height: 12px;
+      height: 8px;
       background: rgba(51, 65, 85, 0.5);
       border-radius: 999px;
       overflow: hidden;
-      position: relative;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
-      background-size: 200% 100%;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
       border-radius: 999px;
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        0 0 24px rgba(251, 191, 36, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      animation: shimmer 2s infinite;
-      position: relative;
-      overflow: hidden;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
     }
 
-    .progress-fill::after {
-      content: '';
+    /* Checkbox */
+    .checkbox {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid rgba(148, 163, 184, 0.3);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .checkbox:hover {
+      border-color: rgba(251, 191, 36, 0.5);
+    }
+
+    .checkbox:checked {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-color: #fbbf24;
+    }
+
+    .checkbox:checked::after {
+      content: '✓';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      animation: slide 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    @keyframes slide {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 10px;
+      margin: -1px 0 0 3px;
     }
 
     /* Modal */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      padding: 2rem;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      padding: 20px;
     }
 
     .modal.hidden {
@@ -595,58 +352,30 @@
     }
 
     .modal-content {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 28px;
-      padding: 2.5rem;
+      border-radius: 16px;
+      padding: 24px;
       width: 100%;
-      max-width: 540px;
+      max-width: 480px;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 
-        0 24px 80px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
     }
 
     /* Toast */
     .toast {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
       border: 1px solid rgba(251, 191, 36, 0.3);
-      border-radius: 18px;
-      padding: 1.5rem 2rem;
-      box-shadow: 
-        0 24px 48px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(251, 191, 36, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       z-index: 2000;
-      min-width: 360px;
-      animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(120px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      min-width: 300px;
+      font-size: 13px;
     }
 
     .toast.hidden {
@@ -658,97 +387,61 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(10, 14, 26, 0.8);
-      backdrop-filter: blur(32px);
-      -webkit-backdrop-filter: blur(32px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      background: rgba(10, 14, 23, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     /* Logo */
     .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 1.75rem;
+      font-weight: 800;
+      font-size: 20px;
       color: #0f172a;
-      box-shadow: 
-        0 12px 32px rgba(251, 191, 36, 0.4),
-        inset 0 2px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -2px 8px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .logo:hover::before {
-      opacity: 1;
+      box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+      transition: all 0.3s;
     }
 
     .logo:hover {
-      transform: rotate(-5deg) scale(1.08);
-      box-shadow: 
-        0 16px 48px rgba(251, 191, 36, 0.6),
-        inset 0 2px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+      transform: rotate(-5deg) scale(1.05);
     }
 
     /* Gradient Text */
     .gradient-text {
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
-      background-size: 200% auto;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      animation: gradientShift 4s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
     }
 
     /* Scrollbar */
     ::-webkit-scrollbar {
-      width: 14px;
-      height: 14px;
+      width: 10px;
+      height: 10px;
     }
 
     ::-webkit-scrollbar-track {
       background: rgba(15, 23, 42, 0.4);
       border-radius: 10px;
-      border: 3px solid transparent;
-      background-clip: content-box;
     }
 
     ::-webkit-scrollbar-thumb {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       border-radius: 10px;
-      border: 3px solid transparent;
-      background-clip: content-box;
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     }
 
     ::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      background-clip: content-box;
     }
 
-    /* Dropdown Menu */
+    /* Dropdown */
     .dropdown {
       position: relative;
     }
@@ -757,197 +450,139 @@
       position: absolute;
       top: 100%;
       right: 0;
-      margin-top: 1rem;
-      min-width: 300px;
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+      margin-top: 8px;
+      min-width: 240px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      box-shadow: 
-        0 24px 64px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
       overflow: hidden;
       z-index: 100;
-      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-12px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
     }
 
     .dropdown-item {
       width: 100%;
-      padding: 1.125rem 1.5rem;
+      padding: 10px 16px;
       text-align: left;
       background: transparent;
       border: none;
-      color: #f1f5f9;
+      color: #cbd5e1;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      position: relative;
-    }
-
-    .dropdown-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, #fbbf24, #f59e0b);
-      transform: scaleY(0);
-      transition: transform 0.3s ease;
-    }
-
-    .dropdown-item:hover::before {
-      transform: scaleY(1);
+      gap: 10px;
+      font-size: 13px;
     }
 
     .dropdown-item:hover {
-      background: linear-gradient(90deg, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.04));
-      padding-left: 2rem;
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
     }
 
     .dropdown-divider {
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.2), transparent);
-      margin: 0.5rem 0;
+      background: rgba(148, 163, 184, 0.1);
+      margin: 4px 0;
     }
 
     /* Empty State */
     .empty-state {
       text-align: center;
-      padding: 6rem 2rem;
+      padding: 60px 20px;
     }
 
     .empty-state-icon {
-      font-size: 6rem;
-      margin-bottom: 2rem;
+      font-size: 64px;
+      margin-bottom: 16px;
       opacity: 0.3;
-      animation: float 4s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-24px); }
     }
 
     /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
     }
 
     /* Form Labels */
     label {
       display: block;
-      margin-bottom: 0.625rem;
+      margin-bottom: 4px;
     }
 
     label span {
       display: block;
-      font-size: 0.875rem;
-      color: #cbd5e1;
-      margin-bottom: 0.625rem;
-      font-weight: 600;
-      letter-spacing: 0.025em;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      font-weight: 500;
     }
 
     /* Utilities */
     .container {
-      max-width: 1600px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 20px;
     }
 
     /* Course Tag */
     .course-tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15));
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      border-radius: 10px;
-      font-size: 0.8125rem;
-      font-weight: 600;
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
       color: #a78bfa;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
     }
 
-    /* Revenue Display */
-    .revenue-amount {
-      font-weight: 800;
-      font-size: 1.125rem;
-      background: linear-gradient(135deg, #10b981, #059669);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.025em;
+    /* Revenue */
+    .revenue {
+      font-weight: 700;
+      color: #10b981;
+      font-size: 14px;
     }
 
     /* Name Cell */
     .name-cell {
-      font-weight: 600;
-      color: #f1f5f9;
-      margin-bottom: 0.375rem;
-      font-size: 0.9375rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      margin-bottom: 4px;
     }
 
     .crm-link {
       display: inline-flex;
       align-items: center;
-      gap: 0.375rem;
+      gap: 4px;
       color: #fbbf24;
-      font-size: 0.8125rem;
+      font-size: 11px;
       text-decoration: none;
-      transition: all 0.2s ease;
-      font-weight: 500;
+      transition: color 0.2s;
     }
 
     .crm-link:hover {
       color: #f59e0b;
-      transform: translateX(2px);
     }
 
     /* Date Cell */
     .date-primary {
-      font-weight: 600;
-      color: #e2e8f0;
-      margin-bottom: 0.25rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      font-size: 13px;
     }
 
     .date-secondary {
-      font-size: 0.75rem;
+      font-size: 11px;
       color: #64748b;
+      margin-top: 2px;
     }
 
     /* Responsive */
-    @media (max-width: 1400px) {
-      .container {
-        padding: 0 1.5rem;
-      }
-    }
-
     @media (max-width: 1024px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
-      }
-
-      .premium-table th,
-      .premium-table td {
-        padding: 1rem 1.25rem;
       }
     }
 
@@ -957,48 +592,23 @@
       }
 
       .toast {
-        left: 1rem;
-        right: 1rem;
-        bottom: 1rem;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
         min-width: auto;
       }
 
-      .logo {
-        width: 56px;
-        height: 56px;
-        font-size: 1.5rem;
+      .container {
+        padding: 0 16px;
+      }
+
+      .premium-table {
+        font-size: 12px;
       }
 
       .premium-table th,
       .premium-table td {
-        padding: 0.875rem 1rem;
-      }
-
-      .premium-table-container {
-        padding: 1.5rem;
-      }
-
-      .modal-content {
-        padding: 2rem;
-      }
-
-      .container {
-        padding: 0 1rem;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .premium-table {
-        font-size: 0.8125rem;
-      }
-
-      .stat-card {
-        padding: 1.5rem;
-      }
-
-      .btn {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.8125rem;
+        padding: 8px 10px;
       }
     }
   </style>
@@ -1007,25 +617,25 @@
 
   <!-- Header -->
   <header class="header">
-    <div class="container" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 1.25rem;">
+    <div class="container" style="padding-top: 16px; padding-bottom: 16px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 12px;">
           <div class="logo">MR</div>
           <div>
-            <h1 class="gradient-text" style="font-size: 1.75rem; font-weight: 900; line-height: 1.2; margin-bottom: 0.375rem;">
+            <h1 class="gradient-text" style="font-size: 20px; font-weight: 800; line-height: 1.2; margin-bottom: 2px;">
               Mi Raj Sales Tracker Pro
             </h1>
-            <p style="font-size: 0.875rem; color: #64748b; display: flex; align-items: center; gap: 0.625rem; flex-wrap: wrap;">
-              <span style="color: #94a3b8;">📊 Advanced Analytics</span>
+            <p style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span>📊 Analytics</span>
               <span style="opacity: 0.3;">•</span>
-              <span style="color: #94a3b8;">💾 Auto-save</span>
+              <span>💾 Auto-save</span>
               <span style="opacity: 0.3;">•</span>
-              <span style="color: #94a3b8;">⚡ Real-time</span>
+              <span>⚡ Real-time</span>
             </p>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 8px;">
           <button id="shortcutsBtn" class="btn btn-secondary" title="Shortcuts">⌨️</button>
           
           <div class="dropdown">
@@ -1035,24 +645,24 @@
             </button>
             <div id="menu" class="dropdown-menu" style="display: none;">
               <button class="dropdown-item" id="importBtn">
-                <span style="font-size: 1.25rem;">📥</span>
+                <span>📥</span>
                 <span>Import CSV</span>
               </button>
               <button class="dropdown-item" id="exportAllBtn">
-                <span style="font-size: 1.25rem;">📤</span>
+                <span>📤</span>
                 <span>Export Semua</span>
               </button>
               <button class="dropdown-item" id="targetBtn">
-                <span style="font-size: 1.25rem;">🎯</span>
+                <span>🎯</span>
                 <span>Atur Target</span>
               </button>
               <button class="dropdown-item" id="chartBtn">
-                <span style="font-size: 1.25rem;">📈</span>
+                <span>📈</span>
                 <span>Lihat Grafik</span>
               </button>
               <div class="dropdown-divider"></div>
               <button class="dropdown-item" id="resetBtn" style="color: #ef4444;">
-                <span style="font-size: 1.25rem;">🗑️</span>
+                <span>🗑️</span>
                 <span>Reset Data</span>
               </button>
             </div>
@@ -1063,96 +673,94 @@
   </header>
 
   <!-- Main -->
-  <main class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+  <main class="container" style="padding-top: 24px; padding-bottom: 40px;">
     
     <!-- Target Progress -->
-    <section id="targetSection" class="glass-card" style="padding: 2.5rem; margin-bottom: 2.5rem; display: none;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem;">
+    <section id="targetSection" class="glass-card" style="padding: 20px; margin-bottom: 24px; display: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
         <div>
-          <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.625rem; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            🎯 Target Revenue Bulan Ini
-          </h3>
-          <p id="targetDesc" style="font-size: 0.9375rem; color: #94a3b8;">Belum ada target</p>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">🎯 Target Revenue Bulan Ini</h3>
+          <p id="targetDesc" style="font-size: 12px; color: #64748b;">Belum ada target</p>
         </div>
         <button id="editTargetBtn" class="btn btn-secondary">Edit Target</button>
       </div>
-      <div class="progress-bar" style="margin-bottom: 1rem;">
+      <div class="progress-bar" style="margin-bottom: 12px;">
         <div id="targetProgress" class="progress-fill" style="width: 0%"></div>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-        <span id="targetCurrent" style="color: #94a3b8; font-size: 0.9375rem;">Rp 0 / Rp 0</span>
-        <span id="targetPercent" style="color: #fbbf24; font-weight: 800; font-size: 1.5rem;">0%</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+        <span id="targetCurrent" style="color: #64748b; font-size: 13px;">Rp 0 / Rp 0</span>
+        <span id="targetPercent" style="color: #fbbf24; font-weight: 700; font-size: 18px;">0%</span>
       </div>
-      <div style="padding-top: 1.5rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-          <span style="color: #94a3b8; font-size: 0.9375rem;">Sisa yang harus dicapai:</span>
-          <span id="targetRemaining" style="color: #10b981; font-weight: 800; font-size: 1.5rem;">Rp 0</span>
+      <div style="padding-top: 12px; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <span style="color: #64748b; font-size: 12px;">Sisa yang harus dicapai:</span>
+          <span id="targetRemaining" style="color: #10b981; font-weight: 700; font-size: 16px;">Rp 0</span>
         </div>
       </div>
     </section>
 
     <!-- Quick Stats -->
-    <section class="stats-grid" style="margin-bottom: 2.5rem;">
+    <section class="stats-grid" style="margin-bottom: 24px;">
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">📞 TC Total</div>
-        <div id="statTcTotal" style="font-size: 2.5rem; font-weight: 900; color: #fbbf24; line-height: 1; margin-bottom: 0.5rem;">0</div>
-        <div id="statTcChange" style="font-size: 0.8125rem; color: #64748b;">-</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">📞 TC Total</div>
+        <div id="statTcTotal" style="font-size: 28px; font-weight: 800; color: #fbbf24; line-height: 1; margin-bottom: 4px;">0</div>
+        <div id="statTcChange" style="font-size: 11px; color: #64748b;">-</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">✅ Sales</div>
-        <div id="statSales" style="font-size: 2.5rem; font-weight: 900; color: #10b981; line-height: 1; margin-bottom: 0.5rem;">0</div>
-        <div id="statSalesChange" style="font-size: 0.8125rem; color: #64748b;">-</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">✅ Sales</div>
+        <div id="statSales" style="font-size: 28px; font-weight: 800; color: #10b981; line-height: 1; margin-bottom: 4px;">0</div>
+        <div id="statSalesChange" style="font-size: 11px; color: #64748b;">-</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">📊 Conversion</div>
-        <div id="statConversion" style="font-size: 2.5rem; font-weight: 900; color: #3b82f6; line-height: 1; margin-bottom: 0.5rem;">0%</div>
-        <div id="statConvChange" style="font-size: 0.8125rem; color: #64748b;">-</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">📊 Conversion</div>
+        <div id="statConversion" style="font-size: 28px; font-weight: 800; color: #3b82f6; line-height: 1; margin-bottom: 4px;">0%</div>
+        <div id="statConvChange" style="font-size: 11px; color: #64748b;">-</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">💰 Revenue</div>
-        <div id="statRevenue" style="font-size: 2.5rem; font-weight: 900; color: #10b981; line-height: 1; margin-bottom: 0.5rem;">Rp 0</div>
-        <div id="statRevChange" style="font-size: 0.8125rem; color: #64748b;">-</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">💰 Revenue</div>
+        <div id="statRevenue" style="font-size: 28px; font-weight: 800; color: #10b981; line-height: 1; margin-bottom: 4px;">Rp 0</div>
+        <div id="statRevChange" style="font-size: 11px; color: #64748b;">-</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">💵 AOV</div>
-        <div id="statAov" style="font-size: 2.5rem; font-weight: 900; color: #a855f7; line-height: 1; margin-bottom: 0.5rem;">Rp 0</div>
-        <div style="font-size: 0.8125rem; color: #64748b;">Avg per sale</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">💵 AOV</div>
+        <div id="statAov" style="font-size: 28px; font-weight: 800; color: #a855f7; line-height: 1; margin-bottom: 4px;">Rp 0</div>
+        <div style="font-size: 11px; color: #64748b;">Avg per sale</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">⏳ Pending</div>
-        <div id="statPending" style="font-size: 2.5rem; font-weight: 900; color: #fbbf24; line-height: 1; margin-bottom: 0.5rem;">0</div>
-        <div style="font-size: 0.8125rem; color: #64748b;">Follow-up</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">⏳ Pending</div>
+        <div id="statPending" style="font-size: 28px; font-weight: 800; color: #fbbf24; line-height: 1; margin-bottom: 4px;">0</div>
+        <div style="font-size: 11px; color: #64748b;">Follow-up</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">💸 Gaji TC</div>
-        <div id="statTcSalary" style="font-size: 2.5rem; font-weight: 900; color: #06b6d4; line-height: 1; margin-bottom: 0.5rem;">Rp 0</div>
-        <div style="font-size: 0.8125rem; color: #64748b;">TC × $2.5 × 16K</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">💸 Gaji TC</div>
+        <div id="statTcSalary" style="font-size: 28px; font-weight: 800; color: #06b6d4; line-height: 1; margin-bottom: 4px;">Rp 0</div>
+        <div style="font-size: 11px; color: #64748b;">TC × $2.5 × 16K</div>
       </div>
 
       <div class="stat-card">
-        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">🎁 Bonus</div>
-        <div id="statBonus" style="font-size: 2.5rem; font-weight: 900; color: #ec4899; line-height: 1; margin-bottom: 0.5rem;">Rp 0</div>
-        <div style="font-size: 0.8125rem; color: #64748b; display: flex; align-items: center; gap: 0.625rem; flex-wrap: wrap;">
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">🎁 Bonus</div>
+        <div id="statBonus" style="font-size: 28px; font-weight: 800; color: #ec4899; line-height: 1; margin-bottom: 4px;">Rp 0</div>
+        <div style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
           <span id="bonusPercent">0%</span>
-          <span style="opacity: 0.4;">•</span>
+          <span style="opacity: 0.3;">•</span>
           <span id="bonusLevel" class="level-badge level-1">Level 1</span>
         </div>
       </div>
     </section>
 
     <!-- Filters -->
-    <section class="glass-card" style="padding: 2.5rem; margin-bottom: 2.5rem;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+    <section class="glass-card" style="padding: 20px; margin-bottom: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
         <div>
           <label>
             <span>🔍 Cari</span>
-            <input id="searchInput" type="search" placeholder="Nama, course, note...">
+            <input id="searchInput" type="search" placeholder="Nama, course...">
           </label>
         </div>
 
@@ -1195,40 +803,40 @@
           </label>
         </div>
 
-        <div style="display: flex; align-items: flex-end; gap: 0.75rem;">
+        <div style="display: flex; align-items: flex-end; gap: 8px;">
           <button id="exportCurrentBtn" class="btn btn-primary" style="flex: 1;">📥 Export</button>
           <button id="refreshBtn" class="btn btn-secondary">🔄</button>
         </div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
-        <div style="color: #94a3b8; font-size: 0.9375rem;">
-          <span id="recordCount" style="font-weight: 700; color: #cbd5e1;">0 records</span>
-          <span id="selectedMonth" style="color: #fbbf24; font-weight: 700; margin-left: 0.75rem;"></span>
-          <span id="selectedPeriod" style="color: #06b6d4; font-weight: 700; margin-left: 0.75rem;"></span>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="color: #64748b; font-size: 12px;">
+          <span id="recordCount" style="font-weight: 600; color: #94a3b8;">0 records</span>
+          <span id="selectedMonth" style="color: #fbbf24; font-weight: 600; margin-left: 8px;"></span>
+          <span id="selectedPeriod" style="color: #06b6d4; font-weight: 600; margin-left: 8px;"></span>
         </div>
         <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">
-          🗑️ Hapus Terpilih (<span id="selectedCount">0</span>)
+          🗑️ Hapus (<span id="selectedCount">0</span>)
         </button>
       </div>
     </section>
 
     <!-- Form & Table Grid -->
-    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 2.5rem;">
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
       
       <!-- Form -->
-      <section class="glass-card" style="padding: 2.5rem; height: fit-content;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 800;">
+      <section class="glass-card" style="padding: 20px; height: fit-content;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+          <h2 style="font-size: 16px; font-weight: 700;">
             📝 <span id="formTitle">Tambah Record</span>
           </h2>
-          <button id="clearFormBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 1.5rem; transition: all 0.2s; padding: 0.5rem;" onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">✕</button>
+          <button id="clearFormBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 20px; padding: 4px; transition: color 0.2s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">✕</button>
         </div>
 
-        <form id="entryForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <form id="entryForm" style="display: flex; flex-direction: column; gap: 12px;">
           <input type="hidden" id="editingId">
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <label>
               <span>📅 Tanggal *</span>
               <input id="date" type="date" required>
@@ -1250,7 +858,7 @@
             <input id="childName" type="text" placeholder="Nama lengkap...">
           </label>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <label>
               <span>📚 Course *</span>
               <select id="course" required>
@@ -1281,7 +889,7 @@
             </label>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <label>
               <span>📊 Layer</span>
               <select id="layer">
@@ -1306,33 +914,31 @@
 
           <label>
             <span>📄 Note</span>
-            <textarea id="note" rows="3" placeholder="Catatan..." style="resize: vertical; min-height: 90px;"></textarea>
+            <textarea id="note" rows="2" placeholder="Catatan..." style="resize: vertical; min-height: 60px;"></textarea>
           </label>
 
-          <div style="display: flex; gap: 1rem; padding-top: 0.5rem;">
+          <div style="display: flex; gap: 8px; padding-top: 4px;">
             <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Simpan</button>
             <button type="button" id="duplicateBtn" class="btn btn-secondary" style="display: none;">📋</button>
           </div>
         </form>
       </section>
 
-      <!-- PREMIUM TABLE -->
-      <section class="premium-table-container">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 800;">
-            📊 Data Records
-          </h2>
-          <label style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: #94a3b8; cursor: pointer; user-select: none;">
-            <input type="checkbox" id="selectAll" class="premium-checkbox">
-            <span style="font-weight: 600;">Pilih Semua</span>
+      <!-- Table -->
+      <section class="table-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+          <h2 style="font-size: 16px; font-weight: 700;">📊 Data Records</h2>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #64748b; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="selectAll" class="checkbox">
+            <span>Pilih Semua</span>
           </label>
         </div>
 
-        <div class="table-wrapper">
+        <div style="overflow-x: auto; border-radius: 8px;">
           <table class="premium-table">
             <thead>
               <tr>
-                <th style="width: 60px;"></th>
+                <th style="width: 40px;"></th>
                 <th data-sort="date">📅 Tanggal</th>
                 <th>👤 Nama</th>
                 <th>📚 Course</th>
@@ -1347,159 +953,151 @@
 
         <div id="emptyState" class="empty-state" style="display: none;">
           <div class="empty-state-icon">📭</div>
-          <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: #cbd5e1;">Belum Ada Data</h3>
-          <p style="font-size: 1rem; color: #64748b;">Tambahkan record pertama Anda dari form di samping</p>
+          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #94a3b8;">Belum Ada Data</h3>
+          <p style="font-size: 13px; color: #64748b;">Tambahkan record pertama Anda</p>
         </div>
       </section>
 
     </div>
   </main>
 
-  <!-- Modals (sama seperti sebelumnya) -->
+  <!-- Modals -->
   
-  <!-- Password Modal -->
   <div id="pwModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <h3 style="font-size: 1.75rem; font-weight: 900; margin-bottom: 1.25rem;">🔒 Reset Data</h3>
-      <p style="font-size: 0.9375rem; color: #94a3b8; margin-bottom: 2rem;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">🔒 Reset Data</h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
         Masukkan password untuk menghapus <strong style="color: #ef4444;">semua data permanen</strong>.
       </p>
-      <input id="pwInput" type="password" placeholder="Password..." style="margin-bottom: 2rem;">
-      <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+      <input id="pwInput" type="password" placeholder="Password..." style="margin-bottom: 16px;">
+      <div style="display: flex; justify-end; gap: 8px;">
         <button id="cancelPwBtn" class="btn btn-secondary">Batal</button>
-        <button id="confirmPwBtn" class="btn btn-danger">🗑️ Reset Sekarang</button>
+        <button id="confirmPwBtn" class="btn btn-danger">🗑️ Reset</button>
       </div>
     </div>
   </div>
 
-  <!-- Target Modal -->
   <div id="targetModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <h3 style="font-size: 1.75rem; font-weight: 900; margin-bottom: 2rem;">🎯 Atur Target Revenue</h3>
-      <label style="margin-bottom: 2rem;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">🎯 Atur Target Revenue</h3>
+      <label style="margin-bottom: 16px;">
         <span>Target Revenue Bulan Ini (Rp)</span>
         <input id="targetInput" type="number" min="1" step="1000000" placeholder="50000000">
-        <p style="font-size: 0.8125rem; color: #64748b; margin-top: 1rem;">💡 Contoh: 50000000 untuk Rp 50 juta</p>
+        <p style="font-size: 11px; color: #64748b; margin-top: 8px;">💡 Contoh: 50000000 untuk Rp 50 juta</p>
       </label>
-      <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+      <div style="display: flex; justify-end; gap: 8px;">
         <button id="cancelTargetBtn" class="btn btn-secondary">Batal</button>
-        <button id="saveTargetBtn" class="btn btn-primary">💾 Simpan Target</button>
+        <button id="saveTargetBtn" class="btn btn-primary">💾 Simpan</button>
       </div>
     </div>
   </div>
 
-  <!-- Chart Modal -->
   <div id="chartModal" class="modal" style="display: none;">
-    <div class="modal-content" style="max-width: 1100px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
-        <h3 style="font-size: 1.75rem; font-weight: 900;">📈 Analytics Dashboard</h3>
-        <button id="closeChartBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 2rem; transition: all 0.2s; padding: 0.5rem;" onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">✕</button>
+    <div class="modal-content" style="max-width: 900px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 700;">📈 Analytics Dashboard</h3>
+        <button id="closeChartBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 24px; padding: 4px; transition: color 0.2s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">✕</button>
       </div>
       
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
-        <div class="glass-card" style="padding: 2rem;">
-          <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1.5rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em;">Status Distribution</h4>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div class="glass-card" style="padding: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 12px; color: #94a3b8; text-transform: uppercase;">Status Distribution</h4>
           <div id="statusChart"></div>
         </div>
 
-        <div class="glass-card" style="padding: 2rem;">
-          <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1.5rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em;">Monthly Performance</h4>
+        <div class="glass-card" style="padding: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 12px; color: #94a3b8; text-transform: uppercase;">Monthly Performance</h4>
           <div id="trendChart"></div>
         </div>
 
-        <div class="glass-card" style="padding: 2rem;">
-          <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1.5rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em;">Course Breakdown</h4>
+        <div class="glass-card" style="padding: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 12px; color: #94a3b8; text-transform: uppercase;">Course Breakdown</h4>
           <div id="courseBreakdown"></div>
         </div>
 
-        <div class="glass-card" style="padding: 2rem;">
-          <h4 style="font-size: 0.875rem; font-weight: 800; margin-bottom: 1.5rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em;">Layer Performance</h4>
+        <div class="glass-card" style="padding: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 12px; color: #94a3b8; text-transform: uppercase;">Layer Performance</h4>
           <div id="layerBreakdown"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Shortcuts Modal -->
   <div id="shortcutsModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
-        <h3 style="font-size: 1.75rem; font-weight: 900;">⌨️ Keyboard Shortcuts</h3>
-        <button id="closeShortcutsBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 2rem; transition: all 0.2s; padding: 0.5rem;" onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">✕</button>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h3 style="font-size: 18px; font-weight: 700;">⌨️ Keyboard Shortcuts</h3>
+        <button id="closeShortcutsBtn" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 24px; padding: 4px; transition: color 0.2s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">✕</button>
       </div>
       
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Search</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + K</kbd>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Search</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+K</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">New Record</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + N</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">New Record</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+N</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Export</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + E</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Export</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+E</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Refresh</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + R</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Refresh</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+R</kbd>
           </div>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Charts</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + G</kbd>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Charts</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+G</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Target</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Ctrl + T</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Target</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Ctrl+T</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Shortcuts</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">?</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Shortcuts</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">?</kbd>
           </div>
-          <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #cbd5e1; font-weight: 500;">Clear Form</span>
-            <kbd style="padding: 0.5rem 1rem; background: rgba(15, 23, 42, 0.8); border: 1.5px solid rgba(148, 163, 184, 0.3); border-radius: 8px; font-size: 0.8125rem; font-family: monospace; font-weight: 600;">Esc</kbd>
+          <div style="display: flex; justify-between; align-items: center; font-size: 12px;">
+            <span style="color: #94a3b8;">Clear Form</span>
+            <kbd style="padding: 4px 10px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 4px; font-size: 11px;">Esc</kbd>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Import Modal -->
   <div id="importModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <h3 style="font-size: 1.75rem; font-weight: 900; margin-bottom: 1.25rem;">📥 Import CSV</h3>
-      <p style="font-size: 0.9375rem; color: #94a3b8; margin-bottom: 2rem;">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">📥 Import CSV</h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
         Upload file CSV. Data akan ditambahkan ke data yang sudah ada.
       </p>
-      <input type="file" id="importFile" accept=".csv" style="margin-bottom: 2rem;">
-      <div style="display: flex; justify-end; gap: 1rem;">
+      <input type="file" id="importFile" accept=".csv" style="margin-bottom: 16px;">
+      <div style="display: flex; justify-end; gap: 8px;">
         <button id="cancelImportBtn" class="btn btn-secondary">Batal</button>
         <button id="confirmImportBtn" class="btn btn-primary">📥 Import</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast" style="display: none;">
-    <div style="display: flex; align-items: center; gap: 1.25rem;">
-      <span id="toastIcon" style="font-size: 2rem;">✅</span>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span id="toastIcon" style="font-size: 20px;">✅</span>
       <div>
-        <div id="toastTitle" style="font-weight: 800; font-size: 1rem; margin-bottom: 0.375rem;"></div>
-        <div id="toastMessage" style="font-size: 0.875rem; color: #94a3b8;"></div>
+        <div id="toastTitle" style="font-weight: 600; font-size: 13px; margin-bottom: 2px;"></div>
+        <div id="toastMessage" style="font-size: 12px; color: #64748b;"></div>
       </div>
     </div>
   </div>
 
   <script>
-    // [GUNAKAN SCRIPT YANG SAMA DARI VERSI SEBELUMNYA]
-    // Saya akan berikan hanya perubahan pada renderTable untuk table premium
-
-    // ===== CONFIG =====
+    // [GUNAKAN SCRIPT YANG SAMA, HANYA UPDATE renderTable untuk table yang lebih compact]
+    
     const STORAGE_KEY = 'mrj_sales_data';
     const TARGET_KEY = 'mrj_target';
     const RESET_PASSWORD = 'resetozeromrj';
@@ -1859,7 +1457,6 @@
       });
     }
 
-    // PREMIUM TABLE RENDER
     function renderTable() {
       const data = loadAllData();
       const selectedMonth = monthSelector.value;
@@ -1891,7 +1488,6 @@
 
       const stats = computeStats(filtered, data);
       
-      // Update stats UI
       document.getElementById('statTcTotal').textContent = stats.tcTotal;
       document.getElementById('statSales').textContent = stats.sales;
       document.getElementById('statConversion').textContent = (stats.conversion * 100).toFixed(2) + '%';
@@ -1910,27 +1506,27 @@
       if (stats.tcChange !== undefined) {
         const change = stats.tcChange;
         const changeEl = document.getElementById('statTcChange');
-        changeEl.textContent = change >= 0 ? `+${change} dari bulan lalu` : `${change} dari bulan lalu`;
+        changeEl.textContent = change >= 0 ? `+${change}` : `${change}`;
         changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
 
       if (stats.salesChange !== undefined) {
         const change = stats.salesChange;
         const changeEl = document.getElementById('statSalesChange');
-        changeEl.textContent = change >= 0 ? `+${change} dari bulan lalu` : `${change} dari bulan lalu`;
+        changeEl.textContent = change >= 0 ? `+${change}` : `${change}`;
         changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
       
       if (stats.revenueChange !== undefined) {
         const change = stats.revenueChange;
         const changeEl = document.getElementById('statRevChange');
-        changeEl.textContent = change >= 0 ? `+${formatRp(change)}` : `${formatRp(change)}`;
+        changeEl.textContent = change >= 0 ? `+${formatRp(Math.abs(change))}` : `-${formatRp(Math.abs(change))}`;
         changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
 
       if (stats.conversion !== undefined) {
         const convEl = document.getElementById('statConvChange');
-        convEl.textContent = `${stats.sales} / ${stats.tcTotal} TC`;
+        convEl.textContent = `${stats.sales}/${stats.tcTotal}`;
       }
 
       document.getElementById('recordCount').textContent = `${filtered.length} records`;
@@ -1944,7 +1540,6 @@
       
       document.getElementById('emptyState').style.display = 'none';
 
-      // RENDER PREMIUM TABLE
       tbody.innerHTML = '';
       filtered.forEach((r, i) => {
         const tr = document.createElement('tr');
@@ -1953,14 +1548,13 @@
         let statusBadge = '-';
         if (r.buyOrNot) {
           const statusLower = r.buyOrNot.toLowerCase();
-          statusBadge = `<span class="premium-badge badge-${statusLower}">
-            ${r.buyOrNot === 'Buy' ? '✅' : r.buyOrNot === 'Not' ? '❌' : '⏳'} ${r.buyOrNot}
-          </span>`;
+          const icon = r.buyOrNot === 'Buy' ? '✅' : r.buyOrNot === 'Not' ? '❌' : '⏳';
+          statusBadge = `<span class="badge badge-${statusLower}">${icon} ${r.buyOrNot}</span>`;
         }
 
         tr.innerHTML = `
           <td style="text-align: center;">
-            <input type="checkbox" class="row-checkbox premium-checkbox" data-id="${r.id}">
+            <input type="checkbox" class="row-checkbox checkbox" data-id="${r.id}">
           </td>
           <td>
             <div class="date-primary">${r.date || '-'}</div>
@@ -1968,19 +1562,19 @@
           </td>
           <td>
             <div class="name-cell">${r.childName || '-'}</div>
-            ${r.crm ? `<a href="${r.crm}" target="_blank" class="crm-link">🔗 View CRM</a>` : ''}
+            ${r.crm ? `<a href="${r.crm}" target="_blank" class="crm-link">🔗 CRM</a>` : ''}
           </td>
           <td>
             <span class="course-tag">${r.course || '-'}</span>
           </td>
           <td>${statusBadge}</td>
           <td>
-            <span class="revenue-amount">${formatRp(r.revenue)}</span>
+            <span class="revenue">${formatRp(r.revenue)}</span>
           </td>
           <td>
-            <div style="display: flex; justify-content: center; gap: 0.625rem;">
-              <button class="editBtn btn-action edit" data-id="${r.id}">✏️ Edit</button>
-              <button class="duplicateRowBtn btn-action duplicate" data-id="${r.id}">📋</button>
+            <div style="display: flex; justify-content: center; gap: 6px;">
+              <button class="editBtn btn-action edit" data-id="${r.id}">✏️</button>
+              <button class="duplicateRowBtn btn-action" data-id="${r.id}">📋</button>
               <button class="deleteBtn btn-action delete" data-id="${r.id}">🗑️</button>
             </div>
           </td>
@@ -1989,7 +1583,6 @@
         tbody.appendChild(tr);
       });
 
-      // Attach events
       document.querySelectorAll('.row-checkbox').forEach(cb => {
         cb.addEventListener('change', (e) => {
           const id = e.target.dataset.id;
@@ -2200,13 +1793,13 @@
       Object.entries(courses).sort((a, b) => b[1] - a[1]).forEach(([course, count]) => {
         const percent = (count / data.length * 100).toFixed(1);
         courseBreakdown.innerHTML += `
-          <div style="display: flex; align-items: center; justify-between; margin-bottom: 1rem;">
-            <span style="color: #cbd5e1; font-weight: 500;">${course}</span>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <div style="width: 160px; height: 10px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
-                <div style="height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); width: ${percent}%; border-radius: 999px; box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);"></div>
+          <div style="display: flex; align-items: center; justify-between; margin-bottom: 10px; font-size: 12px;">
+            <span style="color: #94a3b8;">${course}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 120px; height: 6px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); width: ${percent}%; border-radius: 999px;"></div>
               </div>
-              <span style="color: #94a3b8; width: 60px; text-align: right; font-weight: 700; font-size: 0.9375rem;">${count}</span>
+              <span style="color: #64748b; width: 40px; text-align: right; font-weight: 600;">${count}</span>
             </div>
           </div>
         `;
@@ -2224,13 +1817,13 @@
       Object.entries(layers).sort((a, b) => b[1] - a[1]).forEach(([layer, count]) => {
         const percent = (count / data.length * 100).toFixed(1);
         layerBreakdown.innerHTML += `
-          <div style="display: flex; align-items: center; justify-between; margin-bottom: 1rem;">
-            <span style="color: #cbd5e1; font-weight: 500;">${layer}</span>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <div style="width: 160px; height: 10px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
-                <div style="height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899); width: ${percent}%; border-radius: 999px; box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);"></div>
+          <div style="display: flex; align-items: center; justify-between; margin-bottom: 10px; font-size: 12px;">
+            <span style="color: #94a3b8;">${layer}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 120px; height: 6px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899); width: ${percent}%; border-radius: 999px;"></div>
               </div>
-              <span style="color: #94a3b8; width: 60px; text-align: right; font-weight: 700; font-size: 0.9375rem;">${count}</span>
+              <span style="color: #64748b; width: 40px; text-align: right; font-weight: 600;">${count}</span>
             </div>
           </div>
         `;
@@ -2241,18 +1834,18 @@
       const pending = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('pending')).length;
       
       document.getElementById('statusChart').innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 1.25rem; padding-top: 0.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
           <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #10b981; font-weight: 700; font-size: 1rem;">✅ Buy</span>
-            <span style="font-weight: 900; font-size: 1.5rem; color: #10b981;">${buy}</span>
+            <span style="color: #10b981; font-weight: 600;">✅ Buy</span>
+            <span style="font-weight: 700; font-size: 20px; color: #10b981;">${buy}</span>
           </div>
           <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #ef4444; font-weight: 700; font-size: 1rem;">❌ Not Buy</span>
-            <span style="font-weight: 900; font-size: 1.5rem; color: #ef4444;">${not}</span>
+            <span style="color: #ef4444; font-weight: 600;">❌ Not Buy</span>
+            <span style="font-weight: 700; font-size: 20px; color: #ef4444;">${not}</span>
           </div>
           <div style="display: flex; justify-between; align-items: center;">
-            <span style="color: #fbbf24; font-weight: 700; font-size: 1rem;">⏳ Pending</span>
-            <span style="font-weight: 900; font-size: 1.5rem; color: #fbbf24;">${pending}</span>
+            <span style="color: #fbbf24; font-weight: 600;">⏳ Pending</span>
+            <span style="font-weight: 700; font-size: 20px; color: #fbbf24;">${pending}</span>
           </div>
         </div>
       `;
@@ -2271,7 +1864,7 @@
       });
 
       const trendChart = document.getElementById('trendChart');
-      trendChart.innerHTML = '<div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 0.5rem;">';
+      trendChart.innerHTML = '<div style="display: flex; flex-direction: column; gap: 10px;">';
       
       Object.entries(monthlyData)
         .sort((a, b) => b[0].localeCompare(a[0]))
@@ -2283,14 +1876,14 @@
           const conv = stats.tc > 0 ? (stats.sales / stats.tc * 100).toFixed(1) : 0;
           
           trendChart.innerHTML += `
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <span style="color: #94a3b8; width: 80px; font-weight: 700;">${monthName} ${y}</span>
-              <div style="flex: 1; display: flex; align-items: center; gap: 1rem;">
-                <span style="font-size: 0.8125rem; color: #64748b; width: 70px;">TC: ${stats.tc}</span>
-                <div style="flex: 1; height: 28px; background: rgba(51, 65, 85, 0.6); border-radius: 999px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);">
-                  <div style="height: 100%; background: linear-gradient(90deg, #10b981, #059669); width: ${conv}%; border-radius: 999px; transition: width 0.5s ease; box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);" title="Sales: ${stats.sales} | Revenue: ${formatRp(stats.revenue)}"></div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 12px;">
+              <span style="color: #64748b; width: 60px; font-weight: 600;">${monthName}</span>
+              <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 11px; color: #475569; width: 50px;">TC ${stats.tc}</span>
+                <div style="flex: 1; height: 20px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
+                  <div style="height: 100%; background: linear-gradient(90deg, #10b981, #059669); width: ${conv}%; border-radius: 999px;" title="${stats.sales}/${stats.tc}"></div>
                 </div>
-                <span style="font-size: 1rem; font-weight: 900; width: 60px; color: #10b981;">${conv}%</span>
+                <span style="font-weight: 700; width: 45px; color: #10b981;">${conv}%</span>
               </div>
             </div>
           `;
@@ -2302,15 +1895,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       refresh();
 
-      monthSelector.addEventListener('change', () => {
-        updateSelectedMonthLabel();
-        renderTable();
-      });
-
-      periodFilter.addEventListener('change', () => {
-        renderTable();
-      });
-
+      monthSelector.addEventListener('change', renderTable);
+      periodFilter.addEventListener('change', renderTable);
       searchInput.addEventListener('input', renderTable);
       statusFilter.addEventListener('change', renderTable);
       courseFilter.addEventListener('change', renderTable);
