@@ -1,43 +1,76 @@
-<!doctype html>
-<html lang="id" class="h-full">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mi Raj — Sales Tracker Pro</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Raj Sales Tracker Pro</title>
   <meta name="theme-color" content="#0f172a">
+  
+  <!-- Tailwind CDN with fallback -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
   <style>
+    /* Font Import with Fallback */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     
-    * { font-family: 'Inter', sans-serif; }
-    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    :root {
+      --color-primary: #fbbf24;
+      --color-primary-dark: #f59e0b;
+      --color-bg-dark: #0f172a;
+      --color-bg-light: #1e293b;
+      --color-border: rgba(148, 163, 184, 0.2);
+      --color-text: #f1f5f9;
+      --color-text-muted: #94a3b8;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      color: var(--color-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Glass Effect */
     .glass {
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(148, 163, 184, 0.1);
     }
-    
+
     .glass-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-      backdrop-filter: blur(10px);
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 16px;
       transition: all 0.3s ease;
     }
-    
+
     .glass-card:hover {
       border-color: rgba(251, 191, 36, 0.3);
       transform: translateY(-2px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
-    
+
+    /* Stat Card */
     .stat-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 12px;
+      padding: 1.25rem;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
     }
-    
+
     .stat-card::before {
       content: '';
       position: absolute;
@@ -48,247 +81,539 @@
       background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
       transition: left 0.5s;
     }
-    
+
     .stat-card:hover::before {
       left: 100%;
     }
-    
+
     .stat-card:hover {
       border-color: rgba(251, 191, 36, 0.5);
-      transform: scale(1.02);
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.2);
     }
-    
+
+    /* Buttons */
+    .btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 0.875rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
     .btn-primary {
       background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
       color: #0f172a;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(251, 191, 36, 0.3);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
     }
-    
+
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 12px rgba(251, 191, 36, 0.4);
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
     }
-    
+
     .btn-secondary {
-      background: rgba(51, 65, 85, 0.5);
+      background: rgba(51, 65, 85, 0.6);
+      color: var(--color-text);
       border: 1px solid rgba(148, 163, 184, 0.2);
-      transition: all 0.3s ease;
     }
-    
+
     .btn-secondary:hover {
-      background: rgba(71, 85, 105, 0.7);
+      background: rgba(71, 85, 105, 0.8);
       border-color: rgba(148, 163, 184, 0.4);
     }
-    
-    .sticky-top { 
-      position: sticky; 
-      top: 0; 
-      z-index: 50;
-      backdrop-filter: blur(20px);
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
-    
-    .animate-fade-in {
-      animation: fadeIn 0.5s ease-in;
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
     }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    /* Input Fields */
+    input, select, textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.625rem 1rem;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
     }
-    
-    .animate-slide-up {
-      animation: slideUp 0.3s ease-out;
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+      background: rgba(15, 23, 42, 0.8);
     }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
+
+    /* Badge */
     .badge {
+      display: inline-block;
       padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
+      border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
     }
-    
-    .badge-buy { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .badge-not { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-    .badge-pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-    
-    .progress-bar {
-      height: 8px;
-      background: rgba(51, 65, 85, 0.5);
-      border-radius: 9999px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #fbbf24, #f59e0b);
-      border-radius: 9999px;
-      transition: width 0.5s ease;
-      box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-    }
-    
-    .modal-backdrop {
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-    }
-    
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #fbbf24;
-      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
-    }
-    
-    .table-row {
-      transition: all 0.2s ease;
-    }
-    
-    .table-row:hover {
-      background: rgba(251, 191, 36, 0.05);
-      transform: scale(1.01);
-    }
-    
-    .tooltip {
-      position: relative;
-    }
-    
-    .tooltip::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 0.5rem 1rem;
-      background: #1e293b;
-      color: #f1f5f9;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-      margin-bottom: 0.5rem;
-      border: 1px solid rgba(251, 191, 36, 0.3);
-    }
-    
-    .tooltip:hover::after {
-      opacity: 1;
-    }
-    
-    .skeleton {
-      background: linear-gradient(90deg, rgba(51, 65, 85, 0.5) 25%, rgba(71, 85, 105, 0.5) 50%, rgba(51, 65, 85, 0.5) 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-    }
-    
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    
-    .chart-container {
-      position: relative;
-      min-height: 200px;
-    }
-    
-    .scrollbar-custom::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    
-    .scrollbar-custom::-webkit-scrollbar-track {
-      background: rgba(51, 65, 85, 0.3);
-      border-radius: 10px;
-    }
-    
-    .scrollbar-custom::-webkit-scrollbar-thumb {
-      background: rgba(251, 191, 36, 0.5);
-      border-radius: 10px;
-    }
-    
-    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-      background: rgba(251, 191, 36, 0.7);
+
+    .badge-buy {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
     }
 
+    .badge-not {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .badge-pending {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+    }
+
+    /* Level Badge */
     .level-badge {
       display: inline-block;
       padding: 0.25rem 0.75rem;
-      border-radius: 0.375rem;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    
+
     .level-1 { background: linear-gradient(135deg, #64748b, #475569); color: #f1f5f9; }
     .level-2 { background: linear-gradient(135deg, #06b6d4, #0891b2); color: #f0f9ff; }
     .level-3 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #faf5ff; }
     .level-4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fffbeb; }
     .level-5 { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fef2f2; }
+
+    /* Progress Bar */
+    .progress-bar {
+      height: 8px;
+      background: rgba(51, 65, 85, 0.5);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      border-radius: 999px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead {
+      background: rgba(30, 41, 59, 0.8);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(251, 191, 36, 0.05);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      z-index: 2000;
+      min-width: 300px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast.hidden {
+      display: none;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    /* Logo */
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(51, 65, 85, 0.3);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(251, 191, 36, 0.5);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(251, 191, 36, 0.7);
+    }
+
+    /* Utility Classes */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      
+      .toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        min-width: auto;
+      }
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .gap-1 { gap: 0.25rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-6 { gap: 1.5rem; }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-base { font-size: 1rem; }
+    .text-lg { font-size: 1.125rem; }
+    .text-xl { font-size: 1.25rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .text-3xl { font-size: 1.875rem; }
+
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+
+    .text-muted { color: var(--color-text-muted); }
+    .text-primary { color: var(--color-primary); }
+
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+    .space-y-2 > * + * { margin-top: 0.5rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+
+    .rounded { border-radius: 0.375rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+
+    .shadow-lg {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(251, 191, 36, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--color-primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Dropdown Menu */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      min-width: 250px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    .dropdown-item {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(71, 85, 105, 0.5);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: rgba(148, 163, 184, 0.2);
+      margin: 0.25rem 0;
+    }
+
+    /* Form Labels */
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    label span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.375rem;
+      font-weight: 500;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        position: relative;
+      }
+
+      .modal-content {
+        padding: 1.5rem;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+
+      th, td {
+        padding: 0.5rem;
+      }
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+<body>
 
   <!-- Header -->
-  <header class="sticky-top glass border-b border-slate-700/50">
-    <div class="max-w-7xl mx-auto px-4 py-4">
-      <div class="flex items-center justify-between gap-4 flex-wrap">
+  <header class="header">
+    <div class="container py-4">
+      <div class="flex items-center justify-between gap-4" style="flex-wrap: wrap;">
         <div class="flex items-center gap-3">
-          <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
-            <span class="text-xl font-bold text-slate-900">MR</span>
-          </div>
+          <div class="logo">MR</div>
           <div>
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
+            <h1 class="text-xl font-bold" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
               Mi Raj Sales Tracker Pro
             </h1>
-            <p class="text-xs text-slate-400 flex items-center gap-2">
-              <span>📊 Advanced Analytics</span>
-              <span>•</span>
-              <span>💾 Auto-save</span>
-              <span>•</span>
-              <span>⚡ Real-time Updates</span>
-            </p>
+            <p class="text-xs text-muted">📊 Advanced Analytics • 💾 Auto-save • ⚡ Real-time</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <button id="themeToggle" class="tooltip px-3 py-2 rounded-lg btn-secondary text-sm" data-tooltip="Toggle Theme">
-            🌙
-          </button>
+        <div class="flex items-center gap-2">
+          <button id="shortcutsBtn" class="btn btn-secondary" title="Keyboard Shortcuts">⌨️</button>
           
-          <button id="shortcutsBtn" class="tooltip px-3 py-2 rounded-lg btn-secondary text-sm" data-tooltip="Keyboard Shortcuts">
-            ⌨️
-          </button>
-
-          <div class="relative">
-            <button id="menuBtn" class="px-4 py-2 rounded-lg btn-secondary text-sm flex items-center gap-2">
-              <span>☰</span>
-              <span>Menu</span>
-            </button>
-            <div id="menu" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-2xl overflow-hidden z-50">
-              <button id="importBtn" class="w-full text-left px-4 py-3 hover:bg-slate-700/50 text-sm flex items-center gap-2 transition-colors">
-                <span>📥</span> Import CSV
-              </button>
-              <button id="exportAllBtn" class="w-full text-left px-4 py-3 hover:bg-slate-700/50 text-sm flex items-center gap-2 transition-colors">
-                <span>📤</span> Export Semua Data
-              </button>
-              <button id="targetBtn" class="w-full text-left px-4 py-3 hover:bg-slate-700/50 text-sm flex items-center gap-2 transition-colors">
-                <span>🎯</span> Atur Target Revenue
-              </button>
-              <button id="chartBtn" class="w-full text-left px-4 py-3 hover:bg-slate-700/50 text-sm flex items-center gap-2 transition-colors">
-                <span>📈</span> Lihat Grafik
-              </button>
-              <div class="border-t border-slate-700/50"></div>
-              <button id="resetBtn" class="w-full text-left px-4 py-3 hover:bg-red-900/30 text-red-400 text-sm flex items-center gap-2 transition-colors">
-                <span>🗑️</span> Reset Semua Data
-              </button>
+          <div class="dropdown">
+            <button id="menuBtn" class="btn btn-secondary">☰ Menu</button>
+            <div id="menu" class="dropdown-menu hidden">
+              <button class="dropdown-item" id="importBtn">📥 Import CSV</button>
+              <button class="dropdown-item" id="exportAllBtn">📤 Export Semua</button>
+              <button class="dropdown-item" id="targetBtn">🎯 Atur Target</button>
+              <button class="dropdown-item" id="chartBtn">📈 Lihat Grafik</button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" id="resetBtn" style="color: #ef4444;">🗑️ Reset Data</button>
             </div>
           </div>
         </div>
@@ -297,94 +622,80 @@
   </header>
 
   <!-- Main -->
-  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 animate-fade-in">
+  <main class="container py-6 space-y-6">
     
     <!-- Target Progress -->
-    <section id="targetSection" class="glass-card rounded-2xl p-6 shadow-xl hidden">
-      <div class="flex items-center justify-between mb-4">
+    <section id="targetSection" class="glass-card p-6 hidden">
+      <div class="flex items-center justify-between mb-4" style="flex-wrap: wrap; gap: 1rem;">
         <div>
           <h3 class="text-lg font-semibold">🎯 Target Revenue Bulan Ini</h3>
-          <p class="text-xs text-slate-400" id="targetDesc">Belum ada target</p>
+          <p class="text-xs text-muted" id="targetDesc">Belum ada target</p>
         </div>
-        <button id="editTargetBtn" class="px-3 py-1.5 rounded-lg btn-secondary text-xs">Edit Target</button>
+        <button id="editTargetBtn" class="btn btn-secondary text-xs">Edit Target</button>
       </div>
       <div class="progress-bar mb-2">
         <div id="targetProgress" class="progress-fill" style="width: 0%"></div>
       </div>
-      <div class="flex justify-between text-sm">
-        <span id="targetCurrent" class="text-slate-400">Rp 0 / Rp 0</span>
-        <span id="targetPercent" class="text-amber-400 font-semibold">0%</span>
+      <div class="flex justify-between text-sm" style="flex-wrap: wrap; gap: 0.5rem;">
+        <span id="targetCurrent" class="text-muted">Rp 0 / Rp 0</span>
+        <span id="targetPercent" class="text-primary font-semibold">0%</span>
       </div>
-      <div class="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs">
-        <span class="text-slate-400">Sisa yang harus dicapai:</span>
-        <span id="targetRemaining" class="text-amber-300 font-semibold">Rp 0</span>
+      <div class="mt-3" style="padding-top: 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.2);">
+        <div class="flex justify-between text-xs" style="flex-wrap: wrap; gap: 0.5rem;">
+          <span class="text-muted">Sisa yang harus dicapai:</span>
+          <span id="targetRemaining" class="font-semibold" style="color: #fbbf24;">Rp 0</span>
+        </div>
       </div>
     </section>
 
     <!-- Quick Stats -->
-    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>📞</span> TC Total
-        </div>
-        <div id="statTcTotal" class="text-2xl font-bold text-amber-400">0</div>
-        <div class="text-xs text-slate-500 mt-1" id="statTcChange">-</div>
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">📞 TC Total</div>
+        <div id="statTcTotal" class="text-2xl font-bold" style="color: #fbbf24;">0</div>
+        <div class="text-xs text-muted mt-1" id="statTcChange">-</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>✅</span> Sales
-        </div>
-        <div id="statSales" class="text-2xl font-bold text-emerald-400">0</div>
-        <div class="text-xs text-slate-500 mt-1" id="statSalesChange">-</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">✅ Sales</div>
+        <div id="statSales" class="text-2xl font-bold" style="color: #10b981;">0</div>
+        <div class="text-xs text-muted mt-1" id="statSalesChange">-</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>📊</span> Conversion
-        </div>
-        <div id="statConversion" class="text-2xl font-bold text-blue-400">0%</div>
-        <div class="text-xs text-slate-500 mt-1" id="statConvChange">-</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">📊 Conversion</div>
+        <div id="statConversion" class="text-2xl font-bold" style="color: #3b82f6;">0%</div>
+        <div class="text-xs text-muted mt-1" id="statConvChange">-</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>💰</span> Revenue
-        </div>
-        <div id="statRevenue" class="text-2xl font-bold text-green-400">Rp 0</div>
-        <div class="text-xs text-slate-500 mt-1" id="statRevChange">-</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">💰 Revenue</div>
+        <div id="statRevenue" class="text-2xl font-bold" style="color: #10b981;">Rp 0</div>
+        <div class="text-xs text-muted mt-1" id="statRevChange">-</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>💵</span> AOV
-        </div>
-        <div id="statAov" class="text-2xl font-bold text-purple-400">Rp 0</div>
-        <div class="text-xs text-slate-500 mt-1">Avg per sale</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">💵 AOV</div>
+        <div id="statAov" class="text-2xl font-bold" style="color: #a855f7;">Rp 0</div>
+        <div class="text-xs text-muted mt-1">Avg per sale</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>⏳</span> Pending
-        </div>
-        <div id="statPending" class="text-2xl font-bold text-yellow-400">0</div>
-        <div class="text-xs text-slate-500 mt-1">Follow-up</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">⏳ Pending</div>
+        <div id="statPending" class="text-2xl font-bold" style="color: #fbbf24;">0</div>
+        <div class="text-xs text-muted mt-1">Follow-up</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>💸</span> Gaji TC
-        </div>
-        <div id="statTcSalary" class="text-2xl font-bold text-cyan-400">Rp 0</div>
-        <div class="text-xs text-slate-500 mt-1">TC × $2.5 × 16K</div>
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">💸 Gaji TC</div>
+        <div id="statTcSalary" class="text-2xl font-bold" style="color: #06b6d4;">Rp 0</div>
+        <div class="text-xs text-muted mt-1">TC × $2.5 × 16K</div>
       </div>
 
-      <div class="stat-card rounded-xl p-4 shadow-lg">
-        <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
-          <span>🎁</span> Bonus
-        </div>
-        <div id="statBonus" class="text-2xl font-bold text-pink-400">Rp 0</div>
-        <div class="text-xs text-slate-500 mt-1 flex items-center gap-2">
+      <div class="stat-card">
+        <div class="text-xs text-muted mb-1">🎁 Bonus</div>
+        <div id="statBonus" class="text-2xl font-bold" style="color: #ec4899;">Rp 0</div>
+        <div class="text-xs text-muted mt-1 flex items-center gap-2">
           <span id="bonusPercent">0%</span>
           <span>•</span>
           <span id="bonusLevel" class="level-badge level-1">Level 1</span>
@@ -392,116 +703,113 @@
       </div>
     </section>
 
-    <!-- Filters & Actions -->
-    <section class="glass-card rounded-2xl p-6 shadow-xl">
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="flex-1 min-w-[200px]">
-          <label class="text-xs text-slate-400 mb-1 block">🔍 Cari</label>
-          <input id="searchInput" type="search" placeholder="Nama, course, note..." 
-            class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all" />
+    <!-- Filters -->
+    <section class="glass-card p-6">
+      <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div>
+          <label>
+            <span>🔍 Cari</span>
+            <input id="searchInput" type="search" placeholder="Nama, course...">
+          </label>
         </div>
 
-        <div class="min-w-[180px]">
-          <label class="text-xs text-slate-400 mb-1 block">📅 Bulan</label>
-          <select id="monthSelector" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
-          </select>
+        <div>
+          <label>
+            <span>📅 Bulan</span>
+            <select id="monthSelector"></select>
+          </label>
         </div>
 
-        <div class="min-w-[130px]">
-          <label class="text-xs text-slate-400 mb-1 block">📆 Periode</label>
-          <select id="periodFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
-            <option value="">Semua</option>
-            <option value="P1">P1 (1-15)</option>
-            <option value="P2">P2 (16-31)</option>
-          </select>
+        <div>
+          <label>
+            <span>📆 Periode</span>
+            <select id="periodFilter">
+              <option value="">Semua</option>
+              <option value="P1">P1 (1-15)</option>
+              <option value="P2">P2 (16-31)</option>
+            </select>
+          </label>
         </div>
 
-        <div class="min-w-[150px]">
-          <label class="text-xs text-slate-400 mb-1 block">🏷️ Filter Status</label>
-          <select id="statusFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
-            <option value="">Semua</option>
-            <option value="Buy">Buy</option>
-            <option value="Not">Not Buy</option>
-            <option value="Pending">Pending</option>
-          </select>
+        <div>
+          <label>
+            <span>🏷️ Status</span>
+            <select id="statusFilter">
+              <option value="">Semua</option>
+              <option value="Buy">Buy</option>
+              <option value="Not">Not Buy</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </label>
         </div>
 
-        <div class="min-w-[180px]">
-          <label class="text-xs text-slate-400 mb-1 block">📚 Course</label>
-          <select id="courseFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
-            <option value="">Semua</option>
-          </select>
+        <div>
+          <label>
+            <span>📚 Course</span>
+            <select id="courseFilter">
+              <option value="">Semua</option>
+            </select>
+          </label>
         </div>
 
-        <div class="flex gap-2 items-end">
-          <button id="exportCurrentBtn" class="px-4 py-2 rounded-lg btn-primary text-sm whitespace-nowrap">
-            📥 Export
-          </button>
-          <button id="refreshBtn" class="px-4 py-2 rounded-lg btn-secondary text-sm">
-            🔄
-          </button>
+        <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+          <button id="exportCurrentBtn" class="btn btn-primary">📥 Export</button>
+          <button id="refreshBtn" class="btn btn-secondary">🔄</button>
         </div>
       </div>
 
-      <div class="mt-4 flex items-center justify-between text-sm">
-        <div class="text-slate-400">
+      <div class="mt-4 flex justify-between items-center text-sm" style="flex-wrap: wrap; gap: 1rem;">
+        <div class="text-muted">
           <span id="recordCount">0 records</span>
-          <span id="selectedMonth" class="text-amber-400 font-semibold ml-2"></span>
-          <span id="selectedPeriod" class="text-cyan-400 font-semibold ml-2"></span>
+          <span id="selectedMonth" class="text-primary font-semibold"></span>
+          <span id="selectedPeriod" style="color: #06b6d4;" class="font-semibold"></span>
         </div>
-        <div class="flex gap-2">
-          <button id="bulkDeleteBtn" class="px-3 py-1.5 rounded-lg bg-red-900/30 text-red-400 text-xs hidden border border-red-800/50 hover:bg-red-900/50 transition-colors">
-            🗑️ Hapus Terpilih (<span id="selectedCount">0</span>)
-          </button>
-        </div>
+        <button id="bulkDeleteBtn" class="btn btn-danger text-xs hidden">
+          🗑️ Hapus (<span id="selectedCount">0</span>)
+        </button>
       </div>
     </section>
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Form & Table Grid -->
+    <div class="grid gap-6" style="grid-template-columns: 1fr 2fr;">
       
       <!-- Form -->
-      <section class="lg:col-span-1 glass-card rounded-2xl p-6 shadow-xl animate-slide-up">
+      <section class="glass-card p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold flex items-center gap-2">
-            <span>📝</span>
-            <span id="formTitle">Tambah Record</span>
-          </h2>
-          <button id="clearFormBtn" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
-            ✕ Clear
-          </button>
+          <h2 class="text-lg font-semibold">📝 <span id="formTitle">Tambah Record</span></h2>
+          <button id="clearFormBtn" class="text-xs text-muted" style="cursor: pointer;">✕ Clear</button>
         </div>
 
-        <form id="entryForm" class="space-y-4 text-sm">
-          <input type="hidden" id="editingId" value="">
+        <form id="entryForm" class="space-y-4">
+          <input type="hidden" id="editingId">
 
-          <div class="grid grid-cols-2 gap-3">
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">📅 Tanggal *</span>
-              <input id="date" type="date" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" required />
+          <div class="grid grid-2 gap-3">
+            <label>
+              <span>📅 Tanggal *</span>
+              <input id="date" type="date" required>
             </label>
 
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">🕐 Waktu</span>
-              <input id="time" type="time" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" />
+            <label>
+              <span>🕐 Waktu</span>
+              <input id="time" type="time">
             </label>
           </div>
 
-          <label class="block">
-            <span class="text-slate-300 text-xs mb-1.5 block">🔗 CRM Link</span>
-            <input id="crm" type="url" placeholder="https://..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all"/>
+          <label>
+            <span>🔗 CRM Link</span>
+            <input id="crm" type="url" placeholder="https://...">
           </label>
 
-          <label class="block">
-            <span class="text-slate-300 text-xs mb-1.5 block">👤 Nama Anak</span>
-            <input id="childName" type="text" placeholder="Nama lengkap..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" />
+          <label>
+            <span>👤 Nama Anak</span>
+            <input id="childName" type="text" placeholder="Nama lengkap...">
           </label>
 
-          <div class="grid grid-cols-2 gap-3">
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">📚 Course *</span>
-              <select id="course" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" required>
-                <option value="">- Pilih Course -</option>
+          <div class="grid grid-2 gap-3">
+            <label>
+              <span>📚 Course *</span>
+              <select id="course" required>
+                <option value="">- Pilih -</option>
                 <option value="Coding Knight">Coding Knight</option>
                 <option value="Digital Literasi">Digital Literasi</option>
                 <option value="Visual Programming">Visual Programming</option>
@@ -517,9 +825,9 @@
               </select>
             </label>
 
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">🏷️ Status *</span>
-              <select id="buyOrNot" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" required>
+            <label>
+              <span>🏷️ Status *</span>
+              <select id="buyOrNot" required>
                 <option value="">- Pilih -</option>
                 <option value="Buy">✅ Buy</option>
                 <option value="Not">❌ Not Buy</option>
@@ -528,11 +836,11 @@
             </label>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">📊 Layer</span>
-              <select id="layer" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all">
-                <option value="">- Pilih Layer -</option>
+          <div class="grid grid-2 gap-3">
+            <label>
+              <span>📊 Layer</span>
+              <select id="layer">
+                <option value="">- Pilih -</option>
                 <option value="TCP">TCP</option>
                 <option value="ND">ND</option>
                 <option value="PP">PP</option>
@@ -540,84 +848,60 @@
               </select>
             </label>
 
-            <label class="block">
-              <span class="text-slate-300 text-xs mb-1.5 block">💰 Revenue (Rp)</span>
-              <input id="revenue" type="number" step="1000" min="0" placeholder="2590000" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" />
+            <label>
+              <span>💰 Revenue (Rp)</span>
+              <input id="revenue" type="number" step="1000" min="0" placeholder="2590000">
             </label>
           </div>
 
-          <label class="block">
-            <span class="text-slate-300 text-xs mb-1.5 block">💳 Payment Date</span>
-            <input id="paymentDate" type="date" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" />
+          <label>
+            <span>💳 Payment Date</span>
+            <input id="paymentDate" type="date">
           </label>
 
-          <label class="block">
-            <span class="text-slate-300 text-xs mb-1.5 block">📄 Note</span>
-            <textarea id="note" rows="3" placeholder="Catatan tambahan..." class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm transition-all resize-none"></textarea>
+          <label>
+            <span>📄 Note</span>
+            <textarea id="note" rows="3" placeholder="Catatan..."></textarea>
           </label>
 
-          <div class="flex gap-3 pt-2">
-            <button type="submit" class="flex-1 px-4 py-3 rounded-lg btn-primary font-semibold">
-              💾 Simpan
-            </button>
-            <button type="button" id="duplicateBtn" class="px-4 py-3 rounded-lg btn-secondary hidden">
-              📋
-            </button>
+          <div class="flex gap-3">
+            <button type="submit" class="btn btn-primary w-full">💾 Simpan</button>
+            <button type="button" id="duplicateBtn" class="btn btn-secondary hidden">📋</button>
           </div>
         </form>
       </section>
 
       <!-- Table -->
-      <section class="lg:col-span-2 glass-card rounded-2xl p-6 shadow-xl animate-slide-up">
+      <section class="glass-card p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold flex items-center gap-2">
-            <span>📊</span>
-            <span>Data Records</span>
-          </h2>
-          <div class="flex gap-2">
-            <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
-              <input type="checkbox" id="selectAll" class="rounded border-slate-700 bg-slate-900">
-              <span>Pilih Semua</span>
-            </label>
-            <button id="sortBtn" class="text-xs px-3 py-1.5 rounded-lg btn-secondary">
-              ⬍ Sort
-            </button>
-          </div>
+          <h2 class="text-lg font-semibold">📊 Data Records</h2>
+          <label class="flex items-center gap-2 text-xs text-muted" style="cursor: pointer;">
+            <input type="checkbox" id="selectAll" style="width: auto;">
+            <span>Pilih Semua</span>
+          </label>
         </div>
 
-        <div class="overflow-x-auto scrollbar-custom">
-          <table class="min-w-full text-sm" id="dataTable">
-            <thead class="text-xs text-slate-400 uppercase border-b border-slate-700/50">
+        <div class="table-wrapper">
+          <table>
+            <thead>
               <tr>
-                <th class="px-3 py-3 text-left w-10">
-                  <span class="sr-only">Select</span>
-                </th>
-                <th class="px-3 py-3 text-left cursor-pointer hover:text-amber-400 transition-colors" data-sort="date">
-                  📅 Tanggal
-                </th>
-                <th class="px-3 py-3 text-left">⏰</th>
-                <th class="px-3 py-3 text-left">👤 Nama</th>
-                <th class="px-3 py-3 text-left">📚 Course</th>
-                <th class="px-3 py-3 text-left cursor-pointer hover:text-amber-400 transition-colors" data-sort="buyOrNot">
-                  🏷️ Status
-                </th>
-                <th class="px-3 py-3 text-left">📊 Layer</th>
-                <th class="px-3 py-3 text-left cursor-pointer hover:text-amber-400 transition-colors" data-sort="revenue">
-                  💰 Revenue
-                </th>
-                <th class="px-3 py-3 text-left">📄 Note</th>
-                <th class="px-3 py-3 text-left sticky right-0 glass">⚡ Aksi</th>
+                <th style="width: 40px;"></th>
+                <th data-sort="date" style="cursor: pointer;">📅 Tanggal</th>
+                <th>👤 Nama</th>
+                <th>📚 Course</th>
+                <th data-sort="buyOrNot" style="cursor: pointer;">🏷️ Status</th>
+                <th data-sort="revenue" style="cursor: pointer;">💰 Revenue</th>
+                <th>⚡ Aksi</th>
               </tr>
             </thead>
-            <tbody id="tbody" class="divide-y divide-slate-700/50">
-            </tbody>
+            <tbody id="tbody"></tbody>
           </table>
         </div>
 
-        <div id="emptyState" class="hidden text-center py-12">
-          <div class="text-6xl mb-4">📭</div>
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-state-icon">📭</div>
           <h3 class="text-lg font-semibold mb-2">Belum Ada Data</h3>
-          <p class="text-sm text-slate-400">Mulai tambahkan record pertamamu dari form di samping</p>
+          <p class="text-sm text-muted">Tambahkan record pertama Anda</p>
         </div>
       </section>
 
@@ -627,82 +911,62 @@
   <!-- Modals -->
   
   <!-- Password Modal -->
-  <div id="pwModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-    <div class="glass-card rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
-      <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
-        <span>🔒</span>
-        <span>Reset Data</span>
-      </h3>
-      <p class="text-sm text-slate-400 mb-4">
-        Masukkan password untuk menghapus <strong class="text-red-400">semua data permanen</strong>.
+  <div id="pwModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-3">🔒 Reset Data</h3>
+      <p class="text-sm text-muted mb-4">
+        Masukkan password untuk menghapus <strong style="color: #ef4444;">semua data permanen</strong>.
       </p>
-      <input id="pwInput" type="password" 
-        class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 mb-4 transition-all" 
-        placeholder="Password..." />
+      <input id="pwInput" type="password" placeholder="Password..." class="mb-4">
       <div class="flex justify-end gap-3">
-        <button id="cancelPwBtn" class="px-4 py-2 rounded-lg btn-secondary">Batal</button>
-        <button id="confirmPwBtn" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-semibold">
-          🗑️ Reset Sekarang
-        </button>
+        <button id="cancelPwBtn" class="btn btn-secondary">Batal</button>
+        <button id="confirmPwBtn" class="btn btn-danger">🗑️ Reset</button>
       </div>
     </div>
   </div>
 
   <!-- Target Modal -->
-  <div id="targetModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-    <div class="glass-card rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-        <span>🎯</span>
-        <span>Atur Target Revenue</span>
-      </h3>
-      <label class="block mb-4">
-        <span class="text-sm text-slate-300 mb-2 block">Target Revenue Bulan Ini (Rp)</span>
-        <input id="targetInput" type="number" min="1" step="1000000" placeholder="Contoh: 50000000" 
-          class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 transition-all" />
-        <p class="text-xs text-slate-400 mt-2">💡 Masukkan angka tanpa titik/koma. Contoh: 50000000 untuk Rp 50 juta</p>
+  <div id="targetModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">🎯 Atur Target Revenue</h3>
+      <label class="mb-4">
+        <span>Target Revenue Bulan Ini (Rp)</span>
+        <input id="targetInput" type="number" min="1" step="1000000" placeholder="50000000">
+        <p class="text-xs text-muted mt-2">💡 Contoh: 50000000 untuk Rp 50 juta</p>
       </label>
       <div class="flex justify-end gap-3">
-        <button id="cancelTargetBtn" class="px-4 py-2 rounded-lg btn-secondary">Batal</button>
-        <button id="saveTargetBtn" class="px-4 py-2 rounded-lg btn-primary">
-          💾 Simpan Target
-        </button>
+        <button id="cancelTargetBtn" class="btn btn-secondary">Batal</button>
+        <button id="saveTargetBtn" class="btn btn-primary">💾 Simpan</button>
       </div>
     </div>
   </div>
 
   <!-- Chart Modal -->
-  <div id="chartModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-    <div class="glass-card rounded-2xl p-6 w-full max-w-4xl shadow-2xl animate-slide-up max-h-[90vh] overflow-y-auto scrollbar-custom">
+  <div id="chartModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 900px;">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-bold flex items-center gap-2">
-          <span>📈</span>
-          <span>Analytics Dashboard</span>
-        </h3>
-        <button id="closeChartBtn" class="text-slate-400 hover:text-slate-200 text-2xl">✕</button>
+        <h3 class="text-xl font-bold">📈 Analytics Dashboard</h3>
+        <button id="closeChartBtn" class="text-2xl text-muted" style="cursor: pointer; background: none; border: none;">✕</button>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Status Distribution -->
-        <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-          <h4 class="text-sm font-semibold mb-3 text-slate-300">Status Distribution</h4>
-          <div id="statusChart" class="chart-container"></div>
+      <div class="grid grid-2 gap-6">
+        <div class="glass-card p-4">
+          <h4 class="text-sm font-semibold mb-3">Status Distribution</h4>
+          <div id="statusChart"></div>
         </div>
 
-        <!-- Monthly Trend -->
-        <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-          <h4 class="text-sm font-semibold mb-3 text-slate-300">Monthly Performance</h4>
-          <div id="trendChart" class="chart-container"></div>
+        <div class="glass-card p-4">
+          <h4 class="text-sm font-semibold mb-3">Monthly Performance</h4>
+          <div id="trendChart"></div>
         </div>
 
-        <!-- Course Distribution -->
-        <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-          <h4 class="text-sm font-semibold mb-3 text-slate-300">Course Breakdown</h4>
+        <div class="glass-card p-4">
+          <h4 class="text-sm font-semibold mb-3">Course Breakdown</h4>
           <div id="courseBreakdown" class="space-y-2"></div>
         </div>
 
-        <!-- Layer Performance -->
-        <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-          <h4 class="text-sm font-semibold mb-3 text-slate-300">Layer Performance</h4>
+        <div class="glass-card p-4">
+          <h4 class="text-sm font-semibold mb-3">Layer Performance</h4>
           <div id="layerBreakdown" class="space-y-2"></div>
         </div>
       </div>
@@ -710,50 +974,47 @@
   </div>
 
   <!-- Shortcuts Modal -->
-  <div id="shortcutsModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-    <div class="glass-card rounded-2xl p-6 w-full max-w-2xl shadow-2xl animate-slide-up">
+  <div id="shortcutsModal" class="modal hidden">
+    <div class="modal-content">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-xl font-bold flex items-center gap-2">
-          <span>⌨️</span>
-          <span>Keyboard Shortcuts</span>
-        </h3>
-        <button id="closeShortcutsBtn" class="text-slate-400 hover:text-slate-200 text-2xl">✕</button>
+        <h3 class="text-xl font-bold">⌨️ Keyboard Shortcuts</h3>
+        <button id="closeShortcutsBtn" class="text-2xl text-muted" style="cursor: pointer; background: none; border: none;">✕</button>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-2 gap-4">
         <div class="space-y-2">
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Search</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Search</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + K</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">New Record</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">New Record</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + N</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Export</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Export</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + E</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Refresh</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Refresh</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + R</kbd>
           </div>
         </div>
         <div class="space-y-2">
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Show Charts</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Charts</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + G</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Set Target</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Target</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Ctrl + T</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Shortcuts</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Shortcuts</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">?</kbd>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-400">Clear Form</span>
+          <div class="flex justify-between text-sm">
+            <span class="text-muted">Clear Form</span>
             <kbd class="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs">Esc</kbd>
           </div>
         </div>
@@ -762,69 +1023,47 @@
   </div>
 
   <!-- Import Modal -->
-  <div id="importModal" class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50">
-    <div class="glass-card rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-        <span>📥</span>
-        <span>Import CSV</span>
-      </h3>
-      <p class="text-sm text-slate-400 mb-4">
-        Upload file CSV dengan format yang sama seperti export. Data akan ditambahkan ke data yang sudah ada.
+  <div id="importModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4">📥 Import CSV</h3>
+      <p class="text-sm text-muted mb-4">
+        Upload file CSV. Data akan ditambahkan ke data yang sudah ada.
       </p>
-      <input type="file" id="importFile" accept=".csv" 
-        class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-slate-100 mb-4 transition-all" />
+      <input type="file" id="importFile" accept=".csv" class="mb-4">
       <div class="flex justify-end gap-3">
-        <button id="cancelImportBtn" class="px-4 py-2 rounded-lg btn-secondary">Batal</button>
-        <button id="confirmImportBtn" class="px-4 py-2 rounded-lg btn-primary">
-          📥 Import
-        </button>
+        <button id="cancelImportBtn" class="btn btn-secondary">Batal</button>
+        <button id="confirmImportBtn" class="btn btn-primary">📥 Import</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed right-6 bottom-6 hidden glass-card px-6 py-4 rounded-xl shadow-2xl z-50 animate-slide-up min-w-[300px]">
+  <!-- Toast -->
+  <div id="toast" class="toast hidden">
     <div class="flex items-center gap-3">
       <span id="toastIcon" class="text-2xl">✅</span>
-      <div class="flex-1">
+      <div>
         <div id="toastTitle" class="font-semibold text-sm"></div>
-        <div id="toastMessage" class="text-xs text-slate-400"></div>
+        <div id="toastMessage" class="text-xs text-muted"></div>
       </div>
     </div>
   </div>
 
   <script>
-    /***************
-     CONFIG
-    ***************/
+    // ===== CONFIG =====
     const STORAGE_KEY = 'mrj_sales_data';
     const TARGET_KEY = 'mrj_target';
-    const THEME_KEY = 'mrj_theme';
     const RESET_PASSWORD = 'resetozeromrj';
-
-    // Salary config
     const DOLLAR_RATE = 16000;
     const SALES_COMMISSION_USD = 2.5;
 
-    // List of courses
     const COURSES = [
-      'Coding Knight',
-      'Digital Literasi',
-      'Visual Programming',
-      'Graphic Design Junior',
-      'Graphic Design Senior',
-      'Game Design',
-      'Python Start',
-      'Python Pro',
-      'Math Explorers',
-      'Math Masters',
-      'Course AI',
-      'Math Tutoring'
+      'Coding Knight', 'Digital Literasi', 'Visual Programming',
+      'Graphic Design Junior', 'Graphic Design Senior', 'Game Design',
+      'Python Start', 'Python Pro', 'Math Explorers', 'Math Masters',
+      'Course AI', 'Math Tutoring'
     ];
 
-    /***************
-     UTILITIES
-    ***************/
+    // ===== UTILITIES =====
     function uid() {
       return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
     }
@@ -857,25 +1096,18 @@
       return dateStr.slice(0,7);
     }
 
-    function formatNumber(num) {
-      return new Intl.NumberFormat('id-ID').format(num);
-    }
-
     function getPeriodFromDate(dateStr) {
       if (!dateStr) return '';
       const day = parseInt(dateStr.split('-')[2]);
       return day <= 15 ? 'P1' : 'P2';
     }
 
-    /***************
-     SALARY & BONUS CALCULATIONS
-    ***************/
+    // ===== CALCULATIONS =====
     function calculateTcSalary(totalTC) {
       return totalTC * SALES_COMMISSION_USD * DOLLAR_RATE;
     }
 
     function calculateBonus(totalRevenue, conversionRatePercent) {
-      // conversionRatePercent sudah dalam bentuk persen (0-100)
       if (conversionRatePercent === 0 || !conversionRatePercent) {
         return {
           bonusPercent: 0,
@@ -888,7 +1120,6 @@
 
       let bonusPercent = 0;
       
-      // Determine bonus based on revenue and conversion rate
       if (totalRevenue <= 16830000) {
         if (conversionRatePercent < 30) bonusPercent = 4.5;
         else if (conversionRatePercent < 40) bonusPercent = 5.0;
@@ -944,9 +1175,7 @@
       };
     }
 
-    /***************
-     STORAGE
-    ***************/
+    // ===== STORAGE =====
     function loadAllData() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return [];
@@ -986,9 +1215,7 @@
       saveAllData(arr);
     }
 
-    /***************
-     TARGET
-    ***************/
+    // ===== TARGET =====
     function getTarget() {
       const raw = localStorage.getItem(TARGET_KEY);
       if (!raw) return null;
@@ -1035,9 +1262,7 @@
       document.getElementById('targetRemaining').textContent = formatRp(remaining);
     }
 
-    /***************
-     UI BINDINGS
-    ***************/
+    // ===== UI BINDINGS =====
     const monthSelector = document.getElementById('monthSelector');
     const periodFilter = document.getElementById('periodFilter');
     const tbody = document.getElementById('tbody');
@@ -1138,8 +1363,6 @@
       const aov = sales === 0 ? 0 : (totalRevenue / sales);
 
       const tcSalary = calculateTcSalary(tcTotal);
-
-      // FIXED: Pass percentage to calculateBonus
       const bonusData = calculateBonus(totalRevenue, conversionRatePercent);
 
       const currentMonthKey = monthSelector.value;
@@ -1243,27 +1466,26 @@
         const change = stats.tcChange;
         const changeEl = document.getElementById('statTcChange');
         changeEl.textContent = change >= 0 ? `+${change} dari bulan lalu` : `${change} dari bulan lalu`;
-        changeEl.className = change >= 0 ? 'text-xs text-green-400 mt-1' : 'text-xs text-red-400 mt-1';
+        changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
 
       if (stats.salesChange !== undefined) {
         const change = stats.salesChange;
         const changeEl = document.getElementById('statSalesChange');
         changeEl.textContent = change >= 0 ? `+${change} dari bulan lalu` : `${change} dari bulan lalu`;
-        changeEl.className = change >= 0 ? 'text-xs text-green-400 mt-1' : 'text-xs text-red-400 mt-1';
+        changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
       
       if (stats.revenueChange !== undefined) {
         const change = stats.revenueChange;
         const changeEl = document.getElementById('statRevChange');
         changeEl.textContent = change >= 0 ? `+${formatRp(change)}` : `${formatRp(change)}`;
-        changeEl.className = change >= 0 ? 'text-xs text-green-400 mt-1' : 'text-xs text-red-400 mt-1';
+        changeEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
       }
 
       if (stats.conversion !== undefined) {
         const convEl = document.getElementById('statConvChange');
         convEl.textContent = `${stats.sales} / ${stats.tcTotal} TC`;
-        convEl.className = 'text-xs text-slate-500 mt-1';
       }
 
       document.getElementById('recordCount').textContent = `${filtered.length} records`;
@@ -1280,45 +1502,29 @@
       tbody.innerHTML = '';
       filtered.forEach((r, i) => {
         const tr = document.createElement('tr');
-        tr.className = 'table-row';
         tr.dataset.id = r.id;
         
         const statusBadge = r.buyOrNot ? 
           `<span class="badge badge-${r.buyOrNot.toLowerCase()}">${r.buyOrNot}</span>` : 
           '-';
-        
-        const crm = r.crm ? 
-          `<a href="${r.crm}" target="_blank" class="text-amber-400 hover:text-amber-300 text-xs">🔗 Link</a>` : 
-          '-';
 
         tr.innerHTML = `
-          <td class="px-3 py-3">
-            <input type="checkbox" class="row-checkbox rounded border-slate-700 bg-slate-900" data-id="${r.id}">
+          <td>
+            <input type="checkbox" class="row-checkbox" data-id="${r.id}" style="width: auto; cursor: pointer;">
           </td>
-          <td class="px-3 py-3 text-xs">${r.date || '-'}</td>
-          <td class="px-3 py-3 text-xs text-slate-400">${r.time || '-'}</td>
-          <td class="px-3 py-3">
-            <div class="font-medium">${r.childName || '-'}</div>
-            <div class="text-xs text-slate-400">${crm}</div>
+          <td class="text-xs">${r.date || '-'}<br><span class="text-muted">${r.time || ''}</span></td>
+          <td>
+            <div class="font-semibold">${r.childName || '-'}</div>
+            ${r.crm ? `<a href="${r.crm}" target="_blank" style="color: #fbbf24; font-size: 0.75rem;">🔗 CRM</a>` : ''}
           </td>
-          <td class="px-3 py-3">
-            <span class="px-2 py-1 bg-slate-700 rounded text-xs">${r.course || '-'}</span>
-          </td>
-          <td class="px-3 py-3">${statusBadge}</td>
-          <td class="px-3 py-3 text-xs text-slate-400">${r.layer || '-'}</td>
-          <td class="px-3 py-3 font-semibold">${formatRp(r.revenue)}</td>
-          <td class="px-3 py-3 text-xs text-slate-400 max-w-[200px] truncate">${r.note || '-'}</td>
-          <td class="px-3 py-3 sticky right-0 glass">
-            <div class="flex gap-2">
-              <button class="editBtn px-2 py-1 rounded-lg bg-blue-600/20 text-blue-400 text-xs hover:bg-blue-600/30 transition-colors" data-id="${r.id}">
-                ✏️
-              </button>
-              <button class="duplicateRowBtn px-2 py-1 rounded-lg bg-purple-600/20 text-purple-400 text-xs hover:bg-purple-600/30 transition-colors" data-id="${r.id}">
-                📋
-              </button>
-              <button class="deleteBtn px-2 py-1 rounded-lg bg-red-600/20 text-red-400 text-xs hover:bg-red-600/30 transition-colors" data-id="${r.id}">
-                🗑️
-              </button>
+          <td><span class="badge" style="background: rgba(148, 163, 184, 0.2); font-size: 0.75rem;">${r.course || '-'}</span></td>
+          <td>${statusBadge}</td>
+          <td class="font-semibold">${formatRp(r.revenue)}</td>
+          <td>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="editBtn btn btn-secondary text-xs" data-id="${r.id}" style="padding: 0.25rem 0.5rem;">✏️</button>
+              <button class="duplicateRowBtn btn btn-secondary text-xs" data-id="${r.id}" style="padding: 0.25rem 0.5rem;">📋</button>
+              <button class="deleteBtn btn btn-danger text-xs" data-id="${r.id}" style="padding: 0.25rem 0.5rem;">🗑️</button>
             </div>
           </td>
         `;
@@ -1326,6 +1532,7 @@
         tbody.appendChild(tr);
       });
 
+      // Attach events
       document.querySelectorAll('.row-checkbox').forEach(cb => {
         cb.addEventListener('change', (e) => {
           const id = e.target.dataset.id;
@@ -1439,9 +1646,7 @@
       renderTable();
     }
 
-    /***************
-     EXPORT/IMPORT
-    ***************/
+    // ===== EXPORT/IMPORT =====
     function exportCSV(forAll = false) {
       const data = loadAllData();
       const selectedMonth = monthSelector.value;
@@ -1522,9 +1727,7 @@
       reader.readAsText(file);
     }
 
-    /***************
-     CHARTS
-    ***************/
+    // ===== CHARTS =====
     function showCharts() {
       const data = loadAllData();
       const modal = document.getElementById('chartModal');
@@ -1544,12 +1747,12 @@
         const percent = (count / data.length * 100).toFixed(1);
         courseBreakdown.innerHTML += `
           <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-300">${course}</span>
-            <div class="flex items-center gap-2">
-              <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-500" style="width: ${percent}%"></div>
+            <span>${course}</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 120px; height: 8px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); width: ${percent}%;"></div>
               </div>
-              <span class="text-slate-400 w-12 text-right">${count}</span>
+              <span class="text-muted" style="width: 40px; text-align: right;">${count}</span>
             </div>
           </div>
         `;
@@ -1569,34 +1772,34 @@
         const percent = (count / data.length * 100).toFixed(1);
         layerBreakdown.innerHTML += `
           <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-300">${layer}</span>
-            <div class="flex items-center gap-2">
-              <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-purple-500 to-pink-500" style="width: ${percent}%"></div>
+            <span>${layer}</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 120px; height: 8px; background: rgba(51, 65, 85, 0.5); border-radius: 999px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899); width: ${percent}%;"></div>
               </div>
-              <span class="text-slate-400 w-12 text-right">${count}</span>
+              <span class="text-muted" style="width: 40px; text-align: right;">${count}</span>
             </div>
           </div>
         `;
       });
 
-      // Status chart - FIXED: Use div instead of canvas
+      // Status chart
       const buy = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('buy')).length;
       const not = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('not')).length;
       const pending = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('pending')).length;
       
       document.getElementById('statusChart').innerHTML = `
-        <div class="space-y-3 pt-4">
-          <div class="flex items-center justify-between">
-            <span class="text-green-400">✅ Buy</span>
+        <div class="space-y-3" style="padding-top: 1rem;">
+          <div class="flex justify-between">
+            <span style="color: #10b981;">✅ Buy</span>
             <span class="font-semibold">${buy}</span>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-red-400">❌ Not Buy</span>
+          <div class="flex justify-between">
+            <span style="color: #ef4444;">❌ Not Buy</span>
             <span class="font-semibold">${not}</span>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-yellow-400">⏳ Pending</span>
+          <div class="flex justify-between">
+            <span style="color: #fbbf24;">⏳ Pending</span>
             <span class="font-semibold">${pending}</span>
           </div>
         </div>
@@ -1617,7 +1820,7 @@
       });
 
       const trendChart = document.getElementById('trendChart');
-      trendChart.innerHTML = '<div class="space-y-2 pt-4">';
+      trendChart.innerHTML = '<div class="space-y-2" style="padding-top: 1rem;">';
       
       Object.entries(monthlyData)
         .sort((a, b) => b[0].localeCompare(a[0]))
@@ -1629,14 +1832,14 @@
           const conv = stats.tc > 0 ? (stats.sales / stats.tc * 100).toFixed(1) : 0;
           
           trendChart.innerHTML += `
-            <div class="flex items-center gap-3 text-sm">
-              <span class="w-16 text-slate-400">${monthName} ${y}</span>
-              <div class="flex-1 flex items-center gap-2">
-                <span class="text-xs text-slate-500 w-20">TC: ${stats.tc}</span>
-                <div class="flex-1 h-6 bg-slate-800 rounded-lg overflow-hidden flex">
-                  <div class="bg-emerald-500" style="width: ${conv}%" title="Sales: ${stats.sales} | Revenue: ${formatRp(stats.revenue)}"></div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem;">
+              <span class="text-muted" style="width: 60px;">${monthName} ${y}</span>
+              <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="text-xs text-muted" style="width: 60px;">TC: ${stats.tc}</span>
+                <div style="flex: 1; height: 24px; background: rgba(51, 65, 85, 0.5); border-radius: 8px; overflow: hidden;">
+                  <div style="height: 100%; background: #10b981; width: ${conv}%;" title="Sales: ${stats.sales} | Revenue: ${formatRp(stats.revenue)}"></div>
                 </div>
-                <span class="text-xs font-semibold w-12">${conv}%</span>
+                <span class="text-xs font-semibold" style="width: 40px;">${conv}%</span>
               </div>
             </div>
           `;
@@ -1645,9 +1848,7 @@
       trendChart.innerHTML += '</div>';
     }
 
-    /***************
-     EVENT LISTENERS
-    ***************/
+    // ===== EVENT LISTENERS =====
     document.addEventListener('DOMContentLoaded', () => {
       refresh();
 
@@ -1669,14 +1870,15 @@
         showToast('Refreshed', 'Data telah direfresh', '🔄');
       });
 
-      document.getElementById('menuBtn').addEventListener('click', () => {
+      // Menu dropdown
+      document.getElementById('menuBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
         document.getElementById('menu').classList.toggle('hidden');
       });
 
       document.addEventListener('click', (e) => {
         const menu = document.getElementById('menu');
-        const btn = document.getElementById('menuBtn');
-        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        if (!menu.contains(e.target)) {
           menu.classList.add('hidden');
         }
       });
@@ -1872,6 +2074,7 @@
         });
       });
 
+      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
           e.preventDefault();
@@ -1918,10 +2121,6 @@
           document.getElementById('shortcutsModal').classList.add('hidden');
           document.getElementById('importModal').classList.add('hidden');
         }
-      });
-
-      document.getElementById('themeToggle').addEventListener('click', () => {
-        showToast('Theme', 'Light mode coming soon!', '🌙');
       });
     });
   </script>
