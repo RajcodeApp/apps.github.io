@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Raj Task v3.0 - Luxury Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            
+            --surface-light: #ffffff;
+            --surface-ground: #f8f9fc;
+            --surface-glass: rgba(255, 255, 255, 0.7);
+            --surface-border: rgba(229, 231, 235, 0.8);
+            
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+
+            --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.3);
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            
+            --status-success: #10b981;
+            --status-warning: #f59e0b;
+            --status-danger: #ef4444;
+            --status-info: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --primary-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+            --primary-color: #818cf8;
+            --secondary-color: #a78bfa;
+
+            --surface-light: #1e293b;
+            --surface-ground: #0f172a;
+            --surface-glass: rgba(30, 41, 59, 0.7);
+            --surface-border: rgba(51, 65, 85, 0.6);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+
+            --status-danger: #f87171;
+            --status-warning: #fbbf24;
+            --status-success: #34d399;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--surface-ground);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow: hidden;
+        }
+
+        .app-container { display: flex; height: 100vh; background: radial-gradient(circle at top left, var(--primary-color) 0.05%, transparent 40%); }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            height: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-light);
+            border-right: 1px solid var(--surface-border);
+            z-index: 50;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .logo-area { 
+            display: flex; align-items: center; gap: 12px; margin-bottom: 40px; 
+            font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover { background: var(--surface-ground); color: var(--primary-color); }
+        .nav-item.active { 
+            background: var(--primary-gradient); 
+            color: white; 
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Main Content */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        .top-bar {
+            padding: 20px 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+
+        .page-title h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+        .date-display { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 32px 32px 32px;
+        }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-light); border-radius: 10px; opacity: 0.5; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* General Card & Task Card */
+        .card, .task-card {
+            background: var(--surface-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--surface-border);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .task-card { cursor: pointer; }
+        .card:hover, .task-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08); border-color: var(--primary-color); }
+        
+        .task-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--card-border-color, var(--text-light));
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .task-card:hover::before { opacity: 1; }
+        
+        .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .task-title { font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--text-main); transition: 0.2s; }
+        .task-meta-row { display: flex; gap: 15px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+        
+        .lux-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-date { background: var(--surface-ground); color: var(--text-muted); border: 1px solid var(--surface-border); }
+        .badge-urgent { background: rgba(239, 68, 68, 0.1); color: var(--status-danger); }
+        .badge-high { background: rgba(245, 158, 11, 0.1); color: var(--status-warning); }
+        .badge-normal { background: rgba(59, 130, 246, 0.1); color: var(--status-info); }
+        .badge-repeat { background: rgba(99, 102, 241, 0.1); color: var(--primary-color); }
+
+        .custom-check { width: 22px; height: 22px; border: 2px solid var(--text-light); border-radius: 6px; cursor: pointer; display: grid; place-items: center; transition: 0.2s; flex-shrink: 0; margin-right: 12px; }
+        .custom-check.checked { background: var(--status-success); border-color: var(--status-success); }
+        .custom-check.checked::after { content: '✔'; font-size: 12px; color: white; }
+        .task-row-layout { display: flex; align-items: flex-start; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; border-radius: 12px; border: none; font-weight: 600; font-family: var(--font-main); cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--surface-border); }
+        .btn-ghost:hover { background: var(--surface-ground); color: var(--text-main); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--status-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: var(--status-danger); color: white; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary-gradient); color: white; font-size: 28px; border: none; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); cursor: pointer; display: grid; place-items: center; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 100; }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
+
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-box { background: var(--surface-light); width: 100%; max-width: 600px; border-radius: 24px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .form-control { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--surface-border); background: var(--surface-ground); color: var(--text-main); font-family: var(--font-main); transition: 0.2s; }
+        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); background: var(--surface-light); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* Search Bar */
+        .search-container { position: relative; }
+        .search-input { padding: 10px 16px 10px 40px; border-radius: 20px; border: 1px solid var(--surface-border); background: var(--surface-light); width: 250px; transition: all 0.3s; font-family: var(--font-main); font-size: 14px;}
+        .search-input:focus { width: 320px; outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);}
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+
+        .task-card.completed { opacity: 0.6; background: var(--surface-ground); }
+        .task-card.completed .task-title { text-decoration: line-through; color: var(--text-muted); }
+
+        /* Kanban View */
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+        .kanban-column { background-color: var(--surface-ground); border-radius: 16px; padding: 15px; }
+        .kanban-header { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid var(--surface-border); }
+        .kanban-tasks { display: flex; flex-direction: column; gap: 10px; min-height: 50px;}
+        .kanban-card { background-color: var(--surface-light); padding: 15px; border-radius: 12px; box-shadow: var(--shadow-soft); cursor: move; border: 1px solid var(--surface-border); }
+
+        /* Calendar View */
+        .calendar-container { background-color: var(--surface-light); border: 1px solid var(--surface-border); border-radius: 16px; padding: 20px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-title { font-size: 20px; font-weight: 700; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day-header { text-align: center; font-weight: 700; padding: 10px; color: var(--text-muted); font-size: 14px; }
+        .calendar-day { aspect-ratio: 1; border: 1px solid transparent; border-radius: 12px; padding: 8px; cursor: pointer; transition: all 0.2s; position: relative; }
+        .calendar-day:hover { background-color: var(--surface-ground); border-color: var(--primary-color); }
+        .calendar-day.today { background-color: rgba(99, 102, 241, 0.1); border-color: var(--primary-color); }
+        .calendar-day.other-month { opacity: 0.3; }
+        .day-number { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .task-dots { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+        .task-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -100%; width: 85%; transition: 0.3s; box-shadow: 5px 0 30px rgba(0,0,0,0.1); }
+            .sidebar.open { left: 0; }
+            .top-bar { padding: 15px 20px; flex-wrap: wrap; gap: 10px; }
+            .content-area { padding: 15px 20px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-area">
+                <span>✨</span> Mi Raj Luxury
+            </div>
+            <nav id="mainNav" style="display: flex; flex-direction: column; gap: 5px;">
+                <a href="#" class="nav-item active" data-view="tasks"><span>📋</span> Semua Tugas</a>
+                <a href="#" class="nav-item" data-view="kanban"><span>📊</span> Papan Kanban</a>
+                <a href="#" class="nav-item" data-view="projects"><span>📁</span> Projects</a>
+                <a href="#" class="nav-item" data-view="calendar"><span>📅</span> Kalender</a>
+                <a href="#" class="nav-item" data-view="analytics"><span>📈</span> Analytics</a>
+                <a href="#" class="nav-item" data-view="settings"><span>⚙️</span> Pengaturan</a>
+            </nav>
+            <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--surface-border);">
+                 <div class="nav-item" style="cursor: default;">
+                    <div style="width: 36px; height: 36px; background-image: var(--primary-gradient); border-radius: 50%; color: white; display: grid; place-items: center; font-weight: 700;">U</div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">User</div>
+                        <div style="font-size: 11px;">Premium Member</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <div class="main-wrapper">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="btn-ghost" style="padding:8px; display:none;" id="menuToggle" onclick="toggleSidebar()">☰</button>
+                    <div class="page-title">
+                        <h2 id="pageTitle">Semua Tugas</h2>
+                        <span class="date-display" id="currentDateDisplay"></span>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div class="search-container">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Cari tugas..." onkeyup="filterTasks(this.value)">
+                    </div>
+                    <button class="btn-ghost" onclick="toggleTheme()" style="font-size: 18px;">🌗</button>
+                </div>
+            </header>
+
+            <main class="content-area" id="mainContent"></main>
+        </div>
+    </div>
+
+    <!-- FAB & Modals -->
+    <button class="fab" onclick="openTaskModal()">+</button>
+    <div class="modal-overlay" id="taskModal"></div>
+    <div class="modal-overlay" id="projectModal"></div>
+    <div id="notification"></div>
+
+    <script>
+    // --- 1. DATA, STATE, & SETTINGS ---
+    let tasks = JSON.parse(localStorage.getItem('miraj_tasks_v3')) || [];
+    let projects = JSON.parse(localStorage.getItem('miraj_projects_v3')) || [
+        { id: 1, name: "Personal", color: "#6366f1", icon: "👤" },
+        { id: 2, name: "Work", color: "#f59e0b", icon: "💼" },
+        { id: 3, name: "Shopping", color: "#10b981", icon: "🛒" },
+    ];
+    let settings = JSON.parse(localStorage.getItem('miraj_settings_v3')) || { theme: "light" };
+    
+    let currentView = 'tasks';
+    let editingTaskId = null;
+    let currentMonth = new Date();
+    
+    // --- 2. INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.setAttribute('data-theme', settings.theme);
+        document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewName = e.currentTarget.dataset.view;
+                showView(viewName);
+            });
+        });
+        
+        // Responsive Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        if (window.innerWidth <= 768) menuToggle.style.display = 'block';
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768) menuToggle.style.display = 'block';
+            else menuToggle.style.display = 'none';
+        });
+
+        showView('tasks');
+    });
+
+    // --- 3. VIEW ROUTING & RENDERING ---
+    function showView(viewName) {
+        currentView = viewName;
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+        activeLink.classList.add('active');
+        document.getElementById('pageTitle').textContent = activeLink.textContent;
+
+        const contentArea = document.getElementById('mainContent');
+        contentArea.innerHTML = ''; // Clear content
+        
+        const renderFunction = window[`render${capitalize(viewName)}View`];
+        if (renderFunction) {
+            renderFunction(contentArea);
+        } else {
+            contentArea.innerHTML = `<div class="card" style="text-align:center;"><h3>Fitur ${capitalize(viewName)} segera hadir.</h3></div>`;
+        }
+        if (window.innerWidth <= 768) toggleSidebar(false);
+    }
+    
+    function refreshCurrentView() {
+        showView(currentView);
+    }
+
+    function renderTasksView(container) {
+        const query = document.getElementById('searchInput')?.value || '';
+        const sortedTasks = tasks
+            .sort((a, b) => (a.completed - b.completed) || (new Date(a.deadline) - new Date(b.deadline)))
+            .filter(t => t.title.toLowerCase().includes(query.toLowerCase()));
+
+        if (sortedTasks.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 50px; opacity:0.5;"><div style="font-size: 40px; margin-bottom:10px;">🍃</div><h3>Tugas Kosong</h3><p>Nikmati waktu luang atau tambahkan tugas baru.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = sortedTasks.map(task => {
+            const project = projects.find(p => p.id == task.projectId);
+            let cardBorder = project ? project.color : '#9ca3af';
+            if(task.priority === 'urgent') cardBorder = 'var(--status-danger)';
+            else if(task.priority === 'high') cardBorder = 'var(--status-warning)';
+            
+            return `
+            <div class="task-card ${task.completed ? 'completed' : ''}" style="--card-border-color: ${cardBorder}" ondblclick="openTaskModal(${task.id})">
+                <div class="task-row-layout">
+                    <div class="custom-check ${task.completed ? 'checked' : ''}" onclick="toggleComplete(${task.id})"></div>
+                    <div style="flex:1;">
+                        <div class="task-header">
+                            <div class="task-title">${task.title}</div>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-ghost" style="padding:4px 8px; font-size:12px;" onclick="openTaskModal(${task.id})">✎ Edit</button>
+                                <button class="btn-ghost" style="padding:4px 8px; font-size:12px; color:var(--status-danger);" onclick="deleteTask(${task.id})">🗑</button>
+                            </div>
+                        </div>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">${task.description || ''}</p>
+                        <div class="task-meta-row">
+                            <span class="lux-badge badge-date" title="Mulai">🛫 ${formatLuxuryDate(task.startDate)}</span>
+                            <span class="lux-badge badge-date" style="${new Date() > new Date(task.deadline) && !task.completed ? 'color:var(--status-danger); border-color:var(--status-danger);' : ''}" title="Tenggat">🏁 ${formatLuxuryDate(task.deadline)}</span>
+                            <span class="lux-badge badge-${task.priority}">${task.priority}</span>
+                            ${task.repeat !== 'none' ? `<span class="lux-badge badge-repeat">🔁 ${capitalize(task.repeat)}</span>` : ''}
+                            ${project ? `<span class="lux-badge" style="background:${project.color}20; color:${project.color}; border:1px solid ${project.color}50;">${project.icon} ${project.name}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderKanbanView(container) {
+        container.innerHTML = `<div class="kanban-board" id="kanbanBoard"></div>`;
+        const board = document.getElementById('kanbanBoard');
+        const columns = { todo: 'To Do', inprogress: 'In Progress', done: 'Done' };
+
+        board.innerHTML = Object.entries(columns).map(([key, title]) => {
+            const columnTasks = tasks.filter(t => (t.status || 'todo') === key);
+            return `
+                <div class="kanban-column">
+                    <div class="kanban-header">${title} (${columnTasks.length})</div>
+                    <div class="kanban-tasks" data-column-id="${key}" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                        ${columnTasks.map(task => `
+                            <div class="kanban-card" draggable="true" id="task-${task.id}" ondragstart="handleDragStart(event)">
+                                <div style="font-weight:600;">${task.title}</div>
+                                <span class="lux-badge badge-${task.priority}" style="margin-top:10px;">${task.priority}</span>
+                            </div>`).join('')}
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function renderProjectsView(container) {
+        container.innerHTML = `
+            <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+                <button class="btn btn-primary" onclick="openProjectModal()">+ Project Baru</button>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;" id="projectsGrid"></div>
+        `;
+        const grid = document.getElementById('projectsGrid');
+        grid.innerHTML = projects.map(p => {
+            const taskCount = tasks.filter(t => t.projectId == p.id).length;
+            return `
+            <div class="card" style="cursor:pointer;" ondblclick="openProjectModal(${p.id})">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div style="font-size:32px;">${p.icon}</div>
+                        <div>
+                            <div style="font-size:18px; font-weight:700;">${p.name}</div>
+                            <div style="color:var(--text-muted); font-size:14px;">${taskCount} tugas</div>
+                        </div>
+                    </div>
+                    <button class="btn-ghost" style="padding:4px 8px; font-size:12px;" onclick="openProjectModal(${p.id})">✎</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderCalendarView(container) {
+        container.innerHTML = `
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-title" id="calendarTitle"></div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-ghost" onclick="changeMonth(-1)">◀</button>
+                        <button class="btn-ghost" onclick="goToToday()">Hari Ini</button>
+                        <button class="btn-ghost" onclick="changeMonth(1)">▶</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarWeekdays"></div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>`;
+        
+        document.getElementById('calendarWeekdays').innerHTML = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(day => `<div class="calendar-day-header">${day}</div>`).join('');
+        
+        updateCalendar();
+    }
+    
+    function renderAnalyticsView(container) {
+        container.innerHTML = `<div class="card"><canvas id="tasksChart"></canvas></div>`;
+        const ctx = document.getElementById('tasksChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: projects.map(p => p.name),
+                datasets: [{
+                    label: 'Tugas Selesai',
+                    data: projects.map(p => tasks.filter(t => t.projectId == p.id && t.completed).length),
+                    backgroundColor: projects.map(p => `${p.color}B3`),
+                    borderColor: projects.map(p => p.color),
+                    borderWidth: 1
+                }, {
+                    label: 'Tugas Aktif',
+                    data: projects.map(p => tasks.filter(t => t.projectId == p.id && !t.completed).length),
+                    backgroundColor: projects.map(p => `${p.color}4D`),
+                    borderColor: projects.map(p => p.color),
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    }
+
+    function renderSettingsView(container) {
+        container.innerHTML = `
+        <div class="card">
+            <h3>Pengaturan & Data</h3>
+            <p style="color:var(--text-muted); margin-bottom:20px;">Kelola data aplikasi Anda.</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-ghost" onclick="exportData()">📥 Export Data</button>
+                <button class="btn-ghost" onclick="document.getElementById('importFile').click()">📤 Import Data</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+                <button class="btn-danger" onclick="resetAllData()">🗑️ Reset Semua Data</button>
+            </div>
+        </div>`;
+    }
+
+    // --- 4. CORE LOGIC ---
+    function saveTask(e) {
+        e.preventDefault();
+        const id = document.getElementById('taskId').value;
+        if (new Date(document.getElementById('taskStart').value) > new Date(document.getElementById('taskDeadline').value)) {
+            alert("Tanggal mulai tidak boleh lebih akhir dari tenggat!");
+            return;
+        }
+
+        const taskData = {
+            id: id ? parseInt(id) : Date.now(),
+            title: document.getElementById('taskTitle').value,
+            startDate: document.getElementById('taskStart').value,
+            deadline: document.getElementById('taskDeadline').value,
+            priority: document.getElementById('taskPriority').value,
+            projectId: document.getElementById('taskProject').value,
+            repeat: document.getElementById('taskRepeat').value,
+            description: document.getElementById('taskDesc').value,
+            status: id ? tasks.find(t => t.id == id).status : 'todo'
+        };
+
+        if (id) {
+            const idx = tasks.findIndex(t => t.id == id);
+            tasks[idx] = { ...tasks[idx], ...taskData };
+        } else {
+            taskData.completed = false;
+            tasks.push(taskData);
+        }
+        saveAndRefresh();
+        closeTaskModal();
+    }
+
+    function toggleComplete(id) {
+        const task = tasks.find(t => t.id === id);
+        task.completed = !task.completed;
+
+        if (task.completed && task.repeat && task.repeat !== 'none') {
+            createNextRecurringTask(task);
+            alert(`Tugas selesai! Tugas berikutnya (${task.repeat}) telah dibuat otomatis.`);
+        }
+        saveAndRefresh();
+    }
+
+    function createNextRecurringTask(originalTask) {
+        let newStart = new Date(originalTask.startDate), newEnd = new Date(originalTask.deadline);
+        const diff = newEnd.getTime() - newStart.getTime();
+
+        if (originalTask.repeat === 'daily') newStart.setDate(newStart.getDate() + 1);
+        else if (originalTask.repeat === 'weekly') newStart.setDate(newStart.getDate() + 7);
+        else if (originalTask.repeat === 'monthly') newStart.setMonth(newStart.getMonth() + 1);
+        
+        newEnd.setTime(newStart.getTime() + diff);
+
+        tasks.push({
+            ...originalTask,
+            id: Date.now(),
+            startDate: toLocalISOString(newStart),
+            deadline: toLocalISOString(newEnd),
+            completed: false
+        });
+    }
+
+    function deleteTask(id) {
+        if(confirm("Hapus tugas ini?")) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveAndRefresh();
+        }
+    }
+    
+    function saveProject(e) {
+        e.preventDefault();
+        const id = document.getElementById('projectId').value;
+        const projectData = {
+            id: id ? parseInt(id) : Date.now(),
+            name: document.getElementById('projectName').value,
+            color: document.getElementById('projectColor').value,
+            icon: document.getElementById('projectIcon').value,
+        };
+
+        if (id) {
+            projects[projects.findIndex(p => p.id == id)] = projectData;
+        } else {
+            projects.push(projectData);
+        }
+        saveAndRefresh();
+        closeProjectModal();
+    }
+
+    function filterTasks(query) {
+        if (currentView === 'tasks') {
+            renderTasksView(document.getElementById('mainContent'));
+        }
+    }
+
+    // --- 5. MODAL & UI HELPERS ---
+    function openTaskModal(id = null) {
+        editingTaskId = id;
+        const modal = document.getElementById('taskModal');
+        const task = id ? tasks.find(t => t.id === id) : {};
+        modal.innerHTML = `
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3 style="font-size: 20px; font-weight:700;">${id ? 'Edit Tugas' : 'Tugas Baru'}</h3>
+                <button class="btn-ghost" onclick="closeTaskModal()" style="padding:5px 10px;">✕</button>
+            </div>
+            <form id="taskForm" onsubmit="saveTask(event)">
+                <input type="hidden" id="taskId" value="${task.id || ''}">
+                <div class="form-group"><label class="form-label">Judul</label><input type="text" id="taskTitle" class="form-control" required value="${task.title || ''}"></div>
+                <div class="form-group date-range-container">
+                    <label class="form-label" style="margin-bottom:15px;">Durasi</label>
+                    <div class="form-row">
+                        <div><label class="form-label" style="font-size:11px;">Mulai</label><input type="datetime-local" id="taskStart" class="form-control" required></div>
+                        <div><label class="form-label" style="font-size:11px;">Tenggat</label><input type="datetime-local" id="taskDeadline" class="form-control" required></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Prioritas</label><select id="taskPriority" class="form-control">${['normal', 'high', 'urgent'].map(p=>`<option value="${p}" ${task.priority === p ? 'selected' : ''}>${capitalize(p)}</option>`).join('')}</select></div>
+                    <div class="form-group"><label class="form-label">Project</label><select id="taskProject" class="form-control">${projects.map(p=>`<option value="${p.id}" ${task.projectId == p.id ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('')}</select></div>
+                </div>
+                <div class="form-group"><label class="form-label">Pengulangan</label><select id="taskRepeat" class="form-control">${['none', 'daily', 'weekly', 'monthly'].map(r=>`<option value="${r}" ${task.repeat === r ? 'selected' : ''}>${r==='none' ? 'Tidak Berulang' : 'Setiap '+capitalize(r.slice(0,-2))}</option>`).join('')}</select></div>
+                <div class="form-group"><label class="form-label">Catatan</label><textarea id="taskDesc" class="form-control" rows="3">${task.description || ''}</textarea></div>
+                <div style="display:flex; gap:10px; margin-top:30px;"><button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">Simpan</button></div>
+            </form>
+        </div>`;
+
+        if (id) {
+            document.getElementById('taskStart').value = task.startDate;
+            document.getElementById('taskDeadline').value = task.deadline;
+        } else {
+            const now = new Date();
+            document.getElementById('taskStart').value = toLocalISOString(now);
+            now.setHours(now.getHours() + 1);
+            document.getElementById('taskDeadline').value = toLocalISOString(now);
+        }
+
+        modal.classList.add('active');
+    }
+    function closeTaskModal() { document.getElementById('taskModal').classList.remove('active'); }
+
+    function openProjectModal(id = null) {
+        const modal = document.getElementById('projectModal');
+        const project = id ? projects.find(p => p.id === id) : {};
+        modal.innerHTML = `
+        <div class="modal-box" style="max-width:450px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3 style="font-size: 20px; font-weight:700;">${id ? 'Edit Project' : 'Project Baru'}</h3>
+                <button class="btn-ghost" onclick="closeProjectModal()" style="padding:5px 10px;">✕</button>
+            </div>
+            <form onsubmit="saveProject(event)">
+                <input type="hidden" id="projectId" value="${project.id || ''}">
+                <div class="form-group"><label class="form-label">Nama</label><input required type="text" id="projectName" class="form-control" value="${project.name || ''}"></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Warna</label><input type="color" id="projectColor" class="form-control" value="${project.color || '#6366f1'}"></div>
+                    <div class="form-group"><label class="form-label">Icon</label><input type="text" id="projectIcon" class="form-control" maxlength="2" value="${project.icon || '📁'}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Simpan</button>
+            </form>
+        </div>`;
+        modal.classList.add('active');
+    }
+    function closeProjectModal() { document.getElementById('projectModal').classList.remove('active'); }
+    
+    // --- 6. UTILITY FUNCTIONS ---
+    function saveAndRefresh() {
+        localStorage.setItem('miraj_tasks_v3', JSON.stringify(tasks));
+        localStorage.setItem('miraj_projects_v3', JSON.stringify(projects));
+        localStorage.setItem('miraj_settings_v3', JSON.stringify(settings));
+        refreshCurrentView();
+    }
+    function capitalize(s) { return s && s[0].toUpperCase() + s.slice(1); }
+    function toLocalISOString(date) {
+        const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+        return (new Date(date - tzoffset)).toISOString().slice(0, 16);
+    }
+    function toggleTheme() {
+        settings.theme = settings.theme === 'light' ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', settings.theme);
+        saveAndRefresh();
+    }
+    function toggleSidebar(force) { document.getElementById('sidebar').classList.toggle('open', force); }
+    function formatLuxuryDate(dateStr) { return dateStr ? new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''; }
+    
+    // Calendar Utils
+    function updateCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        document.getElementById('calendarTitle').textContent = new Intl.DateTimeFormat('id', { month: 'long', year: 'numeric' }).format(currentMonth);
+        const year = currentMonth.getFullYear(), month = currentMonth.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        grid.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) grid.insertAdjacentHTML('beforeend', `<div class="calendar-day other-month"></div>`); 
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayTasks = tasks.filter(t => t.deadline?.startsWith(dateStr));
+            const isToday = dateStr === new Date().toISOString().split('T')[0];
+            const taskColors = [...new Set(dayTasks.map(t => projects.find(p=>p.id == t.projectId)?.color).filter(Boolean))];
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="calendar-day ${isToday ? 'today' : ''}" onclick="alert('${dayTasks.length} tugas pada hari ini.')">
+                    <div class="day-number">${day}</div>
+                    <div class="task-dots">${taskColors.slice(0,4).map(color => `<span class="task-dot" style="background-color: ${color};"></span>`).join('')}</div>
+                </div>`);
+        }
+    }
+    function changeMonth(delta) { currentMonth.setMonth(currentMonth.getMonth() + delta); updateCalendar(); }
+    function goToToday() { currentMonth = new Date(); updateCalendar(); }
+
+    // Kanban Drag & Drop
+    function handleDragStart(e) { e.dataTransfer.setData('text/plain', e.target.id); e.target.style.opacity = '0.5'; }
+    function handleDragOver(e) { e.preventDefault(); }
+    function handleDrop(e) {
+        e.preventDefault();
+        const taskId = e.dataTransfer.getData('text/plain').replace('task-', '');
+        const task = tasks.find(t => t.id == taskId);
+        const targetColumnId = e.currentTarget.dataset.columnId;
+        if(task && task.status !== targetColumnId) {
+            task.status = targetColumnId;
+            if (targetColumnId === 'done' && !task.completed) toggleComplete(task.id);
+            else if (targetColumnId !== 'done' && task.completed) task.completed = false;
+            saveAndRefresh();
+        }
+        document.getElementById(`task-${taskId}`).style.opacity = '1';
+    }
+
+    // Data Management
+    function exportData() {
+        const data = { tasks, projects, settings };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `miraj-tasks-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    function importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            if(confirm('Ini akan menimpa semua data. Lanjutkan?')) {
+                const data = JSON.parse(ev.target.result);
+                tasks = data.tasks || [];
+                projects = data.projects || [];
+                settings = data.settings || {};
+                saveAndRefresh();
+                location.reload();
+            }
+        };
+        reader.readAsText(file);
+    }
+    function resetAllData() {
+        if (confirm('YAKIN ingin menghapus semua data? Aksi ini tidak bisa dibatalkan!')) {
+            localStorage.removeItem('miraj_tasks_v3');
+            localStorage.removeItem('miraj_projects_v3');
+            localStorage.removeItem('miraj_settings_v3');
+            location.reload();
+        }
+    }
+    </script>
+</body>
+</html>
