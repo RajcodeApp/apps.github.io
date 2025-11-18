@@ -195,7 +195,7 @@
     
     .chart-container {
       position: relative;
-      height: 200px;
+      min-height: 200px;
     }
     
     .scrollbar-custom::-webkit-scrollbar {
@@ -371,7 +371,6 @@
         <div class="text-xs text-slate-500 mt-1">Follow-up</div>
       </div>
 
-      <!-- UPDATED: Gaji TC Card -->
       <div class="stat-card rounded-xl p-4 shadow-lg">
         <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
           <span>💸</span> Gaji TC
@@ -380,7 +379,6 @@
         <div class="text-xs text-slate-500 mt-1">TC × $2.5 × 16K</div>
       </div>
 
-      <!-- Bonus Card -->
       <div class="stat-card rounded-xl p-4 shadow-lg">
         <div class="text-xs text-slate-400 mb-1 flex items-center gap-1">
           <span>🎁</span> Bonus
@@ -409,13 +407,12 @@
           </select>
         </div>
 
-        <!-- NEW: Period Filter -->
         <div class="min-w-[130px]">
           <label class="text-xs text-slate-400 mb-1 block">📆 Periode</label>
           <select id="periodFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 transition-all">
             <option value="">Semua</option>
             <option value="P1">P1 (1-15)</option>
-            <option value="P2">P2 (16-30)</option>
+            <option value="P2">P2 (16-31)</option>
           </select>
         </div>
 
@@ -503,7 +500,7 @@
           <div class="grid grid-cols-2 gap-3">
             <label class="block">
               <span class="text-slate-300 text-xs mb-1.5 block">📚 Course *</span>
-              <select id="course" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all">
+              <select id="course" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" required>
                 <option value="">- Pilih Course -</option>
                 <option value="Coding Knight">Coding Knight</option>
                 <option value="Digital Literasi">Digital Literasi</option>
@@ -522,7 +519,7 @@
 
             <label class="block">
               <span class="text-slate-300 text-xs mb-1.5 block">🏷️ Status *</span>
-              <select id="buyOrNot" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all">
+              <select id="buyOrNot" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 transition-all" required>
                 <option value="">- Pilih -</option>
                 <option value="Buy">✅ Buy</option>
                 <option value="Not">❌ Not Buy</option>
@@ -592,8 +589,8 @@
           <table class="min-w-full text-sm" id="dataTable">
             <thead class="text-xs text-slate-400 uppercase border-b border-slate-700/50">
               <tr>
-                <th class="px-3 py-3 text-left">
-                  <input type="checkbox" class="rounded border-slate-700 bg-slate-900" id="selectAllHeader">
+                <th class="px-3 py-3 text-left w-10">
+                  <span class="sr-only">Select</span>
                 </th>
                 <th class="px-3 py-3 text-left cursor-pointer hover:text-amber-400 transition-colors" data-sort="date">
                   📅 Tanggal
@@ -613,7 +610,6 @@
               </tr>
             </thead>
             <tbody id="tbody" class="divide-y divide-slate-700/50">
-              <!-- Loading skeleton -->
             </tbody>
           </table>
         </div>
@@ -689,13 +685,13 @@
         <!-- Status Distribution -->
         <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
           <h4 class="text-sm font-semibold mb-3 text-slate-300">Status Distribution</h4>
-          <canvas id="statusChart" class="w-full" height="200"></canvas>
+          <div id="statusChart" class="chart-container"></div>
         </div>
 
         <!-- Monthly Trend -->
         <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
           <h4 class="text-sm font-semibold mb-3 text-slate-300">Monthly Performance</h4>
-          <canvas id="trendChart" class="w-full" height="200"></canvas>
+          <div id="trendChart" class="chart-container"></div>
         </div>
 
         <!-- Course Distribution -->
@@ -865,7 +861,6 @@
       return new Intl.NumberFormat('id-ID').format(num);
     }
 
-    // NEW: Get period from date
     function getPeriodFromDate(dateStr) {
       if (!dateStr) return '';
       const day = parseInt(dateStr.split('-')[2]);
@@ -876,12 +871,12 @@
      SALARY & BONUS CALCULATIONS
     ***************/
     function calculateTcSalary(totalTC) {
-      // UPDATED: Based on Total TC, not Sales
       return totalTC * SALES_COMMISSION_USD * DOLLAR_RATE;
     }
 
-    function calculateBonus(totalRevenue, conversionRate) {
-      if (conversionRate === 0 || !conversionRate) {
+    function calculateBonus(totalRevenue, conversionRatePercent) {
+      // conversionRatePercent sudah dalam bentuk persen (0-100)
+      if (conversionRatePercent === 0 || !conversionRatePercent) {
         return {
           bonusPercent: 0,
           bonusAmount: 0,
@@ -893,32 +888,31 @@
 
       let bonusPercent = 0;
       
-      // Determine revenue range and conversion rate range
-      // Conversion rate dalam bentuk persentase (0-100)
+      // Determine bonus based on revenue and conversion rate
       if (totalRevenue <= 16830000) {
-        if (conversionRate < 30) bonusPercent = 4.5;
-        else if (conversionRate < 40) bonusPercent = 5.0;
-        else if (conversionRate < 50) bonusPercent = 6.0;
+        if (conversionRatePercent < 30) bonusPercent = 4.5;
+        else if (conversionRatePercent < 40) bonusPercent = 5.0;
+        else if (conversionRatePercent < 50) bonusPercent = 6.0;
         else bonusPercent = 7.0;
       } else if (totalRevenue <= 33660000) {
-        if (conversionRate < 30) bonusPercent = 5.5;
-        else if (conversionRate < 40) bonusPercent = 6.0;
-        else if (conversionRate < 50) bonusPercent = 7.0;
+        if (conversionRatePercent < 30) bonusPercent = 5.5;
+        else if (conversionRatePercent < 40) bonusPercent = 6.0;
+        else if (conversionRatePercent < 50) bonusPercent = 7.0;
         else bonusPercent = 8.0;
       } else if (totalRevenue <= 50490000) {
-        if (conversionRate < 30) bonusPercent = 7.0;
-        else if (conversionRate < 40) bonusPercent = 8.0;
-        else if (conversionRate < 50) bonusPercent = 9.0;
+        if (conversionRatePercent < 30) bonusPercent = 7.0;
+        else if (conversionRatePercent < 40) bonusPercent = 8.0;
+        else if (conversionRatePercent < 50) bonusPercent = 9.0;
         else bonusPercent = 10.5;
       } else if (totalRevenue <= 67320000) {
-        if (conversionRate < 30) bonusPercent = 8.5;
-        else if (conversionRate < 40) bonusPercent = 10.0;
-        else if (conversionRate < 50) bonusPercent = 11.5;
+        if (conversionRatePercent < 30) bonusPercent = 8.5;
+        else if (conversionRatePercent < 40) bonusPercent = 10.0;
+        else if (conversionRatePercent < 50) bonusPercent = 11.5;
         else bonusPercent = 13.0;
       } else {
-        if (conversionRate < 30) bonusPercent = 10.5;
-        else if (conversionRate < 40) bonusPercent = 12.0;
-        else if (conversionRate < 50) bonusPercent = 13.5;
+        if (conversionRatePercent < 30) bonusPercent = 10.5;
+        else if (conversionRatePercent < 40) bonusPercent = 12.0;
+        else if (conversionRatePercent < 50) bonusPercent = 13.5;
         else bonusPercent = 15.0;
       }
       
@@ -944,7 +938,7 @@
       return {
         bonusPercent,
         bonusAmount,
-        conversion: conversionRate,
+        conversion: conversionRatePercent,
         level,
         levelName
       };
@@ -1022,7 +1016,6 @@
       const data = loadAllData();
       const filtered = data.filter(r => r.monthKey === currentMonth);
       
-      // Calculate total revenue from Buy status only
       let totalRevenue = 0;
       filtered.forEach(r => {
         if (r.buyOrNot && String(r.buyOrNot).toLowerCase().includes('buy')) {
@@ -1091,7 +1084,6 @@
           `— ${new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
       }
 
-      // Update period label
       const p = periodFilter.value;
       if (!p) {
         document.getElementById('selectedPeriod').textContent = '';
@@ -1107,7 +1099,6 @@
       
       courseFilter.innerHTML = '<option value="">Semua</option>';
       
-      // Add courses from COURSES constant first
       COURSES.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c;
@@ -1115,7 +1106,6 @@
         courseFilter.appendChild(opt);
       });
       
-      // Add any additional courses from data that aren't in the list
       Array.from(courses).sort().forEach(c => {
         if (!COURSES.includes(c)) {
           const opt = document.createElement('option');
@@ -1144,16 +1134,14 @@
         }
       });
 
-      const conversionRate = tcTotal === 0 ? 0 : (sales / tcTotal) * 100;
+      const conversionRatePercent = tcTotal === 0 ? 0 : (sales / tcTotal) * 100;
       const aov = sales === 0 ? 0 : (totalRevenue / sales);
 
-      // Calculate TC Salary - UPDATED: based on TC Total
       const tcSalary = calculateTcSalary(tcTotal);
 
-      // Calculate Bonus - GUNAKAN CONVERSION RATE (dalam persen)
-      const bonusData = calculateBonus(totalRevenue, conversionRate);
+      // FIXED: Pass percentage to calculateBonus
+      const bonusData = calculateBonus(totalRevenue, conversionRatePercent);
 
-      // Compare with previous month
       const currentMonthKey = monthSelector.value;
       if (currentMonthKey) {
         const [y, m] = currentMonthKey.split('-');
@@ -1169,17 +1157,19 @@
           String(r.buyOrNot || '').toLowerCase().includes('buy') ? 
           sum + (Number(r.revenue) || 0) : sum, 0
         );
+        const prevTC = prevData.length;
 
         return {
-          tcTotal, sales, conversion: conversionRate / 100, aov, totalRevenue, pending,
+          tcTotal, sales, conversion: conversionRatePercent / 100, aov, totalRevenue, pending,
           tcSalary, bonusData,
-          prevSales, prevRevenue,
+          prevSales, prevRevenue, prevTC,
           salesChange: sales - prevSales,
-          revenueChange: totalRevenue - prevRevenue
+          revenueChange: totalRevenue - prevRevenue,
+          tcChange: tcTotal - prevTC
         };
       }
 
-      return { tcTotal, sales, conversion: conversionRate / 100, aov, totalRevenue, pending, tcSalary, bonusData };
+      return { tcTotal, sales, conversion: conversionRatePercent / 100, aov, totalRevenue, pending, tcSalary, bonusData };
     }
 
     function sortData(data, field, direction) {
@@ -1210,34 +1200,26 @@
       const course = courseFilter.value;
       
       let filtered = data.filter(r => {
-        // Month filter
         if (selectedMonth && r.monthKey !== selectedMonth) return false;
         
-        // Period filter (P1/P2)
         if (selectedPeriod) {
           const recordPeriod = getPeriodFromDate(r.date);
           if (recordPeriod !== selectedPeriod) return false;
         }
         
-        // Search filter
         if (q) {
           const searchable = `${r.childName||''} ${r.note||''} ${r.course||''}`.toLowerCase();
           if (!searchable.includes(q)) return false;
         }
         
-        // Status filter
         if (status && r.buyOrNot !== status) return false;
-        
-        // Course filter
         if (course && r.course !== course) return false;
         
         return true;
       });
 
-      // Sort
       filtered = sortData(filtered, currentSort.field, currentSort.direction);
 
-      // Stats
       const stats = computeStats(filtered, data);
       
       // Update stats UI
@@ -1247,11 +1229,8 @@
       document.getElementById('statRevenue').textContent = formatRp(stats.totalRevenue);
       document.getElementById('statAov').textContent = formatRp(stats.aov);
       document.getElementById('statPending').textContent = stats.pending;
-      
-      // TC Salary
       document.getElementById('statTcSalary').textContent = formatRp(stats.tcSalary);
       
-      // Bonus
       document.getElementById('statBonus').textContent = formatRp(stats.bonusData.bonusAmount);
       document.getElementById('bonusPercent').textContent = stats.bonusData.bonusPercent.toFixed(1) + '%';
       
@@ -1260,6 +1239,13 @@
       levelBadge.className = `level-badge level-${stats.bonusData.level}`;
 
       // Changes
+      if (stats.tcChange !== undefined) {
+        const change = stats.tcChange;
+        const changeEl = document.getElementById('statTcChange');
+        changeEl.textContent = change >= 0 ? `+${change} dari bulan lalu` : `${change} dari bulan lalu`;
+        changeEl.className = change >= 0 ? 'text-xs text-green-400 mt-1' : 'text-xs text-red-400 mt-1';
+      }
+
       if (stats.salesChange !== undefined) {
         const change = stats.salesChange;
         const changeEl = document.getElementById('statSalesChange');
@@ -1274,10 +1260,15 @@
         changeEl.className = change >= 0 ? 'text-xs text-green-400 mt-1' : 'text-xs text-red-400 mt-1';
       }
 
+      if (stats.conversion !== undefined) {
+        const convEl = document.getElementById('statConvChange');
+        convEl.textContent = `${stats.sales} / ${stats.tcTotal} TC`;
+        convEl.className = 'text-xs text-slate-500 mt-1';
+      }
+
       document.getElementById('recordCount').textContent = `${filtered.length} records`;
       updateSelectedMonthLabel();
 
-      // Empty state
       if (filtered.length === 0) {
         tbody.innerHTML = '';
         document.getElementById('emptyState').classList.remove('hidden');
@@ -1286,7 +1277,6 @@
       
       document.getElementById('emptyState').classList.add('hidden');
 
-      // Render rows
       tbody.innerHTML = '';
       filtered.forEach((r, i) => {
         const tr = document.createElement('tr');
@@ -1336,7 +1326,6 @@
         tbody.appendChild(tr);
       });
 
-      // Attach events
       document.querySelectorAll('.row-checkbox').forEach(cb => {
         cb.addEventListener('change', (e) => {
           const id = e.target.dataset.id;
@@ -1516,11 +1505,10 @@
             obj[h] = values[idx] ? values[idx].replace(/^"|"$/g, '').replace(/""/g, '"') : '';
           });
           
-          // Generate new ID to avoid conflicts
           obj.id = uid();
           obj.createdAt = new Date().toISOString();
           
-          if (obj.date) { // Only import if has date
+          if (obj.date) {
             addEntry(obj);
             imported++;
           }
@@ -1592,7 +1580,7 @@
         `;
       });
 
-      // Simple status chart
+      // Status chart - FIXED: Use div instead of canvas
       const buy = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('buy')).length;
       const not = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('not')).length;
       const pending = data.filter(r => String(r.buyOrNot || '').toLowerCase().includes('pending')).length;
@@ -1614,7 +1602,7 @@
         </div>
       `;
 
-      // Monthly trend (last 6 months)
+      // Monthly trend
       const monthlyData = {};
       data.forEach(r => {
         const month = r.monthKey || 'Unknown';
@@ -1663,29 +1651,24 @@
     document.addEventListener('DOMContentLoaded', () => {
       refresh();
 
-      // Month selector
       monthSelector.addEventListener('change', () => {
         updateSelectedMonthLabel();
         renderTable();
       });
 
-      // Period filter
       periodFilter.addEventListener('change', () => {
         renderTable();
       });
 
-      // Filters
       searchInput.addEventListener('input', renderTable);
       statusFilter.addEventListener('change', renderTable);
       courseFilter.addEventListener('change', renderTable);
 
-      // Refresh
       document.getElementById('refreshBtn').addEventListener('click', () => {
         refresh();
         showToast('Refreshed', 'Data telah direfresh', '🔄');
       });
 
-      // Menu toggle
       document.getElementById('menuBtn').addEventListener('click', () => {
         document.getElementById('menu').classList.toggle('hidden');
       });
@@ -1698,11 +1681,9 @@
         }
       });
 
-      // Export
       document.getElementById('exportCurrentBtn').addEventListener('click', () => exportCSV(false));
       document.getElementById('exportAllBtn').addEventListener('click', () => exportCSV(true));
 
-      // Import
       document.getElementById('importBtn').addEventListener('click', () => {
         document.getElementById('importModal').classList.remove('hidden');
       });
@@ -1720,7 +1701,6 @@
         importCSV(file);
       });
 
-      // Reset
       document.getElementById('resetBtn').addEventListener('click', () => {
         document.getElementById('pwModal').classList.remove('hidden');
         document.getElementById('pwInput').value = '';
@@ -1744,7 +1724,6 @@
         }
       });
 
-      // Target
       document.getElementById('targetBtn').addEventListener('click', () => {
         document.getElementById('targetModal').classList.remove('hidden');
         const target = getTarget();
@@ -1779,13 +1758,11 @@
         showToast('Target Disimpan', `Target: ${formatRp(val)}`, '🎯');
       });
 
-      // Charts
       document.getElementById('chartBtn').addEventListener('click', showCharts);
       document.getElementById('closeChartBtn').addEventListener('click', () => {
         document.getElementById('chartModal').classList.add('hidden');
       });
 
-      // Shortcuts
       document.getElementById('shortcutsBtn').addEventListener('click', () => {
         document.getElementById('shortcutsModal').classList.remove('hidden');
       });
@@ -1794,15 +1771,26 @@
         document.getElementById('shortcutsModal').classList.add('hidden');
       });
 
-      // Form
       entryForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
         const idEditing = editingIdInput.value;
         const date = document.getElementById('date').value;
+        const course = document.getElementById('course').value;
+        const buyOrNot = document.getElementById('buyOrNot').value;
         
         if (!date) {
           showToast('Error', 'Tanggal wajib diisi', '⚠️');
+          return;
+        }
+        
+        if (!course) {
+          showToast('Error', 'Course wajib dipilih', '⚠️');
+          return;
+        }
+        
+        if (!buyOrNot) {
+          showToast('Error', 'Status wajib dipilih', '⚠️');
           return;
         }
 
@@ -1813,8 +1801,8 @@
           time: document.getElementById('time').value || '',
           crm: document.getElementById('crm').value || '',
           childName: document.getElementById('childName').value || '',
-          course: document.getElementById('course').value || '',
-          buyOrNot: document.getElementById('buyOrNot').value || '',
+          course,
+          buyOrNot,
           layer: document.getElementById('layer').value || '',
           revenue: document.getElementById('revenue').value ? Number(document.getElementById('revenue').value) : 0,
           paymentDate: document.getElementById('paymentDate').value || '',
@@ -1849,7 +1837,6 @@
         }
       });
 
-      // Select all
       document.getElementById('selectAll').addEventListener('change', (e) => {
         document.querySelectorAll('.row-checkbox').forEach(cb => {
           cb.checked = e.target.checked;
@@ -1862,12 +1849,6 @@
         updateBulkDeleteBtn();
       });
 
-      document.getElementById('selectAllHeader').addEventListener('change', (e) => {
-        document.getElementById('selectAll').checked = e.target.checked;
-        document.getElementById('selectAll').dispatchEvent(new Event('change'));
-      });
-
-      // Bulk delete
       document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
         const count = selectedRows.size;
         if (!confirm(`Hapus ${count} record terpilih?`)) return;
@@ -1878,7 +1859,6 @@
         showToast('Berhasil Dihapus', `${count} records dihapus`, '🗑️');
       });
 
-      // Sort
       document.querySelectorAll('[data-sort]').forEach(th => {
         th.addEventListener('click', () => {
           const field = th.dataset.sort;
@@ -1892,53 +1872,44 @@
         });
       });
 
-      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
-        // Ctrl/Cmd + K = Search
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
           e.preventDefault();
           searchInput.focus();
         }
         
-        // Ctrl/Cmd + N = New record
         if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
           e.preventDefault();
           clearForm();
           document.getElementById('date').focus();
         }
         
-        // Ctrl/Cmd + E = Export
         if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
           e.preventDefault();
           exportCSV(false);
         }
         
-        // Ctrl/Cmd + R = Refresh
         if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
           e.preventDefault();
           refresh();
           showToast('Refreshed', 'Data direfresh', '🔄');
         }
         
-        // Ctrl/Cmd + G = Charts
         if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
           e.preventDefault();
           showCharts();
         }
         
-        // Ctrl/Cmd + T = Target
         if ((e.ctrlKey || e.metaKey) && e.key === 't') {
           e.preventDefault();
           document.getElementById('targetBtn').click();
         }
         
-        // ? = Shortcuts
         if (e.key === '?' && !e.ctrlKey && !e.metaKey) {
           e.preventDefault();
           document.getElementById('shortcutsBtn').click();
         }
         
-        // Esc = Clear form
         if (e.key === 'Escape') {
           clearForm();
           document.getElementById('pwModal').classList.add('hidden');
@@ -1949,13 +1920,10 @@
         }
       });
 
-      // Theme toggle (bonus - save preference)
       document.getElementById('themeToggle').addEventListener('click', () => {
-        // For now just show a toast, can implement light mode if needed
         showToast('Theme', 'Light mode coming soon!', '🌙');
       });
     });
   </script>
 </body>
 </html>
-
