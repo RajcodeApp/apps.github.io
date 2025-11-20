@@ -1,0 +1,882 @@
+
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Raj Sales Tracker Pro - Remastered</title>
+  <meta name="theme-color" content="#0f172a">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            dark: {
+              950: '#020617',
+              900: '#0f172a',
+              800: '#1e293b',
+            },
+            accent: {
+              500: '#f59e0b', // Amber
+              600: '#d97706',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.4s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(5px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; border: 2px solid #0f172a; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Background */
+    .app-bg {
+      background-color: #020617;
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), 
+        radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.05), transparent 25%);
+      min-height: 100vh;
+    }
+
+    /* Glass Components */
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-field {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+    .input-field:focus {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3);
+      outline: none;
+    }
+
+    /* Tooltip for Notes */
+    .tooltip-container:hover .tooltip-content {
+      display: block;
+    }
+    
+    /* Sticky Header */
+    .sticky-th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="app-bg text-slate-300 font-sans antialiased selection:bg-accent-500/30 selection:text-amber-100">
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[100] hidden transform transition-all duration-300 translate-y-10 opacity-0">
+    <div class="glass-panel rounded-xl p-4 flex items-center gap-4 shadow-2xl border-l-4 border-emerald-500 bg-dark-900">
+      <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400 text-xl" id="toastIcon">✅</div>
+      <div>
+        <h4 id="toastTitle" class="text-sm font-bold text-white">Success</h4>
+        <p id="toastMessage" class="text-xs text-slate-400 mt-0.5">Operation successful.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#020617]/90 backdrop-blur-xl">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 text-black font-bold text-lg tracking-tighter">MR</div>
+          <div>
+            <h1 class="text-white font-bold text-lg tracking-tight leading-none">Mi Raj <span class="text-amber-400 font-normal">Tracker</span></h1>
+          </div>
+        </div>
+
+        <!-- Menu -->
+        <div class="relative group">
+          <button id="menuBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-sm font-medium text-white transition-all">
+            <span>Menu</span>
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden transform origin-top-right transition-all z-50 bg-dark-900">
+            <button id="importBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">📥 Import CSV</button>
+            <button id="exportAllBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">📤 Export All</button>
+            <button id="targetBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">🎯 Set Target</button>
+            <div class="h-px bg-white/10 my-1"></div>
+            <button id="resetBtn" class="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">⚠️ Reset Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-in">
+      <!-- Card 1 -->
+      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+        <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Total Revenue</p>
+        <h3 id="statRevenue" class="text-2xl lg:text-3xl font-bold text-white tracking-tight">Rp 0</h3>
+        <p id="statRevChange" class="text-[11px] mt-2 text-slate-500 font-medium">- vs prev month</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-24 h-24 bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+        <div class="flex justify-between items-end h-full">
+          <div>
+            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Sales Closed</p>
+            <h3 id="statSales" class="text-2xl font-bold text-white">0</h3>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Conv. Rate</p>
+            <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-24 h-24 bg-pink-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-xs font-bold text-pink-400 uppercase tracking-wider">Bonus Est.</p>
+          <span id="bonusLevel" class="bg-white/5 text-slate-300 text-[10px] px-2 py-0.5 rounded border border-white/10">Lvl 1</span>
+        </div>
+        <h3 id="statBonus" class="text-2xl font-bold text-white">Rp 0</h3>
+        <div class="w-full bg-dark-800 h-1 rounded-full mt-3 overflow-hidden">
+          <div id="bonusBar" class="h-full bg-gradient-to-r from-pink-500 to-rose-500 w-0 transition-all duration-500"></div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="glass-panel rounded-xl p-5 relative overflow-hidden flex flex-col justify-between">
+        <div class="flex justify-between">
+          <div>
+            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Total TC</p>
+            <p id="statTcTotal" class="text-xl font-bold text-white">0</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Pending</p>
+            <p id="statPending" class="text-xl font-bold text-amber-400">0</p>
+          </div>
+        </div>
+        <div class="flex justify-between items-end mt-2 pt-2 border-t border-white/5">
+          <div class="text-[10px] text-slate-500">AOV: <span id="statAov" class="text-slate-300 font-mono">0</span></div>
+          <div class="text-[10px] text-slate-500">Salary: <span id="statTcSalary" class="text-cyan-400 font-mono">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Section -->
+    <div id="targetSection" class="hidden mb-6 animate-fade-in">
+      <div class="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
+         <div class="flex-1 w-full">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-xs font-bold text-amber-400 uppercase">Monthly Goal</span>
+                <span class="text-xs text-slate-400"><span id="targetCurrent" class="text-white font-bold">0</span> / <span id="targetDesc">0</span></span>
+            </div>
+            <div class="h-2 bg-dark-800 rounded-full overflow-hidden">
+               <div id="targetProgress" class="h-full bg-amber-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
+            </div>
+         </div>
+         <div class="text-center md:text-right">
+            <span id="targetPercent" class="text-2xl font-black text-white">0%</span>
+         </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-6 h-full items-start">
+      
+      <!-- LEFT: Form & Filters -->
+      <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-5">
+        
+        <!-- Filters -->
+        <div class="glass-panel rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-white">🔍 Filters</h3>
+            <button id="refreshBtn" class="p-1.5 text-slate-500 hover:text-amber-400 transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+          </div>
+
+          <div class="space-y-3">
+            <input id="searchInput" type="text" placeholder="Search..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500">
+            <div class="grid grid-cols-2 gap-2">
+              <select id="monthSelector" class="input-field rounded-lg px-2 py-2 text-xs text-slate-300"></select>
+              <select id="periodFilter" class="input-field rounded-lg px-2 py-2 text-xs text-slate-300">
+                <option value="">All Period</option>
+                <option value="P1">P1 (1-15)</option>
+                <option value="P2">P2 (16-31)</option>
+              </select>
+            </div>
+            <select id="statusFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
+              <option value="">All Statuses</option>
+              <option value="Buy">✅ Buy</option>
+              <option value="Not">❌ Not Buy</option>
+              <option value="Pending">⏳ Pending</option>
+            </select>
+            <select id="courseFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
+              <option value="">All Courses</option>
+            </select>
+            <div class="pt-3 border-t border-white/5 flex justify-between items-center">
+               <span id="recordCount" class="text-[10px] text-slate-500">0 records</span>
+               <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-bold uppercase">Export CSV</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="glass-panel rounded-xl p-5 flex-1 border-t-4 border-t-amber-500">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <span id="formTitleIcon" class="text-amber-400">📝</span> <span id="formTitle">New Record</span>
+            </h3>
+            <button id="clearFormBtn" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase bg-white/5 px-2 py-1 rounded">Clear</button>
+          </div>
+
+          <form id="entryForm" class="space-y-3">
+            <input type="hidden" id="editingId">
+            
+            <div class="grid grid-cols-2 gap-3">
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Date <span class="text-rose-500">*</span></label>
+                 <input id="date" type="date" required class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
+               </div>
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Time</label>
+                 <input id="time" type="time" class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
+               </div>
+            </div>
+
+            <div class="space-y-1">
+               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Student Name</label>
+               <input id="childName" type="text" placeholder="Full Name" class="w-full input-field rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600">
+            </div>
+
+             <div class="space-y-1">
+               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">CRM Link</label>
+               <input id="crm" type="url" placeholder="https://..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-blue-400 placeholder-slate-700">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Course <span class="text-rose-500">*</span></label>
+                 <select id="course" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                   <option value="">Select...</option>
+                    <option value="Coding Knight">Coding Knight</option>
+                    <option value="Digital Literasi">Digital Literasi</option>
+                    <option value="Visual Programming">Visual Programming</option>
+                    <option value="Graphic Design Junior">Graphic Design Junior</option>
+                    <option value="Graphic Design Senior">Graphic Design Senior</option>
+                    <option value="Game Design">Game Design</option>
+                    <option value="Python Start">Python Start</option>
+                    <option value="Python Pro">Python Pro</option>
+                    <option value="Math Explorers">Math Explorers</option>
+                    <option value="Math Masters">Math Masters</option>
+                    <option value="Course AI">Course AI</option>
+                    <option value="Math Tutoring">Math Tutoring</option>
+                 </select>
+               </div>
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Status <span class="text-rose-500">*</span></label>
+                 <select id="buyOrNot" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                   <option value="">Select...</option>
+                   <option value="Buy">✅ Buy</option>
+                   <option value="Not">❌ Not Buy</option>
+                   <option value="Pending">⏳ Pending</option>
+                 </select>
+               </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Revenue</label>
+                 <div class="relative">
+                    <span class="absolute left-3 top-2 text-xs text-emerald-500">Rp</span>
+                    <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg pl-8 pr-3 py-2 text-xs text-white font-mono">
+                 </div>
+               </div>
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Layer</label>
+                 <select id="layer" class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                   <option value="">-</option>
+                   <option value="TCP">TCP</option>
+                   <option value="ND">ND</option>
+                   <option value="PP">PP</option>
+                   <option value="Other">Other</option>
+                 </select>
+               </div>
+            </div>
+
+            <div class="space-y-1">
+               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Note</label>
+               <textarea id="note" rows="2" placeholder="Details..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
+            </div>
+
+            <div class="pt-2 flex gap-2">
+              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-orange-500/20 transition-all text-sm">Save Record</button>
+              <button type="button" id="duplicateBtn" class="hidden px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">📋</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT: Table -->
+      <div class="lg:col-span-8 xl:col-span-9 flex flex-col h-full min-h-[600px]">
+        <div class="glass-panel rounded-xl flex-1 flex flex-col overflow-hidden border-0 ring-1 ring-white/10 shadow-2xl">
+          <!-- Header -->
+          <div class="p-4 border-b border-white/5 flex justify-between items-center bg-dark-800/50">
+            <div class="flex items-center gap-3">
+              <span id="selectedMonth" class="text-sm font-bold text-white"></span>
+              <span id="selectedPeriod" class="text-[10px] font-bold uppercase text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20"></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="chartBtn" class="text-xs font-medium text-slate-400 hover:text-white px-3 py-1.5 rounded hover:bg-white/5 flex gap-1">📊 Analytics</button>
+              <button id="bulkDeleteBtn" class="hidden items-center gap-1 px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold">Delete (<span id="selectedCount">0</span>)</button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-auto flex-1 relative">
+            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
+              <div class="text-4xl mb-2">📂</div>
+              <h3 class="text-white font-bold text-lg mb-1">No Data Found</h3>
+              <p class="text-slate-500 text-sm">Try adjusting filters or add a new record.</p>
+            </div>
+
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-dark-900 text-[11px] text-slate-500 uppercase tracking-wider sticky-th shadow-sm">
+                <tr>
+                  <th class="p-4 w-10 text-center"><input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent focus:ring-0 text-amber-500"></th>
+                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="date">Date ↕</th>
+                  <th class="p-4">Student</th>
+                  <th class="p-4">Course</th>
+                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="buyOrNot">Status ↕</th>
+                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="revenue">Rev ↕</th>
+                  <th class="p-4 w-1/5">Note</th> <!-- NEW NOTE COLUMN -->
+                  <th class="p-4 text-right w-24 bg-dark-900 sticky right-0 z-20 shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">Act</th>
+                </tr>
+              </thead>
+              <tbody id="tbody" class="text-sm text-slate-300 divide-y divide-white/5"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+
+  <!-- Chart Modal -->
+  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
+    <div class="pointer-events-auto w-full max-w-4xl bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transform transition-all scale-95 opacity-0 modal-content">
+      <div class="p-5 border-b border-white/5 flex justify-between items-center bg-dark-800">
+        <h3 class="text-lg font-bold text-white">Analytics Dashboard</h3>
+        <button id="closeChartBtn" class="text-slate-500 hover:text-white text-xl">✕</button>
+      </div>
+      <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6 bg-dark-900">
+         <div class="glass-panel p-5 rounded-xl">
+           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Status Distribution</h4>
+           <div id="statusChart" class="h-48 flex items-end justify-center gap-4 border-b border-white/5 pb-2"></div>
+         </div>
+         <div class="glass-panel p-5 rounded-xl">
+           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Course Performance</h4>
+           <div id="courseBreakdown" class="space-y-3"></div>
+         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Target Modal -->
+  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
+    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-amber-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
+       <h3 class="text-lg font-bold text-white mb-4">🎯 Set Monthly Target</h3>
+       <label class="block text-xs font-bold text-amber-500 uppercase mb-2">Target Amount (IDR)</label>
+       <input id="targetInput" type="number" class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xl font-bold text-white focus:border-amber-500 outline-none mb-6">
+       <div class="flex justify-end gap-3">
+         <button id="cancelTargetBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+         <button id="saveTargetBtn" class="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm">Save Target</button>
+       </div>
+    </div>
+  </div>
+
+  <!-- Reset Modal -->
+  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
+    <div class="pointer-events-auto w-full max-w-sm bg-[#0F172A] border border-rose-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
+      <h3 class="text-lg font-bold text-white mb-2 text-rose-500">⚠️ Factory Reset</h3>
+      <p class="text-sm text-slate-400 mb-4">Permanently delete ALL data. Cannot be undone.</p>
+      <input id="pwInput" type="password" class="w-full bg-dark-800 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-4" placeholder="Password...">
+      <div class="flex justify-end gap-3">
+        <button id="cancelPwBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+        <button id="confirmPwBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-sm">Delete All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
+     <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
+       <h3 class="text-lg font-bold text-white mb-2">📥 Import CSV</h3>
+       <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-amber-500/50 cursor-pointer relative">
+         <input type="file" id="importFile" accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+         <span class="text-sm text-slate-300">Click to upload CSV</span>
+       </div>
+       <div class="flex justify-end gap-3 mt-4">
+         <button id="cancelImportBtn" class="text-slate-400 hover:text-white text-sm">Cancel</button>
+         <button id="confirmImportBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold">Import</button>
+       </div>
+     </div>
+  </div>
+
+  <script>
+    // --- CONFIGURATION (Fixed Storage Key) ---
+    const STORAGE_KEY = 'mrj_sales_data'; // KEY ASLI DIKEMBALIKAN
+    const TARGET_KEY = 'mrj_target';
+    const RESET_PASSWORD = 'resetozeromrj';
+    const DOLLAR_RATE = 16000;
+    const SALES_COMMISSION_USD = 2.5;
+
+    const COURSES = [
+      'Coding Knight', 'Digital Literasi', 'Visual Programming',
+      'Graphic Design Junior', 'Graphic Design Senior', 'Game Design',
+      'Python Start', 'Python Pro', 'Math Explorers', 'Math Masters',
+      'Course AI', 'Math Tutoring'
+    ];
+
+    const uid = () => 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+    const formatRp = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(n)||0);
+
+    // --- APP LOGIC ---
+    function loadData() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+    function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+    function showToast(title, msg='') {
+      const t = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.remove('translate-y-10', 'opacity-0'), 10);
+      setTimeout(() => { t.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => t.classList.add('hidden'), 300); }, 3000);
+    }
+
+    // Calculate Logic
+    function calcStats(data) {
+      let tc=0, sales=0, rev=0, pending=0;
+      data.forEach(r => {
+        if(r.buyOrNot === 'Buy') { sales++; rev += Number(r.revenue)||0; tc++; }
+        else if(r.buyOrNot === 'Not') tc++;
+        else if(r.buyOrNot === 'Pending') { pending++; tc++; }
+      });
+      
+      const conv = tc ? (sales/tc)*100 : 0;
+      // Bonus Logic
+      let bonusPct = 0;
+      if(rev <= 16830000) bonusPct = conv < 30 ? 4.5 : (conv < 50 ? 6.0 : 7.0);
+      else if(rev <= 33660000) bonusPct = conv < 30 ? 5.5 : (conv < 50 ? 7.0 : 8.0);
+      else if(rev <= 50490000) bonusPct = conv < 30 ? 7.0 : (conv < 50 ? 9.0 : 10.5);
+      else if(rev <= 67320000) bonusPct = conv < 30 ? 8.5 : (conv < 50 ? 11.5 : 13.0);
+      else bonusPct = conv < 30 ? 10.5 : (conv < 50 ? 13.5 : 15.0);
+
+      let lvl = 'Lvl 1', prog = 20;
+      if(rev > 67320000) { lvl = 'MAX'; prog = 100; }
+      else if(rev > 50490000) { lvl = 'Lvl 4'; prog = 80; }
+      else if(rev > 33660000) { lvl = 'Lvl 3'; prog = 60; }
+      else if(rev > 16830000) { lvl = 'Lvl 2'; prog = 40; }
+
+      return { 
+        rev, sales, conv, tc, pending, 
+        bonus: rev * (bonusPct/100), 
+        lvl, prog, 
+        tcSalary: tc * SALES_COMMISSION_USD * DOLLAR_RATE 
+      };
+    }
+
+    // --- UI RENDERING ---
+    const els = {
+      tbody: document.getElementById('tbody'),
+      month: document.getElementById('monthSelector'),
+      period: document.getElementById('periodFilter'),
+      search: document.getElementById('searchInput'),
+      status: document.getElementById('statusFilter'),
+      course: document.getElementById('courseFilter'),
+      count: document.getElementById('recordCount'),
+      empty: document.getElementById('emptyState')
+    };
+    let selectedRows = new Set();
+    let sortCol = 'date', sortDir = 'desc';
+
+    function render() {
+      const allData = loadData();
+      const mVal = els.month.value;
+      const pVal = els.period.value;
+      const q = els.search.value.toLowerCase();
+
+      let filtered = allData.filter(r => {
+        if(!r.date) return false;
+        const d = new Date(r.date);
+        const rMonth = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        const rDay = d.getDate();
+        const rPeriod = rDay <= 15 ? 'P1' : 'P2';
+
+        if(mVal && rMonth !== mVal) return false;
+        if(pVal && rPeriod !== pVal) return false;
+        if(els.status.value && r.buyOrNot !== els.status.value) return false;
+        if(els.course.value && r.course !== els.course.value) return false;
+        if(q && !`${r.childName} ${r.note||''} ${r.course}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      // Sort
+      filtered.sort((a,b) => {
+        let vA = a[sortCol], vB = b[sortCol];
+        if(sortCol==='revenue') { vA=Number(vA)||0; vB=Number(vB)||0; }
+        return sortDir==='asc' ? (vA>vB?1:-1) : (vA<vB?1:-1);
+      });
+
+      // Render Stats
+      const stats = calcStats(filtered);
+      document.getElementById('statRevenue').textContent = formatRp(stats.rev);
+      document.getElementById('statSales').textContent = stats.sales;
+      document.getElementById('statConversion').textContent = stats.conv.toFixed(1) + '%';
+      document.getElementById('statBonus').textContent = formatRp(stats.bonus);
+      document.getElementById('bonusLevel').textContent = stats.lvl;
+      document.getElementById('bonusBar').style.width = stats.prog + '%';
+      document.getElementById('statTcTotal').textContent = stats.tc;
+      document.getElementById('statPending').textContent = stats.pending;
+      document.getElementById('statTcSalary').textContent = formatRp(stats.tcSalary);
+      document.getElementById('statAov').textContent = formatRp(stats.sales ? stats.rev/stats.sales : 0);
+      
+      // Render Target
+      const target = JSON.parse(localStorage.getItem(TARGET_KEY));
+      const tSec = document.getElementById('targetSection');
+      if(target && target.monthKey === mVal) {
+        tSec.classList.remove('hidden');
+        const goal = Number(target.targetRevenue)||1;
+        const pct = Math.min((stats.rev/goal)*100, 100);
+        document.getElementById('targetDesc').textContent = formatRp(goal);
+        document.getElementById('targetCurrent').textContent = formatRp(stats.rev);
+        document.getElementById('targetPercent').textContent = pct.toFixed(1) + '%';
+        document.getElementById('targetProgress').style.width = pct + '%';
+      } else {
+        tSec.classList.add('hidden');
+      }
+
+      // Render Table
+      els.count.textContent = filtered.length + ' records';
+      els.tbody.innerHTML = '';
+      
+      if(filtered.length === 0) {
+        els.empty.classList.remove('hidden');
+      } else {
+        els.empty.classList.add('hidden');
+        filtered.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.className = "group border-b border-white/5 hover:bg-white/[0.02] transition-colors";
+          
+          // Badges
+          let badge = 'bg-slate-800 text-slate-400 border-slate-700';
+          let icon = '•';
+          if(r.buyOrNot === 'Buy') { badge = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'; icon = '✅'; }
+          else if(r.buyOrNot === 'Not') { badge = 'bg-rose-500/10 text-rose-400 border-rose-500/20'; icon = '❌'; }
+          else if(r.buyOrNot === 'Pending') { badge = 'bg-amber-500/10 text-amber-400 border-amber-500/20'; icon = '⏳'; }
+
+          // Note Logic
+          const noteTxt = r.note || '';
+          const noteDisplay = noteTxt ? `
+            <div class="tooltip-container relative group/note cursor-help">
+              <div class="truncate max-w-[140px] text-xs text-slate-400 flex items-center gap-1">
+                 ${noteTxt.length > 25 ? '<span class="text-amber-500">📝</span>' : ''} ${noteTxt}
+              </div>
+              <div class="tooltip-content absolute bottom-full left-0 mb-2 hidden w-64 bg-dark-900 border border-white/20 p-3 rounded-lg shadow-xl z-50 text-xs text-white whitespace-normal break-words pointer-events-none">
+                ${noteTxt}
+              </div>
+            </div>
+          ` : '<span class="text-slate-700">-</span>';
+
+          tr.innerHTML = `
+            <td class="p-4 text-center"><input type="checkbox" class="row-cb rounded border-slate-600 bg-transparent text-amber-500 focus:ring-0" data-id="${r.id}" ${selectedRows.has(r.id)?'checked':''}></td>
+            <td class="p-4"><div class="font-bold text-white text-xs">${r.date}</div><div class="text-[10px] text-slate-500">${r.time||''}</div></td>
+            <td class="p-4">
+              <div class="font-medium text-slate-200 text-sm">${r.childName||'-'}</div>
+              ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-indigo-400 hover:underline">🔗 CRM</a>` : ''}
+            </td>
+            <td class="p-4"><span class="text-xs text-slate-400">${r.course||'-'}</span></td>
+            <td class="p-4"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${badge}">${icon} ${r.buyOrNot}</span></td>
+            <td class="p-4 font-mono text-emerald-400 font-bold text-xs">${formatRp(r.revenue)}</td>
+            <td class="p-4">${noteDisplay}</td>
+            <td class="p-4 text-right sticky right-0 bg-dark-900 group-hover:bg-[#101623] z-10 shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
+              <div class="flex justify-end gap-1">
+                <button onclick="editRow('${r.id}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded">✏️</button>
+                <button onclick="deleteRow('${r.id}')" class="p-1.5 text-rose-400 hover:bg-rose-500/20 rounded">🗑️</button>
+              </div>
+            </td>
+          `;
+          els.tbody.appendChild(tr);
+        });
+      }
+      
+      // Rebind checkbox
+      document.querySelectorAll('.row-cb').forEach(cb => cb.addEventListener('change', e => {
+        e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
+        document.getElementById('bulkDeleteBtn').style.display = selectedRows.size ? 'flex' : 'none';
+        document.getElementById('selectedCount').textContent = selectedRows.size;
+      }));
+
+      // Update Labels
+      if(mVal) {
+         const [y,mo] = mVal.split('-');
+         document.getElementById('selectedMonth').textContent = new Date(y, mo-1).toLocaleString('en-US', {month:'long', year:'numeric'});
+         document.getElementById('selectedPeriod').textContent = pVal || 'All';
+      }
+    }
+
+    function refresh() {
+      const data = loadData();
+      const months = new Set(data.map(r => r.date ? r.date.substring(0,7) : null).filter(x=>x));
+      const now = new Date();
+      months.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+      
+      const sorted = Array.from(months).sort().reverse();
+      const oldM = els.month.value;
+      
+      els.month.innerHTML = '';
+      sorted.forEach(m => {
+        const [y,mo] = m.split('-');
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = new Date(y, mo-1).toLocaleString('en-US', {month:'short', year:'numeric'});
+        els.month.appendChild(opt);
+      });
+      els.month.value = (oldM && months.has(oldM)) ? oldM : sorted[0];
+
+      // Courses
+      const courses = new Set([...COURSES, ...data.map(r=>r.course).filter(x=>x)]);
+      const oldC = els.course.value;
+      els.course.innerHTML = '<option value="">All Courses</option>';
+      Array.from(courses).sort().forEach(c => {
+        const opt = document.createElement('option'); opt.value = c; opt.textContent = c; els.course.appendChild(opt);
+      });
+      els.course.value = oldC;
+
+      render();
+    }
+
+    // --- ACTIONS ---
+    window.editRow = (id) => {
+      const r = loadData().find(x => x.id === id);
+      if(!r) return;
+      document.getElementById('editingId').value = r.id;
+      document.getElementById('date').value = r.date;
+      document.getElementById('time').value = r.time;
+      document.getElementById('childName').value = r.childName;
+      document.getElementById('crm').value = r.crm;
+      document.getElementById('course').value = r.course;
+      document.getElementById('buyOrNot').value = r.buyOrNot;
+      document.getElementById('revenue').value = r.revenue;
+      document.getElementById('layer').value = r.layer;
+      document.getElementById('note').value = r.note;
+      document.getElementById('formTitle').textContent = 'Edit Record';
+      document.getElementById('formTitleIcon').textContent = '✏️';
+      document.getElementById('duplicateBtn').classList.remove('hidden');
+      document.getElementById('duplicateBtn').onclick = () => {
+         const n = {...r, id: uid()};
+         const d = loadData(); d.push(n); saveData(d); refresh(); showToast('Duplicated');
+      };
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+
+    window.deleteRow = (id) => {
+      if(confirm('Delete record?')) {
+        saveData(loadData().filter(r => r.id !== id));
+        refresh(); showToast('Deleted', 'Record removed');
+      }
+    };
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+      refresh();
+
+      // Form
+      document.getElementById('entryForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('editingId').value;
+        const entry = {
+          id: id || uid(),
+          date: document.getElementById('date').value,
+          time: document.getElementById('time').value,
+          childName: document.getElementById('childName').value,
+          crm: document.getElementById('crm').value,
+          course: document.getElementById('course').value,
+          buyOrNot: document.getElementById('buyOrNot').value,
+          revenue: document.getElementById('revenue').value,
+          layer: document.getElementById('layer').value,
+          note: document.getElementById('note').value,
+          monthKey: document.getElementById('date').value.substring(0,7)
+        };
+
+        let data = loadData();
+        if(id) {
+          const idx = data.findIndex(x => x.id === id);
+          if(idx > -1) data[idx] = entry;
+        } else {
+          data.push(entry);
+        }
+        saveData(data);
+        
+        document.getElementById('editingId').value = '';
+        document.getElementById('formTitle').textContent = 'New Record';
+        document.getElementById('formTitleIcon').textContent = '📝';
+        document.getElementById('duplicateBtn').classList.add('hidden');
+        document.getElementById('childName').value = '';
+        document.getElementById('crm').value = '';
+        document.getElementById('revenue').value = '';
+        document.getElementById('note').value = '';
+        
+        refresh();
+        showToast(id?'Updated':'Saved', 'Record saved successfully');
+      });
+
+      document.getElementById('clearFormBtn').addEventListener('click', () => {
+         document.getElementById('entryForm').reset();
+         document.getElementById('editingId').value = '';
+         document.getElementById('formTitle').textContent = 'New Record';
+         document.getElementById('duplicateBtn').classList.add('hidden');
+      });
+
+      // Filters
+      ['monthSelector','periodFilter','statusFilter','courseFilter','searchInput'].forEach(id => {
+        document.getElementById(id).addEventListener(id==='searchInput'?'input':'change', render);
+      });
+
+      document.getElementById('selectAll').addEventListener('change', e => {
+        document.querySelectorAll('.row-cb').forEach(cb => {
+          cb.checked = e.target.checked;
+          e.target.checked ? selectedRows.add(cb.dataset.id) : selectedRows.delete(cb.dataset.id);
+        });
+        document.getElementById('bulkDeleteBtn').style.display = selectedRows.size ? 'flex' : 'none';
+        document.getElementById('selectedCount').textContent = selectedRows.size;
+      });
+      
+      document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
+         if(confirm(`Delete ${selectedRows.size} items?`)) {
+            saveData(loadData().filter(r => !selectedRows.has(r.id)));
+            selectedRows.clear(); document.getElementById('selectAll').checked=false; refresh();
+            showToast('Batch Deleted');
+         }
+      });
+
+      // Modals
+      const toggleModal = (id, show) => {
+         const m = document.getElementById(id);
+         const bg = document.getElementById('modalBackdrop');
+         const c = m.querySelector('.modal-content');
+         if(show) { m.classList.remove('hidden'); bg.classList.remove('hidden'); setTimeout(()=>c.classList.remove('scale-95','opacity-0'),10); }
+         else { c.classList.add('scale-95','opacity-0'); setTimeout(()=>{ m.classList.add('hidden'); bg.classList.add('hidden'); },300); }
+      };
+      
+      document.getElementById('menuBtn').addEventListener('click', (e)=>{ e.stopPropagation(); document.getElementById('menu').classList.toggle('hidden'); });
+      document.addEventListener('click', ()=>document.getElementById('menu').classList.add('hidden'));
+
+      document.getElementById('targetBtn').addEventListener('click', () => {
+         toggleModal('targetModal', true);
+         const t = JSON.parse(localStorage.getItem(TARGET_KEY));
+         document.getElementById('targetInput').value = (t && t.monthKey===els.month.value) ? t.targetRevenue : '';
+      });
+      document.getElementById('saveTargetBtn').addEventListener('click', () => {
+         localStorage.setItem(TARGET_KEY, JSON.stringify({monthKey:els.month.value, targetRevenue:document.getElementById('targetInput').value}));
+         toggleModal('targetModal', false); refresh(); showToast('Target Saved');
+      });
+      document.getElementById('cancelTargetBtn').addEventListener('click', ()=>toggleModal('targetModal', false));
+
+      document.getElementById('resetBtn').addEventListener('click', ()=>toggleModal('pwModal', true));
+      document.getElementById('cancelPwBtn').addEventListener('click', ()=>toggleModal('pwModal', false));
+      document.getElementById('confirmPwBtn').addEventListener('click', ()=>{
+         if(document.getElementById('pwInput').value===RESET_PASSWORD) { localStorage.clear(); location.reload(); }
+         else showToast('Error','Wrong Password','❌');
+      });
+
+      // Chart
+      document.getElementById('chartBtn').addEventListener('click', () => {
+         toggleModal('chartModal', true);
+         const data = loadData().filter(r => r.date.startsWith(els.month.value));
+         const counts = {Buy:0,Not:0,Pending:0};
+         const courses = {};
+         data.forEach(r => { counts[r.buyOrNot]++; courses[r.course]=(courses[r.course]||0)+1; });
+         
+         const max = Math.max(counts.Buy,counts.Not,counts.Pending,1);
+         document.getElementById('statusChart').innerHTML = `
+           <div class="w-16 bg-emerald-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Buy/max)*100}%"><span class="absolute -top-5 w-full text-center text-emerald-400 font-bold">${counts.Buy}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Buy</span></div>
+           <div class="w-16 bg-rose-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Not/max)*100}%"><span class="absolute -top-5 w-full text-center text-rose-400 font-bold">${counts.Not}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Not</span></div>
+           <div class="w-16 bg-amber-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Pending/max)*100}%"><span class="absolute -top-5 w-full text-center text-amber-400 font-bold">${counts.Pending}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Wait</span></div>
+         `;
+         document.getElementById('courseBreakdown').innerHTML = Object.entries(courses).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+           <div class="flex justify-between text-xs"><span class="text-slate-400 truncate w-32">${k}</span><div class="flex-1 mx-2 h-1.5 bg-dark-800 rounded-full"><div class="h-full bg-indigo-500" style="width:${(v/data.length)*100}%"></div></div><span class="text-white w-4">${v}</span></div>
+         `).join('');
+      });
+      document.getElementById('closeChartBtn').addEventListener('click', ()=>toggleModal('chartModal', false));
+
+      // Export/Import
+      document.getElementById('exportCurrentBtn').addEventListener('click', () => {
+         const data = loadData().filter(r => r.date.startsWith(els.month.value));
+         if(!data.length) return showToast('Empty','No data to export','⚠️');
+         const csv = ['Date,Time,Name,Course,Status,Revenue,Note,CRM'].join(',') + '\n' + 
+           data.map(r => [r.date,r.time,r.childName,r.course,r.buyOrNot,r.revenue,r.note,r.crm].map(x=>`"${String(x||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = `sales_${els.month.value}.csv`; a.click();
+      });
+      
+      document.getElementById('importBtn').addEventListener('click', ()=>toggleModal('importModal', true));
+      document.getElementById('cancelImportBtn').addEventListener('click', ()=>toggleModal('importModal', false));
+      document.getElementById('confirmImportBtn').addEventListener('click', ()=>{
+         const f = document.getElementById('importFile').files[0];
+         if(f) {
+           const r = new FileReader();
+           r.onload = e => {
+              const rows = e.target.result.split('\n').slice(1).filter(x=>x.trim());
+              const n = rows.map(row => {
+                 const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x=>x.replace(/^"|"$/g,'').replace(/""/g,'"'));
+                 return {id:uid(), date:c[0], time:c[1], childName:c[2], course:c[3], buyOrNot:c[4], revenue:c[5], note:c[6], crm:c[7]};
+              });
+              saveData([...loadData(), ...n]); refresh(); toggleModal('importModal', false); showToast('Imported', `${n.length} records`);
+           };
+           r.readAsText(f);
+         }
+      });
+    });
+  </script>
+</body>
+</html>
