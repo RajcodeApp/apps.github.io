@@ -1,18 +1,10 @@
-Maaf sekali, itu terjadi karena di kode yang baru (versi 2), saya mengganti "Kunci Penyimpanan" (Storage Key) agar tidak tercampur. Akibatnya, data lama Anda jadi tidak terbaca (seolah-olah hilang).
 
-Berikut adalah **kode perbaikan**. Saya telah:
-1.  Mengembalikan kunci penyimpanan ke yang lama (`mrj_sales_data`) agar **data Anda sebelumnya muncul kembali**.
-2.  Menambahkan "pengaman" pada kolom **Notes**, supaya jika data lama belum punya notes, tabel tidak akan error.
-
-Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
-
-```html
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Raj Sales Tracker Pro (Fixed)</title>
+  <title>Mi Raj Sales Tracker Pro</title>
   <meta name="theme-color" content="#0f172a">
   
   <!-- Tailwind CSS -->
@@ -34,24 +26,6 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
               900: '#0B0F19',
               800: '#111827',
               700: '#1F2937',
-            },
-            accent: {
-              gold: '#FBBF24',
-              primary: '#6366f1', // Indigo
-            }
-          },
-          animation: {
-            'fade-in': 'fadeIn 0.4s ease-out',
-            'slide-up': 'slideUp 0.4s ease-out',
-          },
-          keyframes: {
-            fadeIn: {
-              '0%': { opacity: '0' },
-              '100%': { opacity: '1' },
-            },
-            slideUp: {
-              '0%': { opacity: '0', transform: 'translateY(20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
             }
           }
         }
@@ -62,26 +36,22 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
   <style>
     /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #111827; }
-    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; border: 2px solid #111827; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
 
-    /* Background Mesh Cleaner */
+    /* Background */
     .mesh-bg {
-      background-color: #0f172a;
-      background-image: 
-        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), 
-        radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08), transparent 25%);
+      background: linear-gradient(135deg, #0B0F19 0%, #1a1f35 100%);
       min-height: 100vh;
     }
 
-    /* Glass Components Improved */
+    /* Glass Panel */
     .glass-panel {
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(17, 24, 39, 0.6);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .input-field {
@@ -92,74 +62,112 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
     .input-field:focus {
       background: rgba(15, 23, 42, 0.9);
       border-color: #FBBF24;
-      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
       outline: none;
     }
 
-    /* Table Sticky Header */
-    .sticky-header th {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(4px);
+    /* Tooltip untuk Notes */
+    .note-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #1f2937;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      white-space: normal;
+      max-width: 300px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .note-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1f2937;
+    }
+    .note-cell:hover .note-tooltip {
+      opacity: 1;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out;
     }
   </style>
 </head>
-<body class="mesh-bg text-slate-300 font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200">
+<body class="mesh-bg text-slate-300 font-sans antialiased selection:bg-amber-500/30 selection:text-white">
 
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 right-6 z-[100] hidden transform transition-all duration-300 translate-y-10 opacity-0">
-    <div class="glass-panel rounded-xl p-4 flex items-center gap-4 shadow-2xl border-l-4 border-emerald-500 bg-dark-800">
-      <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+    <div class="glass-panel rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-emerald-500">
+      <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400">
         <span id="toastIcon" class="text-xl"></span>
       </div>
       <div>
         <h4 id="toastTitle" class="text-sm font-bold text-white">Success</h4>
-        <p id="toastMessage" class="text-xs text-slate-400 mt-0.5">Action completed.</p>
+        <p id="toastMessage" class="text-xs text-slate-400">Action completed.</p>
       </div>
     </div>
   </div>
 
   <!-- Navbar -->
-  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#0f172a]/90 backdrop-blur-xl">
+  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#0B0F19]/90 backdrop-blur-xl">
     <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 text-black font-bold text-lg tracking-tighter">MR</div>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg text-black font-bold text-xl">MR</div>
           <div>
-            <h1 class="text-white font-bold text-lg tracking-tight leading-none">Mi Raj <span class="text-amber-400 font-normal">Tracker</span></h1>
+            <h1 class="text-white font-bold text-lg">Mi Raj <span class="text-amber-400">Tracker</span></h1>
+            <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Sales Intelligence</p>
           </div>
         </div>
 
-        <!-- Top Actions -->
+        <!-- Actions -->
         <div class="flex items-center gap-3">
-          <div class="hidden md:flex items-center bg-white/5 rounded-full px-3 py-1.5 border border-white/5">
-            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
-            <span class="text-xs font-medium text-slate-400">System Online</span>
-          </div>
-          
-          <div class="relative group">
-            <button id="menuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-sm font-medium text-white transition-all">
+          <div class="relative">
+            <button id="menuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-white transition-all">
               <span>Menu</span>
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             
             <!-- Dropdown -->
-            <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden transform origin-top-right transition-all z-50 bg-dark-800">
-              <button id="importBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg> Import CSV
+            <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden z-50">
+              <button id="importBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg> 
+                Import CSV
               </button>
-              <button id="exportAllBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export All
+              <button id="exportAllBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> 
+                Export All
               </button>
-              <button id="targetBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Set Target
+              <button id="targetBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> 
+                Set Target
+              </button>
+              <button id="chartBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg> 
+                Analytics
               </button>
               <div class="h-px bg-white/10 my-1"></div>
-              <button id="resetBtn" class="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> Reset Data
+              <button id="resetBtn" class="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> 
+                Reset Data
               </button>
             </div>
           </div>
@@ -171,118 +179,111 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
   <!-- Main Content -->
   <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
     
-    <!-- Stats Grid (Improved) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-slide-up">
-      <!-- Card 1: Revenue -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
-        <div class="relative z-10">
-          <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Total Revenue
-          </p>
-          <h3 id="statRevenue" class="text-2xl lg:text-3xl font-bold text-white tracking-tight mt-1">Rp 0</h3>
-          <p id="statRevChange" class="text-[11px] mt-2 font-medium text-slate-500">- vs prev month</p>
+    <!-- Target Section -->
+    <div id="targetSection" class="hidden mb-6 animate-fade-in">
+      <div class="glass-panel rounded-xl p-5 border-l-4 border-l-amber-500">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex-1">
+            <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Monthly Goal</h3>
+            <div class="flex items-baseline gap-2 mb-3">
+              <span id="targetCurrent" class="text-2xl font-bold text-white">Rp 0</span>
+              <span class="text-sm text-slate-500">/ <span id="targetDesc" class="text-slate-400">Rp 0</span></span>
+            </div>
+            <div class="h-3 bg-dark-900/50 rounded-full overflow-hidden border border-white/5">
+              <div id="targetProgress" class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="text-center md:text-right">
+            <div id="targetPercent" class="text-3xl font-black text-amber-400">0%</div>
+            <button id="editTargetBtn" class="text-xs text-slate-500 hover:text-amber-400 underline mt-1">Edit Target</button>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Card 2: Sales -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
-        <div class="grid grid-cols-2 gap-4 relative z-10 h-full items-center">
-          <div>
-            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Sales Closed</p>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- Revenue -->
+      <div class="glass-panel rounded-xl p-5 hover:border-emerald-500/30 transition-all">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+          <p class="text-xs font-bold text-emerald-400 uppercase">Revenue</p>
+        </div>
+        <h3 id="statRevenue" class="text-2xl lg:text-3xl font-bold text-white mb-1">Rp 0</h3>
+        <p id="statRevChange" class="text-xs text-slate-500">-</p>
+      </div>
+
+      <!-- Sales & Conversion -->
+      <div class="glass-panel rounded-xl p-5 hover:border-blue-500/30 transition-all">
+        <div class="grid grid-cols-2 divide-x divide-white/10 h-full">
+          <div class="pr-3">
+            <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Sales</p>
             <h3 id="statSales" class="text-2xl font-bold text-white">0</h3>
           </div>
-          <div class="text-right pl-4 border-l border-white/5">
-             <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Conversion</p>
-             <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
+          <div class="pl-3">
+            <p class="text-[10px] font-bold text-indigo-400 uppercase mb-1">Conv.</p>
+            <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
           </div>
         </div>
       </div>
 
-      <!-- Card 3: Bonus -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-32 h-32 bg-pink-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
-        <div class="relative z-10">
-          <div class="flex justify-between items-center mb-2">
-            <p class="text-xs font-bold text-pink-400 uppercase tracking-wider">Bonus Est.</p>
-            <span id="bonusLevel" class="bg-white/5 text-slate-300 text-[10px] px-2 py-0.5 rounded border border-white/10">Lvl 1</span>
-          </div>
-          <h3 id="statBonus" class="text-2xl font-bold text-white">Rp 0</h3>
-          <div class="w-full bg-dark-900 h-1 rounded-full mt-3 overflow-hidden">
-            <div id="bonusBar" class="h-full bg-gradient-to-r from-pink-500 to-rose-500 w-0 transition-all duration-500"></div>
-          </div>
+      <!-- Bonus -->
+      <div class="glass-panel rounded-xl p-5 hover:border-pink-500/30 transition-all">
+        <div class="flex justify-between items-start mb-2">
+          <p class="text-xs font-bold text-pink-400 uppercase">Bonus</p>
+          <span id="bonusLevel" class="bg-white/5 text-slate-300 text-[10px] px-2 py-0.5 rounded border border-white/10">Lvl 1</span>
         </div>
+        <h3 id="statBonus" class="text-2xl font-bold text-white mb-2">Rp 0</h3>
+        <div class="w-full bg-dark-900 h-1.5 rounded-full overflow-hidden">
+          <div id="bonusBar" class="h-full bg-gradient-to-r from-pink-500 to-rose-500 transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2">Rate: <span id="bonusPercent" class="text-slate-300">0%</span></p>
       </div>
 
-      <!-- Card 4: Operational -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden flex flex-col justify-between">
-        <div class="flex justify-between items-start">
+      <!-- Operational -->
+      <div class="glass-panel rounded-xl p-5">
+        <div class="flex justify-between mb-3">
           <div>
-            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Total TC</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Total TC</p>
             <p id="statTcTotal" class="text-xl font-bold text-white">0</p>
           </div>
           <div class="text-right">
-            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Pending</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Pending</p>
             <p id="statPending" class="text-xl font-bold text-amber-400">0</p>
           </div>
         </div>
-        <div class="flex justify-between items-end mt-2">
-             <div>
-                <p class="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Avg Order</p>
-                <p id="statAov" class="text-xs font-mono text-slate-300">Rp 0</p>
-             </div>
-             <div class="text-right">
-                <p class="text-[10px] text-slate-500 font-bold uppercase mb-0.5">TC Salary</p>
-                <p id="statTcSalary" class="text-xs font-mono text-cyan-400">Rp 0</p>
-             </div>
+        <div class="pt-2 border-t border-white/5 grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <span class="text-slate-500">AOV:</span>
+            <span id="statAov" class="font-mono text-purple-400 ml-1">Rp 0</span>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-500">TC Sal:</span>
+            <span id="statTcSalary" class="font-mono text-cyan-400 ml-1">Rp 0</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Target Section (Dynamic) -->
-    <div id="targetSection" class="hidden mb-6 animate-fade-in">
-      <div class="bg-gradient-to-r from-amber-500/20 to-orange-600/10 border border-amber-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
-         <div class="flex-1 w-full">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-xs font-bold text-amber-400 uppercase">Monthly Goal</span>
-                <span class="text-xs text-slate-400"><span id="targetCurrent" class="text-white font-bold">Rp 0</span> / <span id="targetDesc">Rp 0</span></span>
-            </div>
-            <div class="h-3 bg-dark-900 rounded-full overflow-hidden border border-white/5">
-               <div id="targetProgress" class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-1000 ease-out relative w-0">
-                  <div class="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]"></div>
-               </div>
-            </div>
-         </div>
-         <div class="text-center md:text-right min-w-[100px]">
-            <span id="targetPercent" class="text-2xl font-black text-white">0%</span>
-            <p class="text-[10px] text-slate-500 uppercase">Achieved</p>
-         </div>
-      </div>
-    </div>
-
-    <!-- Workspace Area -->
-    <div class="grid lg:grid-cols-12 gap-6 h-full items-start">
+    <!-- Workspace -->
+    <div class="grid lg:grid-cols-12 gap-6">
       
-      <!-- LEFT PANEL: Form & Filters (Fixed Height on Desktop usually, simplified here) -->
-      <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-5">
+      <!-- Left Panel -->
+      <div class="lg:col-span-4 xl:col-span-3 space-y-5">
         
-        <!-- Filters Card -->
+        <!-- Filters -->
         <div class="glass-panel rounded-xl p-5">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-              Filter Data
-            </h3>
-            <button id="refreshBtn" class="p-1.5 rounded hover:bg-white/5 text-slate-500 hover:text-amber-400 transition-colors" title="Refresh">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <h3 class="text-sm font-bold text-white">Filters</h3>
+            <button id="refreshBtn" class="p-1.5 rounded hover:bg-white/5 text-slate-500 hover:text-amber-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             </button>
           </div>
 
           <div class="space-y-3">
-            <div class="relative group">
-              <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-500 group-focus-within:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              <input id="searchInput" type="text" placeholder="Search name, course, note..." class="w-full input-field rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500">
+            <div class="relative">
+              <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input id="searchInput" type="text" placeholder="Search name, note..." class="w-full input-field rounded-lg pl-10 pr-3 py-2 text-sm text-white placeholder-slate-600">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
@@ -301,182 +302,154 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
               <option value="Pending">⏳ Pending</option>
             </select>
             
-             <select id="courseFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
+            <select id="courseFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
               <option value="">All Courses</option>
             </select>
 
             <div class="pt-3 border-t border-white/5 flex justify-between items-center">
-               <span id="recordCount" class="text-[10px] text-slate-500 font-mono bg-white/5 px-2 py-0.5 rounded">0 records</span>
-               <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-bold uppercase tracking-wider hover:underline">Export CSV</button>
+              <span id="recordCount" class="text-[10px] text-slate-500 font-mono bg-white/5 px-2 py-1 rounded">0 records</span>
+              <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-bold uppercase">Export</button>
             </div>
           </div>
         </div>
 
-        <!-- Entry Form -->
-        <div class="glass-panel rounded-xl p-5 flex-1 border-t-4 border-t-amber-500">
-          <div class="flex items-center justify-between mb-5">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span id="formTitleIcon" class="text-amber-400 bg-amber-400/10 p-1 rounded">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-              </span>
+        <!-- Form -->
+        <div class="glass-panel rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-white">
               <span id="formTitle">New Record</span>
             </h3>
-            <button id="clearFormBtn" class="text-[10px] uppercase tracking-wider font-bold text-slate-500 hover:text-white transition-colors bg-white/5 px-2 py-1 rounded">Clear</button>
+            <button id="clearFormBtn" class="text-xs text-slate-500 hover:text-white bg-white/5 px-2 py-1 rounded">Clear</button>
           </div>
 
-          <form id="entryForm" class="space-y-4">
+          <form id="entryForm" class="space-y-3">
             <input type="hidden" id="editingId">
             
-            <!-- Row 1 -->
-            <div class="grid grid-cols-2 gap-3">
-               <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Date <span class="text-rose-500">*</span></label>
-                 <input id="date" type="date" required class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
-               </div>
-               <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Time</label>
-                 <input id="time" type="time" class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
-               </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Date <span class="text-rose-500">*</span></label>
+                <input id="date" type="date" required class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Time</label>
+                <input id="time" type="time" class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
+              </div>
             </div>
 
-            <!-- Row 2 -->
-            <div class="space-y-1.5">
-               <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Student Name</label>
-               <input id="childName" type="text" placeholder="e.g. Alexander The Great" class="w-full input-field rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:ring-1 focus:ring-amber-500">
+            <div>
+              <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Student Name</label>
+              <input id="childName" type="text" placeholder="Full Name" class="w-full input-field rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600">
             </div>
 
-            <!-- Row 3 -->
-             <div class="space-y-1.5">
-               <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">CRM Link</label>
-               <div class="relative">
-                 <input id="crm" type="url" placeholder="https://crm..." class="w-full input-field rounded-lg pl-8 pr-3 py-2 text-xs text-blue-400 placeholder-slate-700">
-                 <svg class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-               </div>
+            <div>
+              <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">CRM Link</label>
+              <input id="crm" type="url" placeholder="https://..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-blue-400 placeholder-slate-700">
             </div>
 
-            <!-- Row 4 -->
-            <div class="grid grid-cols-2 gap-3">
-               <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Course <span class="text-rose-500">*</span></label>
-                 <select id="course" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">Select...</option>
-                    <option value="Coding Knight">Coding Knight</option>
-                    <option value="Digital Literasi">Digital Literasi</option>
-                    <option value="Visual Programming">Visual Programming</option>
-                    <option value="Graphic Design Junior">Graphic Design Junior</option>
-                    <option value="Graphic Design Senior">Graphic Design Senior</option>
-                    <option value="Game Design">Game Design</option>
-                    <option value="Python Start">Python Start</option>
-                    <option value="Python Pro">Python Pro</option>
-                    <option value="Math Explorers">Math Explorers</option>
-                    <option value="Math Masters">Math Masters</option>
-                    <option value="Course AI">Course AI</option>
-                    <option value="Math Tutoring">Math Tutoring</option>
-                 </select>
-               </div>
-               <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Status <span class="text-rose-500">*</span></label>
-                 <select id="buyOrNot" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">Select...</option>
-                   <option value="Buy">✅ Buy</option>
-                   <option value="Not">❌ Not Buy</option>
-                   <option value="Pending">⏳ Pending</option>
-                 </select>
-               </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Course <span class="text-rose-500">*</span></label>
+                <select id="course" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                  <option value="">Select...</option>
+                  <option value="Coding Knight">Coding Knight</option>
+                  <option value="Digital Literasi">Digital Literasi</option>
+                  <option value="Visual Programming">Visual Programming</option>
+                  <option value="Graphic Design Junior">Graphic Design Junior</option>
+                  <option value="Graphic Design Senior">Graphic Design Senior</option>
+                  <option value="Game Design">Game Design</option>
+                  <option value="Python Start">Python Start</option>
+                  <option value="Python Pro">Python Pro</option>
+                  <option value="Math Explorers">Math Explorers</option>
+                  <option value="Math Masters">Math Masters</option>
+                  <option value="Course AI">Course AI</option>
+                  <option value="Math Tutoring">Math Tutoring</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Status <span class="text-rose-500">*</span></label>
+                <select id="buyOrNot" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                  <option value="">Select...</option>
+                  <option value="Buy">✅ Buy</option>
+                  <option value="Not">❌ Not Buy</option>
+                  <option value="Pending">⏳ Pending</option>
+                </select>
+              </div>
             </div>
 
-            <!-- Row 5 -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Revenue</label>
-                 <div class="relative">
-                   <span class="absolute left-3 top-2 text-xs text-emerald-500 font-bold">Rp</span>
-                   <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg pl-9 pr-3 py-2 text-xs text-white font-mono placeholder-slate-700 focus:border-emerald-500">
-                 </div>
-               </div>
-               <div class="space-y-1.5">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1">Layer</label>
-                 <select id="layer" class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">-</option>
-                   <option value="TCP">TCP</option>
-                   <option value="ND">ND</option>
-                   <option value="PP">PP</option>
-                   <option value="Other">Other</option>
-                 </select>
-               </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Revenue</label>
+                <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg px-3 py-2 text-xs text-emerald-400 font-mono placeholder-slate-700">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Layer</label>
+                <select id="layer" class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
+                  <option value="">-</option>
+                  <option value="TCP">TCP</option>
+                  <option value="ND">ND</option>
+                  <option value="PP">PP</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
 
-            <!-- Row 6: Note -->
-            <div class="space-y-1.5">
-               <label class="text-[10px] uppercase text-slate-400 font-bold tracking-wider ml-1 flex justify-between">
-                 <span>Note</span>
-                 <span class="text-[9px] text-slate-600 normal-case">Optional details</span>
-               </label>
-               <textarea id="note" rows="3" placeholder="Write important details here..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
+            <div>
+              <label class="text-[10px] uppercase text-slate-500 font-bold mb-1 block">Note / Catatan</label>
+              <textarea id="note" rows="3" placeholder="Write important details here..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
             </div>
 
             <div class="pt-2 flex gap-2">
-              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-orange-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg transition-all text-sm">
                 Save Record
               </button>
-              <button type="button" id="duplicateBtn" class="hidden w-12 flex items-center justify-center bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors" title="Duplicate">
-                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <button type="button" id="duplicateBtn" class="hidden w-12 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors" title="Duplicate">
+                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
           </form>
         </div>
+
       </div>
 
-      <!-- RIGHT PANEL: Table -->
-      <div class="lg:col-span-8 xl:col-span-9 flex flex-col h-full min-h-[600px]">
-        <div class="glass-panel rounded-xl flex-1 flex flex-col overflow-hidden border-0 ring-1 ring-white/10 shadow-2xl">
-          <!-- Table Header Actions -->
+      <!-- Right Panel: Table -->
+      <div class="lg:col-span-8 xl:col-span-9">
+        <div class="glass-panel rounded-xl overflow-hidden">
+          <!-- Header -->
           <div class="p-4 border-b border-white/5 flex justify-between items-center bg-dark-800/40">
             <div class="flex items-center gap-3">
               <span id="selectedMonth" class="text-sm font-bold text-white"></span>
-              <span id="selectedPeriod" class="text-[10px] font-bold uppercase text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20"></span>
+              <span id="selectedPeriod" class="text-xs font-bold uppercase text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20"></span>
             </div>
-            <div class="flex items-center gap-3">
-              <button id="chartBtn" class="flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors px-3 py-1.5 rounded hover:bg-white/5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                Analytics
-              </button>
-              <button id="bulkDeleteBtn" class="hidden items-center gap-1.5 px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold transition-all">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                Delete (<span id="selectedCount">0</span>)
-              </button>
-            </div>
+            <button id="bulkDeleteBtn" class="hidden items-center gap-2 px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              Delete (<span id="selectedCount">0</span>)
+            </button>
           </div>
 
-          <!-- Actual Table -->
-          <div class="overflow-auto flex-1 relative">
-             <!-- Empty State -->
-            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
-              <div class="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4 ring-1 ring-white/5">
-                <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden p-12 text-center">
+              <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
               </div>
-              <h3 class="text-white font-bold text-lg mb-1">No Data Found</h3>
-              <p class="text-slate-500 text-sm max-w-xs mx-auto">There are no records for this period. Try adjusting filters or add a new sale.</p>
+              <h3 class="text-white font-bold mb-1">No Data Found</h3>
+              <p class="text-slate-500 text-sm">Try adjusting filters or add a new record.</p>
             </div>
 
             <table class="w-full text-left border-collapse">
-              <thead class="bg-dark-900 text-[11px] text-slate-500 uppercase tracking-wider sticky-header shadow-sm">
+              <thead class="bg-dark-900/80 text-xs text-slate-500 uppercase sticky top-0 backdrop-blur-md">
                 <tr>
-                  <th class="p-4 w-12 text-center"><input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent focus:ring-0 text-amber-500 w-4 h-4 cursor-pointer"></th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400 transition-colors group" data-sort="date">
-                    Date <span class="invisible group-hover:visible">↕</span>
+                  <th class="p-3 w-10 text-center">
+                    <input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent text-amber-500 focus:ring-0">
                   </th>
-                  <th class="p-4">Student</th>
-                  <th class="p-4">Course</th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400 transition-colors group" data-sort="buyOrNot">
-                    Status <span class="invisible group-hover:visible">↕</span>
-                  </th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400 transition-colors group" data-sort="revenue">
-                    Revenue <span class="invisible group-hover:visible">↕</span>
-                  </th>
-                  <th class="p-4 w-1/5">Note</th> <!-- NEW COLUMN -->
-                  <th class="p-4 text-right w-24 bg-dark-900 sticky right-0 z-20 shadow-[-5px_0_10px_rgba(0,0,0,0.1)]">Actions</th>
+                  <th class="p-3 font-bold cursor-pointer hover:text-amber-400" data-sort="date">Date</th>
+                  <th class="p-3 font-bold">Student</th>
+                  <th class="p-3 font-bold">Course</th>
+                  <th class="p-3 font-bold cursor-pointer hover:text-amber-400" data-sort="buyOrNot">Status</th>
+                  <th class="p-3 font-bold cursor-pointer hover:text-amber-400" data-sort="revenue">Revenue</th>
+                  <th class="p-3 font-bold w-1/6">Note</th>
+                  <th class="p-3 text-right w-24">Actions</th>
                 </tr>
               </thead>
               <tbody id="tbody" class="text-sm text-slate-300 divide-y divide-white/5">
@@ -492,89 +465,82 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
   <!-- MODALS -->
   
   <!-- Backdrop -->
-  <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+  <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden"></div>
 
   <!-- Chart Modal -->
-  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-4xl bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transform transition-all scale-95 opacity-0 modal-content">
-      <div class="p-5 border-b border-white/5 flex justify-between items-center bg-dark-800">
+  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl">
+      <div class="p-5 border-b border-white/5 flex justify-between items-center">
         <h3 class="text-lg font-bold text-white">Analytics Dashboard</h3>
         <button id="closeChartBtn" class="text-slate-500 hover:text-white text-xl">✕</button>
       </div>
-      <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0B0F19]">
-         <div class="glass-panel p-5 rounded-xl border-t border-white/5">
-           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider">Status Distribution</h4>
-           <div id="statusChart" class="h-48 flex items-end justify-center gap-4 pb-4 border-b border-white/5"></div>
-         </div>
-         <div class="glass-panel p-5 rounded-xl border-t border-white/5">
-           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider">Course Performance</h4>
-           <div id="courseBreakdown" class="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar"></div>
-         </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
+        <div class="glass-panel p-5 rounded-xl">
+          <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Status Distribution</h4>
+          <div id="statusChart" class="h-48"></div>
+        </div>
+        <div class="glass-panel p-5 rounded-xl">
+          <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Course Performance</h4>
+          <div id="courseBreakdown" class="space-y-3 max-h-48 overflow-y-auto"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Target Modal -->
-  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-amber-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
-       <h3 class="text-lg font-bold text-white mb-2">🎯 Set Monthly Target</h3>
-       <p class="text-xs text-slate-400 mb-6">Define your revenue goal for this month to track progress.</p>
-       
-       <label class="block text-xs font-bold text-amber-500 uppercase mb-2">Target Amount (IDR)</label>
-       <div class="relative mb-8">
-         <span class="absolute left-4 top-3.5 text-slate-500 text-lg">Rp</span>
-         <input id="targetInput" type="number" class="w-full bg-dark-900 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-xl font-bold text-white focus:border-amber-500 outline-none focus:ring-1 focus:ring-amber-500" placeholder="50000000">
-       </div>
-       
-       <div class="flex justify-end gap-3">
-         <button id="cancelTargetBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm font-medium">Cancel</button>
-         <button id="saveTargetBtn" class="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm shadow-lg shadow-amber-500/20">Save Target</button>
-       </div>
+  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0F172A] border border-amber-500/30 rounded-2xl shadow-2xl p-6">
+      <h3 class="text-lg font-bold text-white mb-2">🎯 Set Monthly Target</h3>
+      <p class="text-xs text-slate-400 mb-6">Define your revenue goal for this month.</p>
+      
+      <label class="block text-xs font-bold text-amber-500 uppercase mb-2">Target Amount (IDR)</label>
+      <input id="targetInput" type="number" class="w-full bg-dark-900 border border-white/10 rounded-xl px-4 py-3 text-xl font-bold text-white focus:border-amber-500 outline-none mb-6" placeholder="50000000">
+      
+      <div class="flex justify-end gap-3">
+        <button id="cancelTargetBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+        <button id="saveTargetBtn" class="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm">Save Target</button>
+      </div>
     </div>
   </div>
 
   <!-- Import Modal -->
-  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
-       <h3 class="text-lg font-bold text-white mb-2">📥 Import CSV</h3>
-       <p class="text-xs text-slate-400 mb-4">Upload a standard CSV file generated by this app.</p>
-       <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-amber-500/50 hover:bg-white/5 transition-all cursor-pointer relative group">
-         <input type="file" id="importFile" accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10">
-         <div class="pointer-events-none">
-            <svg class="w-10 h-10 mx-auto text-slate-600 group-hover:text-amber-500 mb-3 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-            <span class="text-sm text-slate-300 font-medium group-hover:text-white">Click to upload CSV</span>
-            <p class="text-xs text-slate-600 mt-1">or drag and drop here</p>
-         </div>
-       </div>
-       <div class="flex justify-end gap-3 mt-6">
-         <button id="cancelImportBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm font-medium">Cancel</button>
-         <button id="confirmImportBtn" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-sm">Process Import</button>
-       </div>
+  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-6">
+      <h3 class="text-lg font-bold text-white mb-2">📥 Import CSV</h3>
+      <p class="text-xs text-slate-400 mb-4">Upload CSV file from this app.</p>
+      <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-amber-500/50 transition-colors cursor-pointer relative">
+        <input type="file" id="importFile" accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer">
+        <svg class="w-10 h-10 mx-auto text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+        <span class="text-sm text-slate-300">Click to upload CSV</span>
+      </div>
+      <div class="flex justify-end gap-3 mt-6">
+        <button id="cancelImportBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+        <button id="confirmImportBtn" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-sm">Process Import</button>
+      </div>
     </div>
   </div>
 
   <!-- Reset Modal -->
-  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-sm bg-[#0F172A] border border-rose-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
+  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-[#0F172A] border border-rose-500/30 rounded-2xl shadow-2xl p-6">
       <div class="flex items-center gap-3 mb-4 text-rose-500">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
         <h3 class="text-lg font-bold text-white">Factory Reset</h3>
       </div>
-       <p class="text-sm text-slate-400 mb-4">This will permanently delete <strong>ALL</strong> data. This action cannot be undone.</p>
-       <input id="pwInput" type="password" class="w-full bg-dark-900 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-6 text-sm" placeholder="Enter password to confirm...">
-       <div class="flex justify-end gap-3">
-         <button id="cancelPwBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
-         <button id="confirmPwBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-rose-900/20">Delete Everything</button>
-       </div>
+      <p class="text-sm text-slate-400 mb-4">This will permanently delete ALL data.</p>
+      <input id="pwInput" type="password" class="w-full bg-dark-900 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-6 text-sm" placeholder="Enter password...">
+      <div class="flex justify-end gap-3">
+        <button id="cancelPwBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
+        <button id="confirmPwBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-sm">Delete Everything</button>
+      </div>
     </div>
   </div>
 
   <!-- SCRIPT -->
   <script>
-    // --- CONFIG & CONSTANTS ---
-    // FIXED: Reverted to original storage key to restore your data
-    const STORAGE_KEY = 'mrj_sales_data'; 
-    const TARGET_KEY = 'mrj_target'; // Also reverted
+    // CONFIG
+    const STORAGE_KEY = 'mrj_sales_data';
+    const TARGET_KEY = 'mrj_target';
     const RESET_PASSWORD = 'resetozeromrj';
     const DOLLAR_RATE = 16000;
     const SALES_COMMISSION_USD = 2.5;
@@ -586,7 +552,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       'Course AI', 'Math Tutoring'
     ];
 
-    // Utility Functions
+    // UTILS
     const uid = () => 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
     
     const formatRp = (num) => {
@@ -601,9 +567,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       document.getElementById('toastIcon').textContent = icon;
       
       toast.classList.remove('hidden');
-      requestAnimationFrame(() => {
-        toast.classList.remove('translate-y-10', 'opacity-0');
-      });
+      setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
 
       clearTimeout(toast._timer);
       toast._timer = setTimeout(() => {
@@ -612,28 +576,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       }, ms);
     };
 
-    // --- BUSINESS LOGIC ---
-    function calculateBonus(revenue, conversion) {
-      if (!conversion) return { amount: 0, percent: 0, level: 'Lvl 1', progress: 0 };
-      
-      let percent = 0;
-      // Simplified logic based on original request ranges
-      if (revenue <= 16830000) percent = conversion < 30 ? 4.5 : (conversion < 50 ? 6.0 : 7.0);
-      else if (revenue <= 33660000) percent = conversion < 30 ? 5.5 : (conversion < 50 ? 7.0 : 8.0);
-      else if (revenue <= 50490000) percent = conversion < 30 ? 7.0 : (conversion < 50 ? 9.0 : 10.5);
-      else if (revenue <= 67320000) percent = conversion < 30 ? 8.5 : (conversion < 50 ? 11.5 : 13.0);
-      else percent = conversion < 30 ? 10.5 : (conversion < 50 ? 13.5 : 15.0);
-
-      let level = 'Lvl 1', progress = 20;
-      if (revenue > 67320000) { level = 'MAX'; progress = 100; }
-      else if (revenue > 50490000) { level = 'Lvl 4'; progress = 80; }
-      else if (revenue > 33660000) { level = 'Lvl 3'; progress = 60; }
-      else if (revenue > 16830000) { level = 'Lvl 2'; progress = 40; }
-
-      return { amount: revenue * (percent / 100), percent, level, progress };
-    }
-
-    // --- DATA MANAGEMENT ---
+    // DATA MANAGEMENT
     const loadData = () => {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
     };
@@ -643,7 +586,48 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       try { return JSON.parse(localStorage.getItem(TARGET_KEY)); } catch { return null; }
     };
 
-    // --- UI RENDERER ---
+    // BUSINESS LOGIC
+    function calculateBonus(revenue, conversion) {
+      if (!conversion) return { amount: 0, percent: 0, level: 'Lvl 1' };
+      
+      let percent = 0;
+      if (revenue <= 16830000) {
+        if (conversion < 30) percent = 4.5;
+        else if (conversion < 40) percent = 5.0;
+        else if (conversion < 50) percent = 6.0;
+        else percent = 7.0;
+      } else if (revenue <= 33660000) {
+        if (conversion < 30) percent = 5.5;
+        else if (conversion < 40) percent = 6.0;
+        else if (conversion < 50) percent = 7.0;
+        else percent = 8.0;
+      } else if (revenue <= 50490000) {
+        if (conversion < 30) percent = 7.0;
+        else if (conversion < 40) percent = 8.0;
+        else if (conversion < 50) percent = 9.0;
+        else percent = 10.5;
+      } else if (revenue <= 67320000) {
+        if (conversion < 30) percent = 8.5;
+        else if (conversion < 40) percent = 10.0;
+        else if (conversion < 50) percent = 11.5;
+        else percent = 13.0;
+      } else {
+        if (conversion < 30) percent = 10.5;
+        else if (conversion < 40) percent = 12.0;
+        else if (conversion < 50) percent = 13.5;
+        else percent = 15.0;
+      }
+
+      let level = 'Lvl 1';
+      if (revenue > 67320000) level = 'MAX';
+      else if (revenue > 50490000) level = 'Lvl 4';
+      else if (revenue > 33660000) level = 'Lvl 3';
+      else if (revenue > 16830000) level = 'Lvl 2';
+
+      return { amount: revenue * (percent / 100), percent, level };
+    }
+
+    // UI ELEMENTS
     const els = {
       tbody: document.getElementById('tbody'),
       monthSel: document.getElementById('monthSelector'),
@@ -651,38 +635,36 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       status: document.getElementById('statusFilter'),
       course: document.getElementById('courseFilter'),
       period: document.getElementById('periodFilter'),
-      empty: document.getElementById('emptyState'),
-      count: document.getElementById('recordCount')
+      empty: document.getElementById('emptyState')
     };
 
     let currentSort = { field: 'date', direction: 'desc' };
     let selectedRows = new Set();
 
+    // RENDER TABLE
     function renderTable() {
       const data = loadData();
       const month = els.monthSel.value;
       const q = els.search.value.toLowerCase().trim();
       
       let filtered = data.filter(r => {
-        if (!r.date) return false; // Safety check for malformed data
-        
-        const rDate = new Date(r.date);
-        const rMonth = `${rDate.getFullYear()}-${String(rDate.getMonth()+1).padStart(2,'0')}`;
-        const rDay = rDate.getDate();
+        // Extract month from date
+        const rMonth = r.date ? r.date.slice(0, 7) : '';
+        const rDay = r.date ? parseInt(r.date.split('-')[2]) : 0;
         const rPeriod = rDay <= 15 ? 'P1' : 'P2';
 
         if (month && rMonth !== month) return false;
         if (els.period.value && rPeriod !== els.period.value) return false;
         if (els.status.value && r.buyOrNot !== els.status.value) return false;
         if (els.course.value && r.course !== els.course.value) return false;
-        if (q && !`${r.childName} ${r.note || ''} ${r.course}`.toLowerCase().includes(q)) return false;
+        if (q && !`${r.childName} ${r.note} ${r.course}`.toLowerCase().includes(q)) return false;
         return true;
       });
 
       // Sort
       filtered.sort((a, b) => {
-        let valA = a[currentSort.field], valB = b[currentSort.field];
-        if (currentSort.field === 'revenue') { valA = Number(valA)||0; valB = Number(valB)||0; }
+        let valA = a[currentSort.field] || '', valB = b[currentSort.field] || '';
+        if (currentSort.field === 'revenue') { valA = Number(valA); valB = Number(valB); }
         return currentSort.direction === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
       });
 
@@ -690,7 +672,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       updateStats(filtered, data);
       updateTarget(filtered);
 
-      els.count.textContent = `${filtered.length} records`;
+      document.getElementById('recordCount').textContent = `${filtered.length} records`;
       els.tbody.innerHTML = '';
 
       if (filtered.length === 0) {
@@ -701,62 +683,60 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
 
       filtered.forEach(r => {
         const tr = document.createElement('tr');
-        tr.className = "group border-b border-white/5 hover:bg-white/[0.02] transition-colors";
+        tr.className = "group hover:bg-white/[0.02] transition-colors border-b border-white/5";
         
-        // Status Badge Style
-        let badge = 'bg-slate-800 text-slate-400 border-slate-700';
+        // Status Badge
+        let badge = 'bg-slate-800 text-slate-400';
         let icon = '•';
         if (r.buyOrNot === 'Buy') { badge = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'; icon = '✅'; }
         else if (r.buyOrNot === 'Not') { badge = 'bg-rose-500/10 text-rose-400 border-rose-500/20'; icon = '❌'; }
         else if (r.buyOrNot === 'Pending') { badge = 'bg-amber-500/10 text-amber-400 border-amber-500/20'; icon = '⏳'; }
 
-        // Course Style
-        let courseStyle = 'text-slate-400';
-        if (r.course && r.course.includes('Python')) courseStyle = 'text-blue-400';
-        if (r.course && r.course.includes('Graphic')) courseStyle = 'text-pink-400';
-
-        // Note Handling (Important Update with Safety Check)
-        const noteText = r.note || '';
-        let noteHtml = '<span class="text-slate-600">-</span>';
-        if (noteText) {
-          noteHtml = `
-            <div class="relative group/note cursor-help">
-              <div class="max-w-[180px] truncate text-xs text-slate-400 flex items-center gap-1">
-                ${noteText.length > 30 ? '<svg class="w-3 h-3 text-amber-500/70 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' : ''}
-                <span>${noteText}</span>
-              </div>
-              <!-- Tooltip on hover -->
-              <div class="absolute bottom-full left-0 mb-2 hidden group-hover/note:block w-64 bg-dark-900 border border-white/20 p-3 rounded-lg shadow-xl z-50 text-xs text-white whitespace-normal break-words pointer-events-none">
+        // Note Display (PENTING!)
+        let noteDisplay = '<span class="text-slate-600 text-xs">-</span>';
+        if (r.note && r.note.trim()) {
+          const noteText = r.note.length > 40 ? r.note.substring(0, 40) + '...' : r.note;
+          noteDisplay = `
+            <div class="relative note-cell">
+              <div class="text-xs text-slate-400 truncate max-w-[200px] cursor-help">
                 ${noteText}
-                <div class="absolute -bottom-1 left-4 w-2 h-2 bg-dark-900 border-b border-r border-white/20 transform rotate-45"></div>
               </div>
+              ${r.note.length > 40 ? `
+                <div class="note-tooltip">
+                  ${r.note}
+                </div>
+              ` : ''}
             </div>
           `;
         }
 
         tr.innerHTML = `
-          <td class="p-4 text-center"><input type="checkbox" class="row-cb rounded border-slate-600 bg-transparent text-amber-500 focus:ring-0 cursor-pointer" data-id="${r.id}" ${selectedRows.has(r.id) ? 'checked' : ''}></td>
-          <td class="p-4">
-            <div class="font-bold text-white text-xs">${r.date}</div>
-            <div class="text-[10px] text-slate-500 font-mono">${r.time || ''}</div>
+          <td class="p-3 text-center">
+            <input type="checkbox" class="row-cb rounded border-slate-600 bg-transparent text-amber-500 focus:ring-0" data-id="${r.id}" ${selectedRows.has(r.id) ? 'checked' : ''}>
           </td>
-          <td class="p-4">
+          <td class="p-3">
+            <div class="font-bold text-white text-xs">${r.date || '-'}</div>
+            ${r.time ? `<div class="text-[10px] text-slate-500 mt-0.5">${r.time}</div>` : ''}
+          </td>
+          <td class="p-3">
             <div class="font-medium text-slate-200 text-sm">${r.childName || '-'}</div>
-            ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 mt-0.5">🔗 CRM Link</a>` : ''}
+            ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1 mt-0.5">🔗 Link</a>` : ''}
           </td>
-          <td class="p-4">
-            <span class="text-xs font-medium ${courseStyle}">${r.course || '-'}</span>
+          <td class="p-3">
+            <span class="text-xs text-slate-400">${r.course || '-'}</span>
             ${r.layer ? `<span class="ml-1 text-[9px] bg-white/5 px-1 rounded text-slate-500">${r.layer}</span>` : ''}
           </td>
-          <td class="p-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-bold ${badge}">${icon} ${r.buyOrNot}</span></td>
-          <td class="p-4 font-mono text-emerald-400 font-bold text-xs">${formatRp(r.revenue)}</td>
-          <td class="p-4">${noteHtml}</td>
-          <td class="p-4 text-right sticky right-0 bg-dark-900 group-hover:bg-[#131a29] z-10 border-l border-white/5 shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
-            <div class="flex justify-end gap-1">
-              <button onclick="editRow('${r.id}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded transition-colors" title="Edit">
+          <td class="p-3">
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium ${badge}">${icon} ${r.buyOrNot}</span>
+          </td>
+          <td class="p-3 font-mono text-emerald-400 font-bold text-xs">${formatRp(r.revenue)}</td>
+          <td class="p-3">${noteDisplay}</td>
+          <td class="p-3 text-right">
+            <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick="editRow('${r.id}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded" title="Edit">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
               </button>
-              <button onclick="deleteRow('${r.id}')" class="p-1.5 text-rose-400 hover:bg-rose-500/20 rounded transition-colors" title="Delete">
+              <button onclick="deleteRow('${r.id}')" class="p-1.5 text-rose-400 hover:bg-rose-500/20 rounded" title="Delete">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
               </button>
             </div>
@@ -765,7 +745,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
         els.tbody.appendChild(tr);
       });
       
-      // Re-attach check listeners
+      // Attach checkbox listeners
       document.querySelectorAll('.row-cb').forEach(cb => {
         cb.addEventListener('change', e => {
           e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
@@ -775,14 +755,15 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
     }
 
     function updateStats(filtered, allData) {
-      let tc=0, sales=0, rev=0, pending=0;
+      let tc = 0, sales = 0, rev = 0, pending = 0;
+      
       filtered.forEach(r => {
-        if(r.buyOrNot === 'Buy') { sales++; rev += Number(r.revenue)||0; tc++; }
-        else if(r.buyOrNot === 'Not') tc++;
-        else if(r.buyOrNot === 'Pending') { pending++; tc++; }
+        tc++;
+        if (r.buyOrNot === 'Buy') { sales++; rev += Number(r.revenue) || 0; }
+        else if (r.buyOrNot === 'Pending') pending++;
       });
 
-      const conv = tc ? (sales/tc)*100 : 0;
+      const conv = tc ? (sales / tc) * 100 : 0;
       const bonus = calculateBonus(rev, conv);
       const tcSalary = tc * SALES_COMMISSION_USD * DOLLAR_RATE;
 
@@ -791,20 +772,24 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       document.getElementById('statConversion').textContent = conv.toFixed(1) + '%';
       document.getElementById('statBonus').textContent = formatRp(bonus.amount);
       document.getElementById('bonusLevel').textContent = bonus.level;
-      document.getElementById('bonusBar').style.width = bonus.progress + '%';
+      document.getElementById('bonusPercent').textContent = bonus.percent.toFixed(1) + '%';
+      document.getElementById('bonusBar').style.width = Math.min((conv / 50) * 100, 100) + '%';
       
       document.getElementById('statTcTotal').textContent = tc;
       document.getElementById('statPending').textContent = pending;
       document.getElementById('statTcSalary').textContent = formatRp(tcSalary);
-      document.getElementById('statAov').textContent = formatRp(sales ? rev/sales : 0);
+      document.getElementById('statAov').textContent = formatRp(sales ? rev / sales : 0);
 
-      // Month Label
+      // Previous month comparison
+      document.getElementById('statRevChange').textContent = 'vs prev month';
+
+      // Month label
       const m = els.monthSel.value;
-      if(m) {
-         const [y, mo] = m.split('-');
-         const date = new Date(y, mo-1);
-         document.getElementById('selectedMonth').textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-         document.getElementById('selectedPeriod').textContent = els.period.value || 'All';
+      if (m) {
+        const [y, mo] = m.split('-');
+        const date = new Date(y, mo - 1);
+        document.getElementById('selectedMonth').textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        document.getElementById('selectedPeriod').textContent = els.period.value || 'All';
       }
     }
 
@@ -819,9 +804,9 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       }
       
       div.classList.remove('hidden');
-      const rev = filtered.reduce((acc, r) => r.buyOrNot === 'Buy' ? acc + (Number(r.revenue)||0) : acc, 0);
+      const rev = filtered.reduce((acc, r) => r.buyOrNot === 'Buy' ? acc + (Number(r.revenue) || 0) : acc, 0);
       const goal = Number(target.targetRevenue) || 1;
-      const pct = Math.min((rev/goal)*100, 100);
+      const pct = Math.min((rev / goal) * 100, 100);
       
       document.getElementById('targetDesc').textContent = formatRp(goal);
       document.getElementById('targetCurrent').textContent = formatRp(rev);
@@ -829,10 +814,10 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       document.getElementById('targetProgress').style.width = pct + '%';
     }
 
-    // --- FORM HANDLERS ---
+    // FORM HANDLERS
     function editRow(id) {
       const r = loadData().find(x => x.id === id);
-      if(!r) return;
+      if (!r) return;
       
       document.getElementById('editingId').value = r.id;
       document.getElementById('date').value = r.date || '';
@@ -845,8 +830,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       document.getElementById('layer').value = r.layer || '';
       document.getElementById('note').value = r.note || '';
       
-      document.getElementById('formTitle').textContent = 'Edit Record';
-      document.getElementById('formTitleIcon').className = "text-blue-400 bg-blue-400/10 p-1 rounded";
+      document.getElementById('formTitle').textContent = '✏️ Edit Record';
       document.getElementById('duplicateBtn').classList.remove('hidden');
       document.getElementById('duplicateBtn').onclick = () => duplicateRow(id);
       
@@ -854,7 +838,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
     }
 
     function deleteRow(id) {
-      if(confirm('Delete this record?')) {
+      if (confirm('Delete this record?')) {
         const data = loadData().filter(r => r.id !== id);
         saveData(data);
         refresh();
@@ -864,10 +848,9 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
 
     function duplicateRow(id) {
       const r = loadData().find(x => x.id === id);
-      if(r) {
-        const n = {...r, id: uid()};
+      if (r) {
         const data = loadData();
-        data.push(n);
+        data.push({ ...r, id: uid() });
         saveData(data);
         refresh();
         showToast('Duplicated', 'Record copied', '📋');
@@ -876,7 +859,7 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
 
     function updateBulkBtn() {
       const btn = document.getElementById('bulkDeleteBtn');
-      if(selectedRows.size > 0) {
+      if (selectedRows.size > 0) {
         btn.style.display = 'flex';
         document.getElementById('selectedCount').textContent = selectedRows.size;
       } else {
@@ -885,17 +868,13 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
     }
 
     function refresh() {
-      // Refresh Months
+      // Refresh months
       const data = loadData();
-      const months = new Set(data.map(r => {
-         if(!r.date) return null;
-         const d = new Date(r.date);
-         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      }).filter(x => x));
+      const months = new Set(data.map(r => r.date ? r.date.slice(0, 7) : ''));
       const curr = new Date();
-      months.add(`${curr.getFullYear()}-${String(curr.getMonth()+1).padStart(2,'0')}`);
+      months.add(`${curr.getFullYear()}-${String(curr.getMonth() + 1).padStart(2, '0')}`);
       
-      const sorted = Array.from(months).sort().reverse();
+      const sorted = Array.from(months).filter(m => m).sort().reverse();
       const oldVal = els.monthSel.value;
       
       els.monthSel.innerHTML = '';
@@ -903,15 +882,15 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
         const [y, mo] = m.split('-');
         const opt = document.createElement('option');
         opt.value = m;
-        opt.textContent = new Date(y, mo-1).toLocaleString('en-US', { month: 'short', year: 'numeric' });
+        opt.textContent = new Date(y, mo - 1).toLocaleString('en-US', { month: 'short', year: 'numeric' });
         els.monthSel.appendChild(opt);
       });
       
-      if(oldVal && months.has(oldVal)) els.monthSel.value = oldVal;
-      else els.monthSel.value = sorted[0];
+      if (oldVal && months.has(oldVal)) els.monthSel.value = oldVal;
+      else if (sorted.length) els.monthSel.value = sorted[0];
 
-      // Refresh Course Filter
-      const courses = new Set([...COURSES, ...data.map(r=>r.course).filter(x=>x)]);
+      // Refresh courses
+      const courses = new Set([...COURSES, ...data.map(r => r.course).filter(x => x)]);
       const cOld = els.course.value;
       els.course.innerHTML = '<option value="">All Courses</option>';
       Array.from(courses).sort().forEach(c => {
@@ -925,11 +904,136 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
       renderTable();
     }
 
-    // --- INITIALIZATION & EVENTS ---
+    // EXPORT CSV
+    function exportCSV() {
+      const data = loadData();
+      const m = els.monthSel.value;
+      const filtered = data.filter(r => r.date && r.date.startsWith(m));
+      
+      if (!filtered.length) return showToast('No Data', 'Nothing to export', '⚠️');
+
+      const headers = ['Date', 'Time', 'Student', 'Course', 'Status', 'Revenue', 'Layer', 'Note', 'CRM'];
+      const rows = filtered.map(r => [
+        r.date, r.time, r.childName, r.course, r.buyOrNot, r.revenue, r.layer, r.note, r.crm
+      ].map(f => `"${String(f || '').replace(/"/g, '""')}"`).join(','));
+      
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `sales_${m}.csv`;
+      a.click();
+      showToast('Exported', 'CSV downloaded', '📥');
+    }
+
+    // IMPORT CSV
+    function importCSV(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const lines = e.target.result.split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+        let count = 0;
+        
+        for (let i = 1; i < lines.length; i++) {
+          if (!lines[i].trim()) continue;
+          const vals = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
+          const obj = { id: uid() };
+          
+          headers.forEach((h, idx) => {
+            const key = h.toLowerCase().replace(/\s+/g, '');
+            const val = vals[idx] ? vals[idx].replace(/^"|"$/g, '').replace(/""/g, '"') : '';
+            if (key === 'date') obj.date = val;
+            else if (key === 'time') obj.time = val;
+            else if (key === 'student') obj.childName = val;
+            else if (key === 'course') obj.course = val;
+            else if (key === 'status') obj.buyOrNot = val;
+            else if (key === 'revenue') obj.revenue = val;
+            else if (key === 'layer') obj.layer = val;
+            else if (key === 'note') obj.note = val;
+            else if (key === 'crm') obj.crm = val;
+          });
+          
+          if (obj.date) {
+            const data = loadData();
+            data.push(obj);
+            saveData(data);
+            count++;
+          }
+        }
+        
+        refresh();
+        toggleModal('importModal', false);
+        showToast('Imported', `${count} records added`, '📥');
+      };
+      reader.readAsText(file);
+    }
+
+    // CHARTS
+    function showCharts() {
+      toggleModal('chartModal', true);
+      const data = loadData();
+      
+      // Status chart
+      const counts = { Buy: 0, Not: 0, Pending: 0 };
+      data.forEach(r => { if (counts[r.buyOrNot] !== undefined) counts[r.buyOrNot]++; });
+      const max = Math.max(counts.Buy, counts.Not, counts.Pending, 1);
+      
+      document.getElementById('statusChart').innerHTML = `
+        <div class="flex items-end justify-around h-full gap-4 pb-8">
+          <div class="w-20 bg-emerald-500/20 rounded-t-lg relative transition-all hover:bg-emerald-500/30" style="height: ${(counts.Buy / max) * 100}%">
+            <div class="absolute -top-7 left-0 w-full text-center text-emerald-400 font-bold">${counts.Buy}</div>
+            <div class="absolute -bottom-6 left-0 w-full text-center text-xs text-slate-500">Buy</div>
+          </div>
+          <div class="w-20 bg-rose-500/20 rounded-t-lg relative transition-all hover:bg-rose-500/30" style="height: ${(counts.Not / max) * 100}%">
+            <div class="absolute -top-7 left-0 w-full text-center text-rose-400 font-bold">${counts.Not}</div>
+            <div class="absolute -bottom-6 left-0 w-full text-center text-xs text-slate-500">Not</div>
+          </div>
+          <div class="w-20 bg-amber-500/20 rounded-t-lg relative transition-all hover:bg-amber-500/30" style="height: ${(counts.Pending / max) * 100}%">
+            <div class="absolute -top-7 left-0 w-full text-center text-amber-400 font-bold">${counts.Pending}</div>
+            <div class="absolute -bottom-6 left-0 w-full text-center text-xs text-slate-500">Pending</div>
+          </div>
+        </div>
+      `;
+
+      // Course breakdown
+      const courses = {};
+      data.forEach(r => courses[r.course] = (courses[r.course] || 0) + 1);
+      const sorted = Object.entries(courses).sort((a, b) => b[1] - a[1]).slice(0, 8);
+      
+      document.getElementById('courseBreakdown').innerHTML = sorted.map(([name, count]) => `
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-400 truncate w-32">${name}</span>
+          <div class="flex-1 mx-2 h-1.5 bg-dark-900 rounded-full overflow-hidden">
+            <div class="h-full bg-indigo-500" style="width: ${(count / data.length) * 100}%"></div>
+          </div>
+          <span class="text-white font-bold w-8 text-right">${count}</span>
+        </div>
+      `).join('');
+    }
+
+    // MODAL HANDLER
+    function toggleModal(id, show) {
+      const m = document.getElementById(id);
+      const bg = document.getElementById('modalBackdrop');
+      if (show) {
+        m.classList.remove('hidden');
+        bg.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+        bg.classList.add('hidden');
+      }
+    }
+
+    // EVENT LISTENERS
     document.addEventListener('DOMContentLoaded', () => {
       refresh();
 
-      // Form Submit
+      // Filters
+      ['monthSelector', 'periodFilter', 'statusFilter', 'courseFilter', 'searchInput'].forEach(id => {
+        document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', renderTable);
+      });
+
+      // Form submit
       document.getElementById('entryForm').addEventListener('submit', e => {
         e.preventDefault();
         const id = document.getElementById('editingId').value;
@@ -943,14 +1047,13 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
           buyOrNot: document.getElementById('buyOrNot').value,
           revenue: document.getElementById('revenue').value,
           layer: document.getElementById('layer').value,
-          note: document.getElementById('note').value,
-          monthKey: document.getElementById('date').value.substring(0,7) // Ensure monthKey is set for backward compatibility if needed
+          note: document.getElementById('note').value
         };
 
         let data = loadData();
-        if(id) {
+        if (id) {
           const idx = data.findIndex(x => x.id === id);
-          if(idx > -1) data[idx] = obj;
+          if (idx > -1) data[idx] = obj;
         } else {
           data.push(obj);
         }
@@ -958,32 +1061,33 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
         saveData(data);
         
         // Clear form
+        document.getElementById('entryForm').reset();
         document.getElementById('editingId').value = '';
         document.getElementById('formTitle').textContent = 'New Record';
-        document.getElementById('formTitleIcon').className = "text-amber-400 bg-amber-400/10 p-1 rounded";
         document.getElementById('duplicateBtn').classList.add('hidden');
-        document.getElementById('childName').value = '';
-        document.getElementById('crm').value = '';
-        document.getElementById('revenue').value = '';
-        document.getElementById('note').value = '';
         
         refresh();
         showToast(id ? 'Updated' : 'Saved', 'Record successful');
       });
 
+      // Clear form
       document.getElementById('clearFormBtn').addEventListener('click', () => {
         document.getElementById('entryForm').reset();
         document.getElementById('editingId').value = '';
         document.getElementById('duplicateBtn').classList.add('hidden');
         document.getElementById('formTitle').textContent = 'New Record';
-        document.getElementById('formTitleIcon').className = "text-amber-400 bg-amber-400/10 p-1 rounded";
       });
 
-      // Filters Listeners
-      ['monthSelector','periodFilter','statusFilter','courseFilter','searchInput'].forEach(id => {
-        document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', renderTable);
+      // Menu dropdown
+      const menuBtn = document.getElementById('menuBtn');
+      const menu = document.getElementById('menu');
+      menuBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
       });
+      document.addEventListener('click', () => menu.classList.add('hidden'));
 
+      // Select all
       document.getElementById('selectAll').addEventListener('change', e => {
         document.querySelectorAll('.row-cb').forEach(cb => {
           cb.checked = e.target.checked;
@@ -992,8 +1096,9 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
         updateBulkBtn();
       });
 
+      // Bulk delete
       document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
-        if(confirm(`Delete ${selectedRows.size} records?`)) {
+        if (confirm(`Delete ${selectedRows.size} records?`)) {
           const data = loadData().filter(r => !selectedRows.has(r.id));
           saveData(data);
           selectedRows.clear();
@@ -1003,137 +1108,79 @@ Silakan **Copy Semua** kode di bawah ini dan timpa file yang tadi:
         }
       });
 
-      // Modals Logic
-      const toggleModal = (id, show) => {
-        const m = document.getElementById(id);
-        const bg = document.getElementById('modalBackdrop');
-        const content = m.querySelector('.modal-content');
-        if(show) {
-          m.classList.remove('hidden');
-          bg.classList.remove('hidden');
-          setTimeout(() => {
-            bg.classList.remove('opacity-0');
-            content.classList.remove('scale-95', 'opacity-0');
-          }, 10);
-        } else {
-          bg.classList.add('opacity-0');
-          content.classList.add('scale-95', 'opacity-0');
-          setTimeout(() => {
-            m.classList.add('hidden');
-            bg.classList.add('hidden');
-          }, 300);
-        }
-      };
-
-      document.getElementById('menuBtn').addEventListener('click', (e) => {
-         e.stopPropagation();
-         document.getElementById('menu').classList.toggle('hidden');
+      // Sort
+      document.querySelectorAll('[data-sort]').forEach(el => {
+        el.addEventListener('click', () => {
+          currentSort.direction = (currentSort.field === el.dataset.sort && currentSort.direction === 'desc') ? 'asc' : 'desc';
+          currentSort.field = el.dataset.sort;
+          renderTable();
+        });
       });
-      document.addEventListener('click', () => document.getElementById('menu').classList.add('hidden'));
 
+      // Export/Import
+      document.getElementById('exportCurrentBtn').addEventListener('click', exportCSV);
+      document.getElementById('exportAllBtn').addEventListener('click', exportCSV);
+      
+      document.getElementById('importBtn').addEventListener('click', () => toggleModal('importModal', true));
+      document.getElementById('cancelImportBtn').addEventListener('click', () => toggleModal('importModal', false));
+      document.getElementById('confirmImportBtn').addEventListener('click', () => {
+        const f = document.getElementById('importFile').files[0];
+        if (f) importCSV(f);
+        else showToast('Error', 'Select file first', '⚠️');
+      });
+
+      // Target
       document.getElementById('targetBtn').addEventListener('click', () => {
         toggleModal('targetModal', true);
         const t = getTarget();
         document.getElementById('targetInput').value = (t && t.monthKey === els.monthSel.value) ? t.targetRevenue : '';
       });
+      document.getElementById('editTargetBtn').addEventListener('click', () => document.getElementById('targetBtn').click());
+      document.getElementById('cancelTargetBtn').addEventListener('click', () => toggleModal('targetModal', false));
       document.getElementById('saveTargetBtn').addEventListener('click', () => {
-        localStorage.setItem(TARGET_KEY, JSON.stringify({ monthKey: els.monthSel.value, targetRevenue: document.getElementById('targetInput').value }));
+        localStorage.setItem(TARGET_KEY, JSON.stringify({
+          monthKey: els.monthSel.value,
+          targetRevenue: document.getElementById('targetInput').value
+        }));
         toggleModal('targetModal', false);
         refresh();
         showToast('Target Set');
       });
-      document.getElementById('cancelTargetBtn').addEventListener('click', () => toggleModal('targetModal', false));
-
-      // Export
-      const exportCSV = () => {
-        const data = loadData().filter(r => {
-           const d = new Date(r.date);
-           return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}` === els.monthSel.value;
-        });
-        if(!data.length) return showToast('No Data', 'Nothing to export', '⚠️');
-        
-        const header = ['Date','Time','Student','Course','Status','Revenue','Note','CRM'];
-        const rows = data.map(r => [r.date, r.time, r.childName, r.course, r.buyOrNot, r.revenue, r.note, r.crm].map(f => `"${String(f||'').replace(/"/g,'""')}"`).join(','));
-        const csv = [header.join(','), ...rows].join('\n');
-        const blob = new Blob([csv], {type: 'text/csv'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `sales_${els.monthSel.value}.csv`;
-        a.click();
-      };
-      document.getElementById('exportCurrentBtn').addEventListener('click', exportCSV);
 
       // Chart
-      document.getElementById('chartBtn').addEventListener('click', () => {
-        toggleModal('chartModal', true);
-        const data = loadData().filter(r => r.date.startsWith(els.monthSel.value));
-        const counts = { Buy:0, Not:0, Pending:0 };
-        const courses = {};
-        data.forEach(r => {
-          counts[r.buyOrNot]++;
-          courses[r.course] = (courses[r.course]||0)+1;
-        });
-        
-        const max = Math.max(counts.Buy, counts.Not, counts.Pending, 1);
-        document.getElementById('statusChart').innerHTML = `
-          <div class="w-16 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-t-lg relative group transition-all h-full" style="height:${(counts.Buy/max)*100}%">
-             <span class="absolute -top-6 left-0 w-full text-center text-emerald-400 font-bold">${counts.Buy}</span>
-             <span class="absolute bottom-2 left-0 w-full text-center text-[10px] uppercase">Buy</span>
-          </div>
-          <div class="w-16 bg-rose-500/20 hover:bg-rose-500/30 rounded-t-lg relative group transition-all h-full" style="height:${(counts.Not/max)*100}%">
-             <span class="absolute -top-6 left-0 w-full text-center text-rose-400 font-bold">${counts.Not}</span>
-             <span class="absolute bottom-2 left-0 w-full text-center text-[10px] uppercase">Not</span>
-          </div>
-          <div class="w-16 bg-amber-500/20 hover:bg-amber-500/30 rounded-t-lg relative group transition-all h-full" style="height:${(counts.Pending/max)*100}%">
-             <span class="absolute -top-6 left-0 w-full text-center text-amber-400 font-bold">${counts.Pending}</span>
-             <span class="absolute bottom-2 left-0 w-full text-center text-[10px] uppercase">Wait</span>
-          </div>
-        `;
-
-        document.getElementById('courseBreakdown').innerHTML = Object.entries(courses).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-400 truncate w-32">${k}</span>
-            <div class="flex-1 mx-2 h-1.5 bg-dark-900 rounded-full overflow-hidden"><div class="h-full bg-indigo-500" style="width:${(v/data.length)*100}%"></div></div>
-            <span class="text-white font-bold w-6 text-right">${v}</span>
-          </div>
-        `).join('');
-      });
+      document.getElementById('chartBtn').addEventListener('click', showCharts);
       document.getElementById('closeChartBtn').addEventListener('click', () => toggleModal('chartModal', false));
-      
+
       // Reset
       document.getElementById('resetBtn').addEventListener('click', () => toggleModal('pwModal', true));
       document.getElementById('cancelPwBtn').addEventListener('click', () => toggleModal('pwModal', false));
       document.getElementById('confirmPwBtn').addEventListener('click', () => {
-         if(document.getElementById('pwInput').value === RESET_PASSWORD) {
-           localStorage.clear();
-           location.reload();
-         } else showToast('Error', 'Wrong Password', '❌');
+        if (document.getElementById('pwInput').value === RESET_PASSWORD) {
+          localStorage.clear();
+          location.reload();
+        } else {
+          showToast('Error', 'Wrong Password', '❌');
+        }
       });
 
-      // Import
-      document.getElementById('importBtn').addEventListener('click', () => toggleModal('importModal', true));
-      document.getElementById('cancelImportBtn').addEventListener('click', () => toggleModal('importModal', false));
-      document.getElementById('confirmImportBtn').addEventListener('click', () => {
-        const f = document.getElementById('importFile').files[0];
-        if(f) {
-          const reader = new FileReader();
-          reader.onload = e => {
-             const rows = e.target.result.split('\n').slice(1).filter(x=>x.trim());
-             const newData = rows.map(r => {
-               const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x => x.replace(/^"|"$/g, '').replace(/""/g, '"'));
-               return { id: uid(), date:c[0], time:c[1], childName:c[2], course:c[3], buyOrNot:c[4], revenue:c[5], note:c[6], crm:c[7] };
-             });
-             const current = loadData();
-             saveData([...current, ...newData]);
-             refresh();
-             toggleModal('importModal', false);
-             showToast('Imported', `${newData.length} records added`);
-          };
-          reader.readAsText(f);
+      // Refresh button
+      document.getElementById('refreshBtn').addEventListener('click', () => {
+        refresh();
+        showToast('Refreshed');
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          document.getElementById('searchInput').focus();
+        }
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.fixed.z-50').forEach(m => m.classList.add('hidden'));
+          document.getElementById('modalBackdrop').classList.add('hidden');
         }
       });
     });
   </script>
 </body>
 </html>
-```
