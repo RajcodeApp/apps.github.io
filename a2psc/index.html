@@ -1,16 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Raj Sales Tracker Pro</title>
-  <meta name="theme-color" content="#0f172a">
+  <title>Mi Raj Sales Intelligence</title>
+  <meta name="theme-color" content="#0B0F19">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -19,31 +21,26 @@
         extend: {
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            dark: {
-              900: '#0B0F19',
-              800: '#111827',
-              700: '#1F2937',
-            },
-            accent: {
-              gold: '#FBBF24',
-              goldDim: '#B45309',
-            }
+            background: '#050505',
+            surface: '#0F1115',
+            surfaceHighlight: '#1A1D24',
+            primary: '#F59E0B', // Amber
+            secondary: '#6366F1', // Indigo
           },
           animation: {
-            'blob': 'blob 7s infinite',
-            'fade-in': 'fadeIn 0.3s ease-out',
+            'fade-in': 'fadeIn 0.4s ease-out forwards',
+            'slide-up': 'slideUp 0.4s ease-out forwards',
           },
           keyframes: {
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
             fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             }
           }
@@ -53,115 +50,113 @@
   </script>
 
   <style>
-    /* Custom Scrollbar */
+    /* Global Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-    /* Background Mesh */
-    .mesh-bg {
-      background-color: #0B0F19;
+    body {
+      background-color: #050505;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), 
+        radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.05), transparent 25%);
       min-height: 100vh;
     }
 
     /* Glass Components */
-    .glass-panel {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    .glass {
+      background: rgba(20, 22, 27, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-    .input-field {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
+    .glass-high {
+      background: rgba(30, 33, 40, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .input-field:focus {
+
+    /* Form Inputs */
+    .input-modern {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+    .input-modern:focus {
       background: rgba(0, 0, 0, 0.5);
-      border-color: #FBBF24;
-      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3);
       outline: none;
     }
 
-    /* Loader */
-    .loading-bar {
-      height: 3px;
-      width: 100%;
-      background: linear-gradient(90deg, transparent, #FBBF24, transparent);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      display: none;
+    /* Table Specifics */
+    .table-row-hover:hover {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
     }
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    
+    /* Line Clamp for Notes */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   </style>
 </head>
-<body class="mesh-bg text-slate-300 font-sans antialiased selection:bg-accent-gold selection:text-black">
+<body class="text-slate-400 font-sans antialiased selection:bg-primary selection:text-black">
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden transform transition-all duration-300 translate-y-10 opacity-0">
-    <div class="glass-panel rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-emerald-500">
-      <div class="bg-emerald-500/20 p-2 rounded-full text-emerald-400">
-        <span id="toastIcon" class="text-lg"></span>
+  <div id="toast" class="fixed bottom-8 right-8 z-50 hidden transform transition-all duration-500 translate-y-10 opacity-0">
+    <div class="glass rounded-xl p-4 flex items-center gap-4 shadow-2xl border-l-4 border-emerald-500 bg-[#0F1115]">
+      <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+        <span id="toastIcon" class="text-xl">✅</span>
       </div>
       <div>
-        <h4 id="toastTitle" class="text-sm font-bold text-white">Success</h4>
-        <p id="toastMessage" class="text-xs text-slate-400">Action completed.</p>
+        <h4 id="toastTitle" class="text-sm font-bold text-white">Notification</h4>
+        <p id="toastMessage" class="text-xs text-slate-400 mt-0.5">Message here.</p>
       </div>
     </div>
   </div>
 
   <!-- Navbar -->
-  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#0B0F19]/80 backdrop-blur-xl">
-    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+  <nav class="fixed w-full top-0 z-40 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl">
+    <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 text-black font-bold text-xl tracking-tighter">MR</div>
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/10 text-black font-bold text-lg">M</div>
           <div>
-            <h1 class="text-white font-bold text-lg tracking-tight leading-none">Mi Raj <span class="text-amber-400 font-light">Tracker</span></h1>
-            <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Sales Intelligence Pro</p>
+            <h1 class="text-white font-bold text-base tracking-tight">Mi Raj <span class="text-amber-500">Tracker</span></h1>
           </div>
         </div>
 
-        <!-- Top Actions -->
+        <!-- Right Actions -->
         <div class="flex items-center gap-3">
-          <button id="shortcutsBtn" class="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors" title="Shortcuts">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-          </button>
-          
           <div class="relative group">
-            <button id="menuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-sm font-medium text-white transition-all">
-              <span>Menu</span>
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <button id="menuBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-medium text-white transition-all">
+              <span>Menu Actions</span>
+              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             
             <!-- Dropdown -->
-            <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden transform origin-top-right transition-all z-50">
-              <button id="importBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg> Import CSV
+            <div id="menu" class="absolute right-0 mt-2 w-56 glass rounded-xl shadow-2xl py-2 hidden transform origin-top-right transition-all z-50 bg-[#0F1115]">
+              <button id="importBtn" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors">
+                <span class="text-blue-400">📥</span> Import CSV
               </button>
-              <button id="exportAllBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export All
+              <button id="exportAllBtn" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors">
+                <span class="text-emerald-400">📤</span> Export All Data
               </button>
-              <button id="targetBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Set Target
+              <button id="targetBtn" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors">
+                <span class="text-amber-400">🎯</span> Set Monthly Target
               </button>
-              <button id="chartBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg> Analytics
+              <button id="chartBtn" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors">
+                <span class="text-purple-400">📊</span> Analytics Dashboard
               </button>
-              <div class="h-px bg-white/10 my-1"></div>
-              <button id="resetBtn" class="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> Reset Data
+              <div class="h-px bg-white/5 my-1"></div>
+              <button id="resetBtn" class="w-full text-left px-4 py-2.5 text-xs text-rose-500 hover:bg-rose-500/10 flex items-center gap-3 transition-colors">
+                <span>💥</span> Factory Reset
               </button>
             </div>
           </div>
@@ -170,369 +165,331 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Main Layout -->
+  <main class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16">
     
-    <!-- Target Progress (Conditional) -->
-    <div id="targetSection" class="hidden mb-8 animate-fade-in">
-      <div class="glass-panel rounded-2xl p-1 relative overflow-hidden group">
-        <!-- Animated glow background -->
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-amber-500/10 via-transparent to-emerald-500/10 opacity-50"></div>
-        
-        <div class="bg-dark-800/50 rounded-xl p-5 relative z-10">
-          <div class="flex items-end justify-between mb-3">
-            <div>
-              <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Monthly Goal</h3>
-              <div class="flex items-baseline gap-3 mt-1">
-                <span id="targetCurrent" class="text-2xl font-bold text-white">Rp 0</span>
-                <span class="text-sm text-slate-500">of <span id="targetDesc" class="text-slate-400">Rp 0</span></span>
-              </div>
-            </div>
-            <div class="text-right">
-              <span id="targetPercent" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">0%</span>
-              <button id="editTargetBtn" class="block ml-auto mt-1 text-xs text-slate-500 hover:text-amber-400 underline decoration-dotted">Change</button>
-            </div>
-          </div>
-          
-          <div class="h-4 bg-dark-900 rounded-full overflow-hidden border border-white/5 relative">
-            <div id="targetProgress" class="h-full bg-gradient-to-r from-amber-400 to-orange-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(245,158,11,0.5)] relative" style="width: 0%">
-              <div class="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]"></div>
-            </div>
-          </div>
-          
-          <div class="flex justify-between mt-3 text-xs font-medium">
-            <span class="text-slate-500">Remaining: <span id="targetRemaining" class="text-emerald-400">Rp 0</span></span>
-            <span class="text-amber-500">Keep Pushing! 🚀</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <!-- Card 1: Revenue (Most Important) -->
-      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
-        <div class="relative z-10">
-          <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">Total Revenue</p>
-          <h3 id="statRevenue" class="text-2xl xl:text-3xl font-bold text-white tracking-tight">Rp 0</h3>
-          <p id="statRevChange" class="text-xs mt-2 font-medium text-slate-500 flex items-center gap-1">
-            <span>-</span> vs prev month
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 2: Sales & Conversion -->
-      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-300">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
-        <div class="grid grid-cols-2 gap-4 relative z-10 h-full">
-          <div>
-            <p class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-1">Sales</p>
-            <h3 id="statSales" class="text-2xl font-bold text-white">0</h3>
-            <p id="statSalesChange" class="text-[10px] text-slate-500 mt-1">-</p>
-          </div>
-          <div class="text-right border-l border-white/10 pl-4">
-             <p class="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1">Conv.</p>
-             <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
-             <p id="statConvChange" class="text-[10px] text-slate-500 mt-1">0/0</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3: Bonus & Level -->
-      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-pink-500/30 transition-all duration-300">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-pink-500/20 rounded-full blur-2xl group-hover:bg-pink-500/30 transition-all"></div>
-        <div class="relative z-10">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="text-xs font-semibold text-pink-400 uppercase tracking-wider mb-1">Est. Bonus</p>
-              <h3 id="statBonus" class="text-2xl font-bold text-white">Rp 0</h3>
-            </div>
-            <span id="bonusLevel" class="bg-slate-700/50 text-slate-300 text-[10px] px-2 py-1 rounded-md font-bold border border-white/10">Lvl 1</span>
-          </div>
-          <div class="w-full bg-dark-900/50 h-1.5 rounded-full mt-4 overflow-hidden">
-            <div id="bonusBar" class="h-full bg-pink-500 w-0 transition-all duration-500"></div>
-          </div>
-          <p class="text-[10px] text-slate-500 mt-2 flex justify-between">
-            <span>Rate: <span id="bonusPercent" class="text-slate-300">0%</span></span>
-            <span>TC Salary: <span id="statTcSalary" class="text-cyan-400">Rp 0</span></span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 4: Operational (TC/AOV/Pending) -->
-      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
-        <div class="flex justify-between items-center">
-          <div>
-            <p class="text-[10px] text-slate-500 font-bold uppercase">Total TC</p>
-            <p id="statTcTotal" class="text-lg font-bold text-white">0</p>
-          </div>
-           <div class="text-right">
-            <p class="text-[10px] text-slate-500 font-bold uppercase">Pending</p>
-            <p id="statPending" class="text-lg font-bold text-amber-400">0</p>
-          </div>
-        </div>
-        <div class="mt-2 pt-2 border-t border-white/5 flex justify-between items-center">
-          <span class="text-[10px] text-slate-500">AOV</span>
-          <span id="statAov" class="text-xs font-mono text-purple-400">Rp 0</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Workspace Area (Filter + Form + Table) -->
-    <div class="grid lg:grid-cols-4 gap-6 h-full">
+    <!-- 1. Stats Overview (Top) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-slide-up" style="animation-delay: 0.1s;">
       
-      <!-- Left Panel: Filters & Form -->
-      <div class="lg:col-span-1 flex flex-col gap-6">
-        
-        <!-- Filters -->
-        <div class="glass-panel rounded-2xl p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-white flex items-center gap-2">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-              Filters
-            </h3>
-            <button id="refreshBtn" class="text-slate-500 hover:text-amber-400 transition-colors p-1">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            </button>
+      <!-- Revenue Card -->
+      <div class="glass rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+        <div class="relative z-10">
+          <div class="flex justify-between items-start mb-2">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Revenue</p>
+            <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/10">Net</span>
           </div>
-
-          <div class="space-y-3">
-            <div class="relative">
-              <svg class="w-4 h-4 absolute left-3 top-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              <input id="searchInput" type="text" placeholder="Search name, course..." class="w-full bg-dark-900/50 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-slate-600 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <select id="monthSelector" class="bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none"></select>
-              <select id="periodFilter" class="bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
-                <option value="">All Period</option>
-                <option value="P1">P1 (1-15)</option>
-                <option value="P2">P2 (16-31)</option>
-              </select>
-            </div>
-
-            <select id="statusFilter" class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
-              <option value="">All Statuses</option>
-              <option value="Buy">✅ Buy</option>
-              <option value="Not">❌ Not Buy</option>
-              <option value="Pending">⏳ Pending</option>
-            </select>
-            
-             <select id="courseFilter" class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
-              <option value="">All Courses</option>
-            </select>
-
-            <div class="pt-2 border-t border-white/5 flex justify-between items-center">
-               <span id="recordCount" class="text-[10px] text-slate-500 font-mono">0 records</span>
-               <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-medium">Export CSV</button>
-            </div>
+          <h3 id="statRevenue" class="text-2xl lg:text-3xl font-bold text-white tracking-tight">Rp 0</h3>
+          <div class="mt-3 flex items-center gap-2">
+             <div id="statRevChange" class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/5 text-slate-400">vs prev month</div>
           </div>
         </div>
-
-        <!-- Entry Form -->
-        <div class="glass-panel rounded-2xl p-5 flex-1">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-white flex items-center gap-2">
-              <span id="formTitleIcon" class="text-amber-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-              </span>
-              <span id="formTitle">New Record</span>
-            </h3>
-            <button id="clearFormBtn" class="text-xs text-slate-500 hover:text-white transition-colors">Clear</button>
-          </div>
-
-          <form id="entryForm" class="space-y-3">
-            <input type="hidden" id="editingId">
-            
-            <div class="grid grid-cols-2 gap-2">
-               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Date</label>
-                 <input id="date" type="date" required class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
-               </div>
-               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Time</label>
-                 <input id="time" type="time" class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
-               </div>
-            </div>
-
-            <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Student Name</label>
-               <input id="childName" type="text" placeholder="Full Name" class="w-full input-field rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600">
-            </div>
-
-             <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">CRM Link</label>
-               <input id="crm" type="url" placeholder="https://..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-blue-400 placeholder-slate-700">
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Course</label>
-                 <select id="course" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">Select...</option>
-                    <option value="Coding Knight">Coding Knight</option>
-                    <option value="Digital Literasi">Digital Literasi</option>
-                    <option value="Visual Programming">Visual Programming</option>
-                    <option value="Graphic Design Junior">Graphic Design Junior</option>
-                    <option value="Graphic Design Senior">Graphic Design Senior</option>
-                    <option value="Game Design">Game Design</option>
-                    <option value="Python Start">Python Start</option>
-                    <option value="Python Pro">Python Pro</option>
-                    <option value="Math Explorers">Math Explorers</option>
-                    <option value="Math Masters">Math Masters</option>
-                    <option value="Course AI">Course AI</option>
-                    <option value="Math Tutoring">Math Tutoring</option>
-                 </select>
-               </div>
-               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Status</label>
-                 <select id="buyOrNot" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">Select...</option>
-                   <option value="Buy">✅ Buy</option>
-                   <option value="Not">❌ Not Buy</option>
-                   <option value="Pending">⏳ Pending</option>
-                 </select>
-               </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Revenue</label>
-                 <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg px-3 py-2 text-xs text-emerald-400 font-mono placeholder-slate-700">
-               </div>
-               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Layer</label>
-                 <select id="layer" class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
-                   <option value="">-</option>
-                   <option value="TCP">TCP</option>
-                   <option value="ND">ND</option>
-                   <option value="PP">PP</option>
-                   <option value="Other">Other</option>
-                 </select>
-               </div>
-            </div>
-
-            <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Note</label>
-               <textarea id="note" rows="2" placeholder="Additional info..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
-            </div>
-
-             <!-- Hidden Fields for advanced logic if needed -->
-             <input id="paymentDate" type="date" class="hidden">
-
-            <div class="pt-2 flex gap-2">
-              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-orange-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-sm">
-                Save Record
-              </button>
-              <button type="button" id="duplicateBtn" class="hidden px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors" title="Duplicate">
-                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-              </button>
-            </div>
-          </form>
-        </div>
-
       </div>
 
-      <!-- Right Panel: Table -->
-      <div class="lg:col-span-3 flex flex-col h-full">
-        <div class="glass-panel rounded-2xl flex-1 flex flex-col overflow-hidden">
-          <!-- Table Header Actions -->
-          <div class="p-4 border-b border-white/5 flex justify-between items-center bg-dark-800/30">
-            <div class="flex items-center gap-2">
-              <span id="selectedMonth" class="text-sm font-bold text-amber-400"></span>
-              <span id="selectedPeriod" class="text-xs font-medium text-slate-500 bg-white/5 px-2 py-0.5 rounded"></span>
+      <!-- Performance Card -->
+      <div class="glass rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition-all duration-500"></div>
+        <div class="relative z-10">
+           <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Conversion</p>
+           <div class="flex items-baseline gap-3">
+             <h3 id="statConversion" class="text-3xl font-bold text-white">0%</h3>
+             <span class="text-xs text-slate-400">from <span id="statTcTotal" class="text-white font-bold">0</span> TCs</span>
+           </div>
+           <div class="mt-3 grid grid-cols-2 gap-2">
+             <div class="bg-white/5 rounded p-1.5 text-center">
+               <div class="text-[10px] text-slate-500">Sales</div>
+               <div id="statSales" class="text-sm font-bold text-blue-400">0</div>
+             </div>
+             <div class="bg-white/5 rounded p-1.5 text-center">
+               <div class="text-[10px] text-slate-500">Pending</div>
+               <div id="statPending" class="text-sm font-bold text-amber-400">0</div>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- Bonus Estimator -->
+      <div class="glass rounded-2xl p-5 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-pink-500/20 transition-all duration-500"></div>
+        <div class="relative z-10">
+          <div class="flex justify-between items-start mb-1">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Estimated Bonus</p>
+            <span id="bonusLevel" class="text-[10px] font-bold bg-gradient-to-r from-purple-500 to-pink-600 text-white px-2 py-0.5 rounded shadow-lg shadow-purple-500/20">Lvl 1</span>
+          </div>
+          <h3 id="statBonus" class="text-2xl font-bold text-white mt-1">Rp 0</h3>
+          
+          <div class="w-full bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
+            <div id="bonusBar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 w-0 transition-all duration-1000 ease-out"></div>
+          </div>
+          <div class="flex justify-between mt-2 text-[10px]">
+             <span class="text-slate-500">Rate: <span id="bonusPercent" class="text-white">0%</span></span>
+             <span class="text-slate-500">TC Salary: <span id="statTcSalary" class="text-white">Rp 0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Target Progress -->
+      <div id="targetSection" class="glass rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500 opacity-50"></div>
+        <div>
+          <div class="flex justify-between items-end mb-1">
+             <p class="text-[10px] font-bold uppercase tracking-widest text-amber-500">Monthly Goal</p>
+             <p id="targetPercent" class="text-xl font-bold text-white">0%</p>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <h3 id="targetCurrent" class="text-lg font-bold text-slate-300">Rp 0</h3>
+            <span class="text-xs text-slate-600">/ <span id="targetDesc">Rp 0</span></span>
+          </div>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full mt-3 overflow-hidden relative">
+           <div id="targetProgress" class="h-full bg-amber-500 rounded-full relative transition-all duration-1000" style="width: 0%">
+             <div class="absolute inset-0 bg-white/30 w-full h-full animate-[shimmer_2s_infinite]"></div>
+           </div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 text-right">To go: <span id="targetRemaining" class="text-white">Rp 0</span></p>
+      </div>
+    </div>
+
+    <!-- 2. Workspace Split (Left: Form/Filter, Right: Table) -->
+    <div class="grid lg:grid-cols-12 gap-6 h-full animate-slide-up" style="animation-delay: 0.2s;">
+      
+      <!-- LEFT PANEL (Sticky) -->
+      <div class="lg:col-span-3 flex flex-col gap-5 h-full">
+        <div class="sticky top-24 space-y-5">
+          
+          <!-- Entry Form -->
+          <div class="glass rounded-2xl p-5 border-t-4 border-t-amber-500">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <span id="formTitle">New Record</span>
+              </h3>
+              <button id="clearFormBtn" class="text-[10px] text-slate-500 hover:text-white transition-colors uppercase tracking-wider font-bold">Clear</button>
             </div>
-            <button id="bulkDeleteBtn" class="hidden items-center gap-1 px-3 py-1 bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold transition-all">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-              Delete (<span id="selectedCount">0</span>)
+
+            <form id="entryForm" class="space-y-3">
+              <input type="hidden" id="editingId">
+              
+              <!-- Date & Time -->
+              <div class="grid grid-cols-2 gap-2">
+                 <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Date</label>
+                   <input id="date" type="date" required class="w-full input-modern rounded-lg px-3 py-2 text-xs text-white">
+                 </div>
+                 <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Time</label>
+                   <input id="time" type="time" class="w-full input-modern rounded-lg px-3 py-2 text-xs text-white">
+                 </div>
+              </div>
+
+              <!-- Student -->
+              <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-500 font-bold">Student Name</label>
+                 <input id="childName" type="text" placeholder="Name..." class="w-full input-modern rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600">
+              </div>
+
+              <!-- CRM -->
+               <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-500 font-bold">CRM Link</label>
+                 <input id="crm" type="url" placeholder="https://..." class="w-full input-modern rounded-lg px-3 py-2 text-xs text-blue-400 placeholder-slate-700">
+              </div>
+
+              <!-- Course & Status -->
+              <div class="grid grid-cols-2 gap-2">
+                 <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Course</label>
+                   <select id="course" required class="w-full input-modern rounded-lg px-2 py-2 text-xs text-white">
+                     <option value="">Select...</option>
+                      <option value="Coding Knight">Coding Knight</option>
+                      <option value="Digital Literasi">Digital Literasi</option>
+                      <option value="Visual Programming">Visual Programming</option>
+                      <option value="Graphic Design Junior">GD Junior</option>
+                      <option value="Graphic Design Senior">GD Senior</option>
+                      <option value="Game Design">Game Design</option>
+                      <option value="Python Start">Python Start</option>
+                      <option value="Python Pro">Python Pro</option>
+                      <option value="Math Explorers">Math Exp.</option>
+                      <option value="Math Masters">Math Masters</option>
+                      <option value="Course AI">Course AI</option>
+                      <option value="Math Tutoring">Math Tutor</option>
+                   </select>
+                 </div>
+                 <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Status</label>
+                   <select id="buyOrNot" required class="w-full input-modern rounded-lg px-2 py-2 text-xs text-white">
+                     <option value="">Select...</option>
+                     <option value="Buy">✅ Buy</option>
+                     <option value="Not">❌ Not Buy</option>
+                     <option value="Pending">⏳ Pending</option>
+                   </select>
+                 </div>
+              </div>
+
+              <!-- Revenue & Layer -->
+              <div class="grid grid-cols-2 gap-2">
+                <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Revenue</label>
+                   <input id="revenue" type="number" placeholder="0" class="w-full input-modern rounded-lg px-3 py-2 text-xs text-emerald-400 font-mono placeholder-slate-700">
+                 </div>
+                 <div class="space-y-1">
+                   <label class="text-[10px] uppercase text-slate-500 font-bold">Layer</label>
+                   <select id="layer" class="w-full input-modern rounded-lg px-2 py-2 text-xs text-white">
+                     <option value="">-</option>
+                     <option value="TCP">TCP</option>
+                     <option value="ND">ND</option>
+                     <option value="PP">PP</option>
+                     <option value="Other">Other</option>
+                   </select>
+                 </div>
+              </div>
+
+              <!-- Notes -->
+              <div class="space-y-1">
+                 <label class="text-[10px] uppercase text-slate-500 font-bold">Notes</label>
+                 <textarea id="note" rows="3" placeholder="Add details here..." class="w-full input-modern rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
+              </div>
+
+              <div class="pt-2 flex gap-2">
+                <button type="submit" class="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-0.5 text-sm">
+                  Save
+                </button>
+                <button type="button" id="duplicateBtn" class="hidden px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors" title="Duplicate">
+                   📋
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Filters Mini -->
+          <div class="glass rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-400 text-xs uppercase tracking-wider">Filters</h3>
+              <button id="refreshBtn" class="text-amber-500 hover:text-amber-400 text-xs font-bold">Refresh</button>
+            </div>
+            <div class="space-y-2.5">
+              <input id="searchInput" type="text" placeholder="Search..." class="w-full input-modern rounded-lg px-3 py-2 text-xs text-white">
+              <div class="grid grid-cols-2 gap-2">
+                <select id="monthSelector" class="input-modern rounded-lg px-2 py-2 text-xs text-slate-300"></select>
+                <select id="periodFilter" class="input-modern rounded-lg px-2 py-2 text-xs text-slate-300">
+                  <option value="">All Time</option>
+                  <option value="P1">P1 (1-15)</option>
+                  <option value="P2">P2 (16-31)</option>
+                </select>
+              </div>
+              <select id="courseFilter" class="w-full input-modern rounded-lg px-2 py-2 text-xs text-slate-300">
+                <option value="">All Courses</option>
+              </select>
+              <div class="flex justify-between text-[10px] text-slate-500 pt-1">
+                <span id="recordCount">0 records</span>
+                <button id="exportCurrentBtn" class="hover:text-white">Exp. CSV</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL (Table) -->
+      <div class="lg:col-span-9 flex flex-col h-full min-h-[600px]">
+        <div class="glass rounded-2xl flex-1 flex flex-col overflow-hidden relative">
+          
+          <!-- Table Header & Bulk Actions -->
+          <div class="p-4 border-b border-white/5 flex justify-between items-center bg-[#0F1115]/50">
+            <div class="flex items-center gap-3">
+               <h2 class="text-white font-bold text-sm">Data Log</h2>
+               <div class="h-4 w-px bg-white/10"></div>
+               <span id="selectedMonth" class="text-xs text-amber-500 font-mono"></span>
+            </div>
+            <button id="bulkDeleteBtn" class="hidden items-center gap-2 px-3 py-1 bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold transition-all">
+              Delete Selected (<span id="selectedCount">0</span>)
             </button>
           </div>
 
-          <!-- Actual Table -->
-          <div class="overflow-auto flex-1 relative">
+          <!-- Table Container -->
+          <div class="overflow-auto flex-1 w-full">
              <!-- Empty State -->
-            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
+            <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 bg-[#0B0F19]/80 backdrop-blur-sm">
               <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-                <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="text-3xl">📭</span>
               </div>
-              <h3 class="text-slate-300 font-bold mb-1">No Data Found</h3>
-              <p class="text-slate-500 text-sm">Try adjusting filters or add a new record.</p>
+              <h3 class="text-slate-300 font-bold mb-1">No Records Found</h3>
+              <p class="text-slate-500 text-xs max-w-xs mx-auto">Try adjusting your filters or use the form on the left to add new data.</p>
             </div>
 
             <table class="w-full text-left border-collapse">
-              <thead class="bg-dark-900/50 text-xs text-slate-500 uppercase sticky top-0 z-20 backdrop-blur-md">
+              <thead class="bg-[#0F1115] text-[10px] text-slate-500 uppercase font-bold tracking-wider sticky top-0 z-20 shadow-sm">
                 <tr>
-                  <th class="p-4 w-10"><input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent focus:ring-amber-500 text-amber-500"></th>
-                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="date">Date ↕</th>
-                  <th class="p-4 font-semibold">Student</th>
-                  <th class="p-4 font-semibold">Course</th>
-                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="buyOrNot">Status ↕</th>
-                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="revenue">Revenue ↕</th>
-                  <th class="p-4 text-right">Actions</th>
+                  <th class="p-4 w-10"><input type="checkbox" id="selectAll" class="rounded border-slate-700 bg-transparent text-amber-500 focus:ring-0 cursor-pointer"></th>
+                  <th class="p-4 cursor-pointer hover:text-white transition-colors" data-sort="date">Date ↕</th>
+                  <th class="p-4">Student / CRM</th>
+                  <th class="p-4">Course</th>
+                  <th class="p-4 cursor-pointer hover:text-white transition-colors" data-sort="buyOrNot">Status ↕</th>
+                  <th class="p-4 cursor-pointer hover:text-white transition-colors" data-sort="revenue">Revenue ↕</th>
+                  <!-- KOLOM NOTES BARU -->
+                  <th class="p-4 w-1/5">Notes</th> 
+                  <th class="p-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="tbody" class="text-sm text-slate-300 divide-y divide-white/5">
-                <!-- Rows will be injected here -->
+                <!-- JS will inject rows here -->
               </tbody>
             </table>
           </div>
         </div>
       </div>
+
     </div>
   </main>
 
-  <!-- MODALS (Hidden by default) -->
+  <!-- MODALS -->
   
-  <!-- Overlay Backdrop -->
+  <!-- Backdrop -->
   <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity"></div>
 
   <!-- Chart Modal -->
-  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-4xl bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-      <div class="p-5 border-b border-white/5 flex justify-between items-center">
-        <h3 class="text-lg font-bold text-white">Analytics Dashboard</h3>
+  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-[#0F1115] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up">
+      <div class="p-5 border-b border-white/5 flex justify-between items-center bg-[#15181E]">
+        <h3 class="text-white font-bold">Analytics Dashboard</h3>
         <button id="closeChartBtn" class="text-slate-500 hover:text-white">✕</button>
       </div>
       <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-         <div class="glass-panel p-4 rounded-xl">
-           <h4 class="text-xs font-bold text-slate-500 uppercase mb-4">Status Distribution</h4>
-           <div id="statusChart" class="h-40"></div>
+         <div class="glass p-5 rounded-xl border border-white/5">
+           <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">Status Distribution</h4>
+           <div id="statusChart" class="h-40 flex items-end gap-2 px-2"></div>
          </div>
-         <div class="glass-panel p-4 rounded-xl">
-           <h4 class="text-xs font-bold text-slate-500 uppercase mb-4">Monthly Trend (Conv %)</h4>
-           <div id="trendChart" class="h-40 space-y-2"></div>
-         </div>
-         <div class="glass-panel p-4 rounded-xl md:col-span-2">
-           <h4 class="text-xs font-bold text-slate-500 uppercase mb-4">Course Popularity</h4>
-           <div id="courseBreakdown" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2"></div>
+         <div class="glass p-5 rounded-xl border border-white/5 md:col-span-2">
+           <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest">Course Popularity</h4>
+           <div id="courseBreakdown" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3"></div>
          </div>
       </div>
     </div>
   </div>
 
   <!-- Target Modal -->
-  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-amber-500/30 rounded-2xl shadow-2xl p-6">
-       <h3 class="text-lg font-bold text-white mb-4">🎯 Set Monthly Target</h3>
-       <label class="block text-xs text-slate-500 mb-2">Revenue Target (IDR)</label>
-       <input id="targetInput" type="number" class="w-full bg-dark-900 border border-white/10 rounded-lg p-3 text-xl font-bold text-white focus:border-amber-500 outline-none mb-6" placeholder="50000000">
+  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0F1115] border border-amber-500/30 rounded-2xl shadow-2xl p-6 animate-slide-up">
+       <h3 class="text-lg font-bold text-white mb-1">🎯 Monthly Target</h3>
+       <p class="text-xs text-slate-500 mb-4">Set your revenue goal for the selected month.</p>
+       
+       <div class="relative mb-6">
+         <span class="absolute left-3 top-3 text-slate-500 font-mono">Rp</span>
+         <input id="targetInput" type="number" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 pl-10 text-xl font-bold text-white focus:border-amber-500 outline-none" placeholder="50000000">
+       </div>
+       
        <div class="flex justify-end gap-3">
          <button id="cancelTargetBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
-         <button id="saveTargetBtn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm">Save Target</button>
+         <button id="saveTargetBtn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm shadow-lg shadow-amber-500/20">Save Target</button>
        </div>
     </div>
   </div>
 
-  <!-- Password Modal (Reset) -->
-  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-sm bg-[#0F172A] border border-rose-500/30 rounded-2xl shadow-2xl p-6">
-      <div class="flex items-center gap-3 mb-4 text-rose-500">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-        <h3 class="text-lg font-bold text-white">Factory Reset</h3>
-      </div>
-       <p class="text-sm text-slate-400 mb-4">This will permanently delete ALL data. Enter password to confirm.</p>
-       <input id="pwInput" type="password" class="w-full bg-dark-900 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-6" placeholder="Password...">
+  <!-- Reset Password Modal -->
+  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-[#0F1115] border border-rose-500/30 rounded-2xl shadow-2xl p-6 animate-slide-up">
+       <div class="w-12 h-12 bg-rose-500/10 rounded-full flex items-center justify-center mb-4 text-rose-500 text-xl">⚠️</div>
+       <h3 class="text-lg font-bold text-white">Factory Reset</h3>
+       <p class="text-xs text-slate-400 mb-4">This will permanently delete ALL data. Enter password to confirm.</p>
+       <input id="pwInput" type="password" class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-6" placeholder="Password...">
        <div class="flex justify-end gap-3">
          <button id="cancelPwBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
          <button id="confirmPwBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-sm">NUKE IT 💥</button>
@@ -541,14 +498,14 @@
   </div>
 
   <!-- Import Modal -->
-  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-6">
-       <h3 class="text-lg font-bold text-white mb-2">📥 Import CSV</h3>
-       <p class="text-xs text-slate-400 mb-4">Upload a standard CSV file generated by this app.</p>
-       <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-amber-500/50 transition-colors cursor-pointer relative">
+  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0F1115] border border-white/10 rounded-2xl shadow-2xl p-6 animate-slide-up">
+       <h3 class="text-lg font-bold text-white mb-2">📥 Import Data</h3>
+       <p class="text-xs text-slate-400 mb-4">Upload a CSV file generated by this app.</p>
+       <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-blue-500/50 hover:bg-blue-500/5 transition-all cursor-pointer relative">
          <input type="file" id="importFile" accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-         <svg class="w-8 h-8 mx-auto text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-         <span class="text-sm text-amber-500 font-medium">Click to upload</span>
+         <div class="text-3xl mb-2">📄</div>
+         <span class="text-sm text-blue-400 font-medium">Click or Drag CSV Here</span>
        </div>
        <div class="flex justify-end gap-3 mt-6">
          <button id="cancelImportBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
@@ -557,52 +514,12 @@
     </div>
   </div>
 
-  <!-- Shortcuts Modal -->
-  <div id="shortcutsModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-2xl bg-[#0F172A]/95 backdrop-blur border border-white/10 rounded-2xl shadow-2xl p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-bold text-white">Keyboard Shortcuts</h3>
-        <button id="closeShortcutsBtn" class="text-slate-500 hover:text-white">✕</button>
-      </div>
-      <div class="grid grid-cols-2 gap-6">
-        <div class="space-y-3">
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">New Record</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-amber-500 font-mono border border-white/10">Ctrl + N</kbd>
-           </div>
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">Search</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-amber-500 font-mono border border-white/10">Ctrl + K</kbd>
-           </div>
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">Export CSV</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-amber-500 font-mono border border-white/10">Ctrl + E</kbd>
-           </div>
-        </div>
-        <div class="space-y-3">
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">Refresh Data</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-amber-500 font-mono border border-white/10">Ctrl + R</kbd>
-           </div>
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">Open Analytics</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-amber-500 font-mono border border-white/10">Ctrl + G</kbd>
-           </div>
-           <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
-             <span class="text-sm text-slate-300">Close Modals</span>
-             <kbd class="bg-dark-900 px-2 py-1 rounded text-xs text-slate-400 font-mono border border-white/10">Esc</kbd>
-           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN LOGIC SCRIPT -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // --- KONFIGURASI & UTILS ---
-    const STORAGE_KEY = 'mrj_sales_data';
-    const TARGET_KEY = 'mrj_target';
-    const RESET_PASSWORD = 'resetozeromrj';
+    // --- CONFIGURATION ---
+    const STORAGE_KEY = 'mrj_sales_data_v2';
+    const TARGET_KEY = 'mrj_target_v2';
+    const RESET_PASSWORD = 'reset'; // Simple password
     const DOLLAR_RATE = 16000;
     const SALES_COMMISSION_USD = 2.5;
 
@@ -613,620 +530,428 @@
       'Course AI', 'Math Tutoring'
     ];
 
+    // Helper Utils
     function uid() { return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9); }
-
-    function showToast(title, message = '', icon = '✅', ms = 3000) {
-      const toast = document.getElementById('toast');
-      const toastTitle = document.getElementById('toastTitle');
-      const toastMessage = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
-      
-      toastTitle.textContent = title;
-      toastMessage.textContent = message;
-      toastIcon.textContent = icon;
-      
-      toast.classList.remove('hidden');
-      // Animation in
-      setTimeout(() => {
-        toast.classList.remove('translate-y-10', 'opacity-0');
-      }, 10);
-
-      clearTimeout(toast._timer);
-      toast._timer = setTimeout(() => {
-        toast.classList.add('translate-y-10', 'opacity-0');
-        setTimeout(() => toast.classList.add('hidden'), 300);
-      }, ms);
-    }
-
+    
     function formatRp(num) {
       if (num === null || num === undefined || num === '') return 'Rp 0';
-      const n = Number(num) || 0;
-      return new Intl.NumberFormat('id-ID', { 
-        style: 'currency', 
-        currency: 'IDR', 
-        maximumFractionDigits: 0 
-      }).format(n);
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(num));
     }
 
-    function monthKeyFromDateStr(dateStr) {
-      if (!dateStr) {
-        const d = new Date();
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      }
-      return dateStr.slice(0,7);
+    function showToast(title, message = '', icon = '✅') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+      setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => toast.classList.add('hidden'), 500);
+      }, 3000);
     }
 
-    function getPeriodFromDate(dateStr) {
-      if (!dateStr) return '';
-      const day = parseInt(dateStr.split('-')[2]);
-      return day <= 15 ? 'P1' : 'P2';
+    // --- DATA LAYER ---
+    function loadData() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
     }
+    function saveData(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+    function getTarget() { try { return JSON.parse(localStorage.getItem(TARGET_KEY)); } catch { return null; } }
+    function saveTarget(month, val) { localStorage.setItem(TARGET_KEY, JSON.stringify({ month, val })); }
 
-    // --- LOGIKA BISNIS ---
-    function calculateTcSalary(totalTC) {
-      return totalTC * SALES_COMMISSION_USD * DOLLAR_RATE;
-    }
-
-    function calculateBonus(totalRevenue, conversionRatePercent) {
-      if (!conversionRatePercent) return { bonusPercent: 0, bonusAmount: 0, conversion: 0, level: 1, levelName: 'Lvl 1' };
-
-      let bonusPercent = 0;
-      // Logic Tier
-      if (totalRevenue <= 16830000) {
-        if (conversionRatePercent < 30) bonusPercent = 4.5;
-        else if (conversionRatePercent < 40) bonusPercent = 5.0;
-        else if (conversionRatePercent < 50) bonusPercent = 6.0;
-        else bonusPercent = 7.0;
-      } else if (totalRevenue <= 33660000) {
-        if (conversionRatePercent < 30) bonusPercent = 5.5;
-        else if (conversionRatePercent < 40) bonusPercent = 6.0;
-        else if (conversionRatePercent < 50) bonusPercent = 7.0;
-        else bonusPercent = 8.0;
-      } else if (totalRevenue <= 50490000) {
-        if (conversionRatePercent < 30) bonusPercent = 7.0;
-        else if (conversionRatePercent < 40) bonusPercent = 8.0;
-        else if (conversionRatePercent < 50) bonusPercent = 9.0;
-        else bonusPercent = 10.5;
-      } else if (totalRevenue <= 67320000) {
-        if (conversionRatePercent < 30) bonusPercent = 8.5;
-        else if (conversionRatePercent < 40) bonusPercent = 10.0;
-        else if (conversionRatePercent < 50) bonusPercent = 11.5;
-        else bonusPercent = 13.0;
-      } else {
-        if (conversionRatePercent < 30) bonusPercent = 10.5;
-        else if (conversionRatePercent < 40) bonusPercent = 12.0;
-        else if (conversionRatePercent < 50) bonusPercent = 13.5;
-        else bonusPercent = 15.0;
-      }
-      
-      const bonusAmount = totalRevenue * (bonusPercent / 100);
-      
-      let level = 1;
-      let levelName = 'Lvl 1';
-      if (totalRevenue > 67320000) { level = 5; levelName = 'MAX'; }
-      else if (totalRevenue > 50490000) { level = 4; levelName = 'Lvl 4'; }
-      else if (totalRevenue > 33660000) { level = 3; levelName = 'Lvl 3'; }
-      else if (totalRevenue > 16830000) { level = 2; levelName = 'Lvl 2'; }
-      
-      return { bonusPercent, bonusAmount, conversion: conversionRatePercent, level, levelName };
-    }
-
-    // --- DATA MANAGEMENT ---
-    function loadAllData() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      try { return JSON.parse(raw); } catch { return []; }
-    }
-
-    function saveAllData(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-    
-    function addEntry(entry) { const arr = loadAllData(); arr.push(entry); saveAllData(arr); }
-    
-    function updateEntry(id, updated) {
-      const arr = loadAllData();
-      const idx = arr.findIndex(r => r.id === id);
-      if (idx !== -1) { arr[idx] = { ...arr[idx], ...updated }; saveAllData(arr); return true; }
-      return false;
-    }
-
-    function deleteEntry(id) { let arr = loadAllData(); arr = arr.filter(r => r.id !== id); saveAllData(arr); }
-    function bulkDelete(ids) { let arr = loadAllData(); arr = arr.filter(r => !ids.includes(r.id)); saveAllData(arr); }
-
-    function getTarget() { 
-      try { return JSON.parse(localStorage.getItem(TARGET_KEY)); } catch { return null; } 
-    }
-    
-    function saveTarget(monthKey, targetRevenue) {
-      const data = { monthKey, targetRevenue, updatedAt: new Date().toISOString() };
-      localStorage.setItem(TARGET_KEY, JSON.stringify(data));
-    }
-
-    // --- UI UPDATES ---
-    const monthSelector = document.getElementById('monthSelector');
-    const periodFilter = document.getElementById('periodFilter');
-    const tbody = document.getElementById('tbody');
-    const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-    const courseFilter = document.getElementById('courseFilter');
-    const entryForm = document.getElementById('entryForm');
-    const editingIdInput = document.getElementById('editingId');
-
-    let currentSort = { field: 'date', direction: 'desc' };
-    let selectedRows = new Set();
-
-    function updateTargetUI() {
-      const targetData = getTarget();
-      const currentMonth = monthSelector.value;
-      const section = document.getElementById('targetSection');
-      
-      if (!targetData || targetData.monthKey !== currentMonth) {
-        section.classList.add('hidden');
-        return;
-      }
-
-      const data = loadAllData();
+    // --- BUSINESS LOGIC ---
+    function calculateStats(data, currentMonth) {
       const filtered = data.filter(r => r.monthKey === currentMonth);
-      let totalRevenue = filtered.reduce((sum, r) => 
-        String(r.buyOrNot).toLowerCase().includes('buy') ? sum + (Number(r.revenue) || 0) : sum, 0);
+      let tc = filtered.length;
+      let sales = 0, revenue = 0, pending = 0;
       
-      const targetRev = targetData.targetRevenue || 0;
-      const percent = targetRev > 0 ? Math.min((totalRevenue / targetRev) * 100, 100) : 0;
-      const remaining = Math.max(targetRev - totalRevenue, 0);
-
-      section.classList.remove('hidden');
-      document.getElementById('targetDesc').textContent = formatRp(targetRev);
-      document.getElementById('targetProgress').style.width = percent + '%';
-      document.getElementById('targetCurrent').textContent = formatRp(totalRevenue);
-      document.getElementById('targetPercent').textContent = percent.toFixed(1) + '%';
-      document.getElementById('targetRemaining').textContent = formatRp(remaining);
-    }
-
-    function refreshMonthOptions() {
-      const all = loadAllData();
-      const set = new Set(all.map(r => r.monthKey));
-      const now = new Date();
-      set.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
-      const arr = Array.from(set).sort().reverse();
-      const current = monthSelector.value || arr[0] || '';
-      
-      monthSelector.innerHTML = '';
-      arr.forEach(k => {
-        const opt = document.createElement('option');
-        const [y,m] = k.split('-');
-        opt.value = k;
-        opt.textContent = new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-        monthSelector.appendChild(opt);
-      });
-      if (arr.length > 0) monthSelector.value = current && arr.includes(current) ? current : arr[0];
-      updateSelectedMonthLabel();
-    }
-
-    function updateSelectedMonthLabel() {
-      const v = monthSelector.value;
-      const [y,m] = v.split('-');
-      document.getElementById('selectedMonth').textContent = 
-        v ? new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' }) : '';
-      
-      const p = periodFilter.value;
-      document.getElementById('selectedPeriod').textContent = p ? p : '';
-    }
-
-    function refreshCourseFilter() {
-      const all = loadAllData();
-      const courses = new Set(all.map(r => r.course).filter(c => c));
-      const current = courseFilter.value;
-      
-      courseFilter.innerHTML = '<option value="">All Courses</option>';
-      COURSES.forEach(c => {
-        const opt = document.createElement('option'); opt.value = c; opt.textContent = c; courseFilter.appendChild(opt);
-      });
-      Array.from(courses).sort().forEach(c => {
-        if (!COURSES.includes(c)) {
-          const opt = document.createElement('option'); opt.value = c; opt.textContent = c + ' (other)'; courseFilter.appendChild(opt);
-        }
-      });
-      if (current) courseFilter.value = current;
-    }
-
-    function computeStats(filtered, allData) {
-      const tcTotal = filtered.length;
-      let sales = 0, totalRevenue = 0, pending = 0;
-
       filtered.forEach(r => {
-        const status = String(r.buyOrNot || '').toLowerCase();
-        if (status.includes('buy')) { sales++; totalRevenue += Number(r.revenue) || 0; } 
-        else if (status.includes('pending')) { pending++; }
+        const status = (r.buyOrNot || '').toLowerCase();
+        if (status.includes('buy')) { sales++; revenue += Number(r.revenue) || 0; }
+        else if (status.includes('pending')) pending++;
       });
 
-      const conversionRatePercent = tcTotal === 0 ? 0 : (sales / tcTotal) * 100;
-      const aov = sales === 0 ? 0 : (totalRevenue / sales);
-      const tcSalary = calculateTcSalary(tcTotal);
-      const bonusData = calculateBonus(totalRevenue, conversionRatePercent);
-
-      // Prev Month Comparison Logic
-      const currentMonthKey = monthSelector.value;
-      let prevSales = 0, salesChange = 0, revenueChange = 0;
+      const conv = tc ? (sales / tc * 100) : 0;
       
-      if (currentMonthKey) {
-        const [y, m] = currentMonthKey.split('-');
-        const prevMonth = m === '01' ? `${parseInt(y)-1}-12` : `${y}-${String(parseInt(m)-1).padStart(2,'0')}`;
-        const prevData = allData.filter(r => r.monthKey === prevMonth);
-        prevSales = prevData.filter(r => String(r.buyOrNot).toLowerCase().includes('buy')).length;
-        const prevRevenue = prevData.reduce((sum, r) => String(r.buyOrNot).toLowerCase().includes('buy') ? sum + (Number(r.revenue)||0) : sum, 0);
-        
-        salesChange = sales - prevSales;
-        revenueChange = totalRevenue - prevRevenue;
-      }
+      // Bonus Calculation Logic
+      let bonusPct = 0;
+      if (revenue <= 16830000) bonusPct = conv < 30 ? 4.5 : (conv < 40 ? 5.0 : (conv < 50 ? 6.0 : 7.0));
+      else if (revenue <= 33660000) bonusPct = conv < 30 ? 5.5 : (conv < 40 ? 6.0 : (conv < 50 ? 7.0 : 8.0));
+      else if (revenue <= 50490000) bonusPct = conv < 30 ? 7.0 : (conv < 40 ? 8.0 : (conv < 50 ? 9.0 : 10.5));
+      else if (revenue <= 67320000) bonusPct = conv < 30 ? 8.5 : (conv < 40 ? 10.0 : (conv < 50 ? 11.5 : 13.0));
+      else bonusPct = conv < 30 ? 10.5 : (conv < 40 ? 12.0 : (conv < 50 ? 13.5 : 15.0));
+      
+      let lvl = 'Lvl 1';
+      if (revenue > 67320000) lvl = 'MAX';
+      else if (revenue > 50490000) lvl = 'Lvl 4';
+      else if (revenue > 33660000) lvl = 'Lvl 3';
+      else if (revenue > 16830000) lvl = 'Lvl 2';
 
-      return { tcTotal, sales, conversion: conversionRatePercent, aov, totalRevenue, pending, tcSalary, bonusData, salesChange, revenueChange };
+      const tcSalary = tc * SALES_COMMISSION_USD * DOLLAR_RATE;
+      const bonus = revenue * (bonusPct / 100);
+
+      // Prev Month Check
+      const [y, m] = currentMonth.split('-');
+      const prevKey = m === '01' ? `${parseInt(y)-1}-12` : `${y}-${String(parseInt(m)-1).padStart(2,'0')}`;
+      const prevRev = data.filter(r => r.monthKey === prevKey && (r.buyOrNot||'').toLowerCase().includes('buy'))
+                          .reduce((sum, r) => sum + (Number(r.revenue)||0), 0);
+
+      return { tc, sales, pending, revenue, conv, bonus, bonusPct, lvl, tcSalary, prevRev };
     }
 
-    function renderTable() {
-      const data = loadAllData();
-      const selectedMonth = monthSelector.value;
-      const selectedPeriod = periodFilter.value;
-      const q = (searchInput.value || '').toLowerCase().trim();
-      const status = statusFilter.value;
-      const course = courseFilter.value;
+    // --- UI RENDERING ---
+    const elements = {
+      tbody: document.getElementById('tbody'),
+      date: document.getElementById('date'),
+      monthSelector: document.getElementById('monthSelector'),
+      search: document.getElementById('searchInput'),
+      statusFilter: document.getElementById('statusFilter'), // Removed from HTML but logic kept generic
+      courseFilter: document.getElementById('courseFilter'),
+      periodFilter: document.getElementById('periodFilter')
+    };
+
+    let selectedRows = new Set();
+    let currentSort = { col: 'date', dir: 'desc' };
+
+    function init() {
+      const now = new Date();
+      elements.date.valueAsDate = now;
       
+      // Populate Months
+      const data = loadData();
+      const months = new Set(data.map(r => r.monthKey));
+      months.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+      
+      elements.monthSelector.innerHTML = '';
+      Array.from(months).sort().reverse().forEach(m => {
+        const opt = document.createElement('option');
+        const [y, mo] = m.split('-');
+        opt.value = m;
+        opt.textContent = new Date(y, mo-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+        elements.monthSelector.appendChild(opt);
+      });
+
+      // Populate Course Filter
+      COURSES.forEach(c => {
+        const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+        elements.courseFilter.appendChild(opt);
+      });
+
+      render();
+    }
+
+    function render() {
+      const data = loadData();
+      const month = elements.monthSelector.value;
+      const period = elements.periodFilter.value;
+      const search = elements.search.value.toLowerCase();
+      const courseF = elements.courseFilter.value;
+
+      // Filter
       let filtered = data.filter(r => {
-        if (selectedMonth && r.monthKey !== selectedMonth) return false;
-        if (selectedPeriod && getPeriodFromDate(r.date) !== selectedPeriod) return false;
-        if (q && !`${r.childName} ${r.note} ${r.course}`.toLowerCase().includes(q)) return false;
-        if (status && r.buyOrNot !== status) return false;
-        if (course && r.course !== course) return false;
+        if (r.monthKey !== month) return false;
+        if (period) {
+          const d = parseInt(r.date.split('-')[2]);
+          if (period === 'P1' && d > 15) return false;
+          if (period === 'P2' && d <= 15) return false;
+        }
+        if (courseF && r.course !== courseF) return false;
+        if (search && !JSON.stringify(r).toLowerCase().includes(search)) return false;
         return true;
       });
 
-      // Sorting
+      // Sort
       filtered.sort((a, b) => {
-        let valA = a[currentSort.field], valB = b[currentSort.field];
-        if (currentSort.field === 'revenue') { valA = Number(valA)||0; valB = Number(valB)||0; }
-        if (currentSort.field === 'date') { valA = new Date(valA||0); valB = new Date(valB||0); }
-        return currentSort.direction === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+        let va = a[currentSort.col], vb = b[currentSort.col];
+        if (currentSort.col === 'revenue') { va = Number(va)||0; vb = Number(vb)||0; }
+        return currentSort.dir === 'asc' ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
       });
 
       // Update Stats
-      const stats = computeStats(filtered, data);
-      document.getElementById('statTcTotal').textContent = stats.tcTotal;
+      const stats = calculateStats(data, month);
+      document.getElementById('statRevenue').textContent = formatRp(stats.revenue);
+      document.getElementById('statConversion').textContent = stats.conv.toFixed(1) + '%';
+      document.getElementById('statTcTotal').textContent = stats.tc;
       document.getElementById('statSales').textContent = stats.sales;
-      document.getElementById('statConversion').textContent = stats.conversion.toFixed(1) + '%';
-      document.getElementById('statRevenue').textContent = formatRp(stats.totalRevenue);
-      document.getElementById('statAov').textContent = formatRp(stats.aov);
       document.getElementById('statPending').textContent = stats.pending;
+      document.getElementById('statBonus').textContent = formatRp(stats.bonus);
+      document.getElementById('bonusLevel').textContent = stats.lvl;
+      document.getElementById('bonusPercent').textContent = stats.bonusPct.toFixed(1) + '%';
       document.getElementById('statTcSalary').textContent = formatRp(stats.tcSalary);
-      document.getElementById('statBonus').textContent = formatRp(stats.bonusData.bonusAmount);
-      document.getElementById('bonusPercent').textContent = stats.bonusData.bonusPercent.toFixed(1) + '%';
-      document.getElementById('bonusLevel').textContent = stats.bonusData.levelName;
       
-      const barWidth = Math.min((stats.bonusData.conversion / 50) * 100, 100);
-      document.getElementById('bonusBar').style.width = barWidth + '%';
-      
-      // Changes
-      const revEl = document.getElementById('statRevChange');
-      revEl.innerHTML = stats.revenueChange >= 0 ? 
-        `<span class="text-emerald-400">▲ ${formatRp(stats.revenueChange)}</span> vs prev` : 
-        `<span class="text-rose-400">▼ ${formatRp(Math.abs(stats.revenueChange))}</span> vs prev`;
+      document.getElementById('bonusBar').style.width = Math.min(stats.conv * 2, 100) + '%'; // Visual bar approx
 
+      const diff = stats.revenue - stats.prevRev;
+      const diffEl = document.getElementById('statRevChange');
+      diffEl.innerHTML = diff >= 0 ? `▲ ${formatRp(diff)} vs prev` : `▼ ${formatRp(Math.abs(diff))} vs prev`;
+      diffEl.className = diff >= 0 ? "text-[10px] font-medium px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400" : "text-[10px] font-medium px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400";
+
+      // Update Target
+      const target = getTarget();
+      const targetSec = document.getElementById('targetSection');
+      if (target && target.month === month) {
+        targetSec.classList.remove('hidden');
+        const tVal = Number(target.val);
+        const pct = Math.min((stats.revenue / tVal) * 100, 100);
+        document.getElementById('targetDesc').textContent = formatRp(tVal);
+        document.getElementById('targetCurrent').textContent = formatRp(stats.revenue);
+        document.getElementById('targetPercent').textContent = pct.toFixed(1) + '%';
+        document.getElementById('targetProgress').style.width = pct + '%';
+        document.getElementById('targetRemaining').textContent = formatRp(Math.max(tVal - stats.revenue, 0));
+      } else {
+        targetSec.classList.add('hidden');
+      }
+
+      // Render Table
+      elements.tbody.innerHTML = '';
       document.getElementById('recordCount').textContent = `${filtered.length} records`;
-      updateSelectedMonthLabel();
-
-      // Render Rows
-      tbody.innerHTML = '';
+      document.getElementById('selectedMonth').textContent = elements.monthSelector.options[elements.monthSelector.selectedIndex]?.text;
+      
       if (filtered.length === 0) {
         document.getElementById('emptyState').classList.remove('hidden');
-        return;
-      }
-      document.getElementById('emptyState').classList.add('hidden');
+      } else {
+        document.getElementById('emptyState').classList.add('hidden');
+        filtered.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.className = "table-row-hover group border-b border-white/5 transition-all duration-200";
+          
+          let statusBadge = '';
+          if (r.buyOrNot === 'Buy') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✅ BUY</span>';
+          else if (r.buyOrNot === 'Not') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">❌ NOT</span>';
+          else statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">⏳ WAIT</span>';
 
-      filtered.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-white/5 transition-colors group";
-        tr.dataset.id = r.id;
-        
-        let badgeClass = 'bg-slate-700 text-slate-300 border-slate-600';
-        let statusIcon = '•';
-        if (r.buyOrNot === 'Buy') { badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'; statusIcon = '✅'; }
-        else if (r.buyOrNot === 'Not') { badgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20'; statusIcon = '❌'; }
-        else if (r.buyOrNot === 'Pending') { badgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20'; statusIcon = '⏳'; }
+          tr.innerHTML = `
+            <td class="p-4"><input type="checkbox" class="row-cb rounded bg-transparent border-slate-600 text-amber-500 focus:ring-0 cursor-pointer" data-id="${r.id}" ${selectedRows.has(r.id)?'checked':''}></td>
+            <td class="p-4 whitespace-nowrap">
+              <div class="font-mono text-xs text-white font-bold">${r.date}</div>
+              <div class="text-[10px] text-slate-500">${r.time || ''}</div>
+            </td>
+            <td class="p-4">
+              <div class="font-medium text-white text-xs">${r.childName || '-'}</div>
+              ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-blue-400 hover:underline">Link CRM ↗</a>` : ''}
+            </td>
+            <td class="p-4 text-xs text-slate-400">${r.course}</td>
+            <td class="p-4">${statusBadge}</td>
+            <td class="p-4 font-mono text-xs font-bold ${r.buyOrNot === 'Buy' ? 'text-emerald-400' : 'text-slate-600'}">${formatRp(r.revenue)}</td>
+            
+            <!-- NOTE COLUMN (New) -->
+            <td class="p-4 max-w-[180px]">
+               ${r.note ? `<div class="line-clamp-2 text-[11px] text-slate-400 leading-tight cursor-help transition-colors hover:text-white" title="${r.note}">${r.note}</div>` : '<span class="text-slate-700 text-[10px]">-</span>'}
+            </td>
 
-        const isSelected = selectedRows.has(r.id);
-
-        tr.innerHTML = `
-          <td class="p-4"><input type="checkbox" class="row-checkbox rounded bg-transparent border-slate-600 text-amber-500 focus:ring-0" data-id="${r.id}" ${isSelected ? 'checked' : ''}></td>
-          <td class="p-4">
-            <div class="font-medium text-white">${r.date}</div>
-            ${r.time ? `<div class="text-[10px] text-slate-500">${r.time}</div>` : ''}
-          </td>
-          <td class="p-4">
-            <div class="font-medium text-slate-200">${r.childName || '-'}</div>
-            ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-blue-400 hover:underline flex items-center gap-1">🔗 CRM</a>` : ''}
-          </td>
-          <td class="p-4"><span class="inline-block px-2 py-0.5 rounded text-[10px] bg-white/5 border border-white/10 text-slate-400 whitespace-nowrap">${r.course || '-'}</span></td>
-          <td class="p-4"><span class="inline-flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-medium ${badgeClass}">${statusIcon} ${r.buyOrNot}</span></td>
-          <td class="p-4 font-mono text-emerald-400 font-medium">${formatRp(r.revenue)}</td>
-          <td class="p-4 text-right">
-            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button class="editBtn p-1.5 hover:bg-blue-500/20 text-blue-400 rounded" data-id="${r.id}" title="Edit">✏️</button>
-              <button class="duplicateRowBtn p-1.5 hover:bg-slate-700 text-slate-400 rounded" data-id="${r.id}" title="Duplicate">📋</button>
-              <button class="deleteBtn p-1.5 hover:bg-rose-500/20 text-rose-400 rounded" data-id="${r.id}" title="Delete">🗑️</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      attachRowListeners();
-      updateTargetUI();
-    }
-
-    function attachRowListeners() {
-       document.querySelectorAll('.row-checkbox').forEach(cb => {
-        cb.addEventListener('change', (e) => {
-          e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
-          updateBulkDeleteBtn();
+            <td class="p-4 text-right">
+              <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="editRecord('${r.id}')" class="p-1.5 hover:bg-blue-500/20 text-blue-400 rounded transition-colors">✏️</button>
+                <button onclick="deleteRecord('${r.id}')" class="p-1.5 hover:bg-rose-500/20 text-rose-400 rounded transition-colors">🗑️</button>
+              </div>
+            </td>
+          `;
+          elements.tbody.appendChild(tr);
         });
-      });
-      document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', e => startEdit(e.currentTarget.dataset.id)));
-      document.querySelectorAll('.duplicateRowBtn').forEach(btn => btn.addEventListener('click', e => duplicateRecord(e.currentTarget.dataset.id)));
-      document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', e => {
-        if(confirm('Delete record?')) { deleteEntry(e.currentTarget.dataset.id); refresh(); showToast('Deleted', 'Record removed permanently', '🗑️'); }
+      }
+
+      // Re-attach listeners
+      document.querySelectorAll('.row-cb').forEach(cb => cb.addEventListener('change', e => {
+        e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
+        updateBulkBtn();
       }));
     }
 
-    function updateBulkDeleteBtn() {
+    function updateBulkBtn() {
       const btn = document.getElementById('bulkDeleteBtn');
       if (selectedRows.size > 0) {
-        btn.style.display = 'inline-flex';
+        btn.style.display = 'flex';
         document.getElementById('selectedCount').textContent = selectedRows.size;
-      } else {
-        btn.style.display = 'none';
-      }
+      } else btn.style.display = 'none';
     }
 
-    function startEdit(id) {
-      const rec = loadAllData().find(r => r.id === id);
-      if (!rec) return;
+    // --- CRUD ---
+    document.getElementById('entryForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const id = document.getElementById('editingId').value || uid();
+      const date = document.getElementById('date').value;
       
-      editingIdInput.value = rec.id;
-      document.getElementById('date').value = rec.date || '';
-      document.getElementById('time').value = rec.time || '';
-      document.getElementById('crm').value = rec.crm || '';
-      document.getElementById('childName').value = rec.childName || '';
-      document.getElementById('course').value = rec.course || '';
-      document.getElementById('buyOrNot').value = rec.buyOrNot || '';
-      document.getElementById('layer').value = rec.layer || '';
-      document.getElementById('revenue').value = rec.revenue || '';
-      document.getElementById('note').value = rec.note || '';
+      const entry = {
+        id,
+        date,
+        time: document.getElementById('time').value,
+        childName: document.getElementById('childName').value,
+        crm: document.getElementById('crm').value,
+        course: document.getElementById('course').value,
+        buyOrNot: document.getElementById('buyOrNot').value,
+        revenue: document.getElementById('revenue').value,
+        layer: document.getElementById('layer').value,
+        note: document.getElementById('note').value,
+        monthKey: date.slice(0, 7)
+      };
+
+      const data = loadData();
+      const idx = data.findIndex(r => r.id === id);
+      if (idx >= 0) data[idx] = entry; else data.push(entry);
       
-      document.getElementById('formTitle').textContent = 'Edit Record';
-      document.getElementById('formTitleIcon').classList.replace('text-amber-400', 'text-blue-400');
+      saveData(data);
+      clearForm();
+      init(); // Re-render & refresh months
+      showToast('Success', 'Record saved successfully');
+    });
+
+    window.editRecord = (id) => {
+      const r = loadData().find(d => d.id === id);
+      if (!r) return;
+      document.getElementById('editingId').value = r.id;
+      document.getElementById('date').value = r.date;
+      document.getElementById('time').value = r.time;
+      document.getElementById('childName').value = r.childName;
+      document.getElementById('crm').value = r.crm;
+      document.getElementById('course').value = r.course;
+      document.getElementById('buyOrNot').value = r.buyOrNot;
+      document.getElementById('revenue').value = r.revenue;
+      document.getElementById('layer').value = r.layer;
+      document.getElementById('note').value = r.note;
+      
+      document.getElementById('formTitle').innerHTML = `<span class="text-blue-400">✏️</span> Edit Record`;
       document.getElementById('duplicateBtn').classList.remove('hidden');
+      document.getElementById('duplicateBtn').onclick = () => {
+        saveData([...loadData(), { ...r, id: uid() }]);
+        init(); showToast('Duplicated');
+      };
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    };
+
+    window.deleteRecord = (id) => {
+      if (confirm('Delete this record?')) {
+        saveData(loadData().filter(r => r.id !== id));
+        render(); showToast('Deleted', '', '🗑️');
+      }
+    };
 
     function clearForm() {
-      editingIdInput.value = '';
-      entryForm.reset();
+      document.getElementById('entryForm').reset();
+      document.getElementById('editingId').value = '';
+      document.getElementById('date').valueAsDate = new Date();
       document.getElementById('formTitle').textContent = 'New Record';
-      document.getElementById('formTitleIcon').classList.replace('text-blue-400', 'text-amber-400');
       document.getElementById('duplicateBtn').classList.add('hidden');
     }
 
-    function duplicateRecord(id) {
-      const rec = loadAllData().find(r => r.id === id);
-      if (rec) {
-        addEntry({ ...rec, id: uid(), createdAt: new Date().toISOString() });
-        refresh();
-        showToast('Duplicated', 'Record copied successfully', '📋');
-      }
-    }
+    // --- EVENT LISTENERS ---
+    document.addEventListener('DOMContentLoaded', init);
+    
+    // Filters
+    ['monthSelector', 'periodFilter', 'courseFilter', 'searchInput'].forEach(id => {
+      document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', render);
+    });
 
-    function refresh() { refreshMonthOptions(); refreshCourseFilter(); renderTable(); }
+    document.getElementById('refreshBtn').addEventListener('click', () => { render(); showToast('Refreshed'); });
+    document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+    
+    // Menu
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+    document.addEventListener('click', e => { if (!menu.contains(e.target)) menu.classList.add('hidden'); });
 
-    // --- CSV EXPORT/IMPORT ---
-    function exportCSV(all) {
-      const data = loadAllData();
-      const filtered = all ? data : data.filter(r => 
-        r.monthKey === monthSelector.value && 
-        (!periodFilter.value || getPeriodFromDate(r.date) === periodFilter.value)
-      );
-      
-      if (!filtered.length) return showToast('No Data', 'Nothing to export', '⚠️');
-
-      const headers = ['id','date','time','crm','childName','course','buyOrNot','layer','revenue','note','monthKey'];
-      const csv = [headers.join(','), ...filtered.map(r => headers.map(h => `"${String(r[h]||'').replace(/"/g,'""')}"`).join(','))].join('\n');
-      
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
-      a.download = `mrj_export_${all ? 'ALL' : monthSelector.value}.csv`;
-      a.click();
-    }
-
-    function importCSV(file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const lines = e.target.result.split('\n');
-        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-        let count = 0;
-        for(let i=1; i<lines.length; i++) {
-          if(!lines[i].trim()) continue;
-          const val = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
-          const obj = { id: uid(), createdAt: new Date().toISOString() };
-          headers.forEach((h, idx) => obj[h] = val[idx] ? val[idx].replace(/^"|"$/g, '').replace(/""/g, '"') : '');
-          if(obj.date) { addEntry(obj); count++; }
-        }
-        refresh(); toggleModal('importModal', false); showToast('Imported', `${count} records added`, '📥');
-      };
-      reader.readAsText(file);
-    }
-
-    // --- CHARTS & MODALS ---
-    function showCharts() {
-      toggleModal('chartModal', true);
-      const data = loadAllData();
-      
-      // 1. Status
-      const statusCounts = { Buy:0, Not:0, Pending:0 };
-      data.forEach(r => { if(statusCounts[r.buyOrNot] !== undefined) statusCounts[r.buyOrNot]++; });
-      document.getElementById('statusChart').innerHTML = `
-        <div class="flex items-end justify-around h-full pb-4 gap-4">
-          <div class="w-1/3 bg-emerald-500/20 rounded-t-lg relative group h-[${(statusCounts.Buy/data.length)*100}%] min-h-[10px] transition-all hover:bg-emerald-500/40">
-             <div class="absolute bottom-0 w-full text-center pb-2 font-bold text-emerald-400">${statusCounts.Buy}</div>
-             <div class="absolute -bottom-6 w-full text-center text-[10px] text-slate-500">Buy</div>
-          </div>
-           <div class="w-1/3 bg-rose-500/20 rounded-t-lg relative group h-[${(statusCounts.Not/data.length)*100}%] min-h-[10px] transition-all hover:bg-rose-500/40">
-             <div class="absolute bottom-0 w-full text-center pb-2 font-bold text-rose-400">${statusCounts.Not}</div>
-             <div class="absolute -bottom-6 w-full text-center text-[10px] text-slate-500">Not</div>
-          </div>
-           <div class="w-1/3 bg-amber-500/20 rounded-t-lg relative group h-[${(statusCounts.Pending/data.length)*100}%] min-h-[10px] transition-all hover:bg-amber-500/40">
-             <div class="absolute bottom-0 w-full text-center pb-2 font-bold text-amber-400">${statusCounts.Pending}</div>
-             <div class="absolute -bottom-6 w-full text-center text-[10px] text-slate-500">Pending</div>
-          </div>
-        </div>
-      `;
-
-      // 2. Course
-      const courses = {};
-      data.forEach(r => courses[r.course] = (courses[r.course]||0)+1);
-      const sortedCourses = Object.entries(courses).sort((a,b)=>b[1]-a[1]).slice(0,8);
-      document.getElementById('courseBreakdown').innerHTML = sortedCourses.map(([name, count]) => `
-        <div class="flex items-center justify-between text-xs mb-2">
-          <span class="text-slate-400 truncate w-32" title="${name}">${name}</span>
-          <div class="flex items-center gap-2 flex-1">
-            <div class="h-1.5 bg-slate-800 rounded-full flex-1 overflow-hidden">
-              <div class="h-full bg-indigo-500 rounded-full" style="width: ${(count/data.length)*100}%"></div>
-            </div>
-            <span class="font-bold text-white w-6 text-right">${count}</span>
-          </div>
-        </div>
-      `).join('');
-
-      // 3. Trend
-      // Simple visual representation logic simplified for CSS-only rendering
-      document.getElementById('trendChart').innerHTML = `<div class="flex h-full items-center justify-center text-slate-500 text-xs italic">Chart visualization requires chart library (Chart.js). Used CSS bars above for lightweight demo.</div>`;
-    }
-
-    function toggleModal(id, show) {
+    // Modals
+    const toggleModal = (id, show) => {
       const m = document.getElementById(id);
       const bg = document.getElementById('modalBackdrop');
-      if(show) { m.classList.remove('hidden'); bg.classList.remove('hidden'); }
-      else { m.classList.add('hidden'); if(!document.querySelector('.fixed.z-50:not(.hidden):not(#modalBackdrop)')) bg.classList.add('hidden'); }
-    }
+      if (show) { m.classList.remove('hidden'); bg.classList.remove('hidden'); }
+      else { m.classList.add('hidden'); bg.classList.add('hidden'); }
+    };
 
-    // --- EVENT LISTENERS ---
-    document.addEventListener('DOMContentLoaded', () => {
-      refresh();
+    document.getElementById('targetBtn').addEventListener('click', () => {
+      toggleModal('targetModal', true);
+      const t = getTarget();
+      document.getElementById('targetInput').value = t ? t.val : '';
+    });
+    document.getElementById('saveTargetBtn').addEventListener('click', () => {
+      saveTarget(elements.monthSelector.value, document.getElementById('targetInput').value);
+      toggleModal('targetModal', false);
+      render();
+    });
+    document.getElementById('cancelTargetBtn').addEventListener('click', () => toggleModal('targetModal', false));
 
-      // Filters
-      ['monthSelector','periodFilter','searchInput','statusFilter','courseFilter'].forEach(id => {
-        document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', renderTable);
-      });
-      document.getElementById('refreshBtn').addEventListener('click', () => { refresh(); showToast('Refreshed'); });
-      document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+    document.getElementById('chartBtn').addEventListener('click', () => {
+      toggleModal('chartModal', true);
+      const data = loadData();
+      // Simple Chart Vis using HTML/CSS Bars
+      const counts = { Buy:0, Not:0, Pending:0 };
+      data.forEach(r => { if(counts[r.buyOrNot]!==undefined) counts[r.buyOrNot]++; });
+      const total = data.length || 1;
       
-      // Menu
-      const menuBtn = document.getElementById('menuBtn');
-      const menu = document.getElementById('menu');
-      menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
-      document.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuBtn.contains(e.target)) menu.classList.add('hidden'); });
+      document.getElementById('statusChart').innerHTML = `
+        <div class="w-1/3 bg-emerald-500/20 h-[${(counts.Buy/total)*100}%] min-h-[20px] rounded-t relative group"><span class="absolute -top-5 w-full text-center text-xs text-emerald-400 font-bold">${counts.Buy}</span><div class="absolute bottom-2 w-full text-center text-[10px]">Buy</div></div>
+        <div class="w-1/3 bg-rose-500/20 h-[${(counts.Not/total)*100}%] min-h-[20px] rounded-t relative group"><span class="absolute -top-5 w-full text-center text-xs text-rose-400 font-bold">${counts.Not}</span><div class="absolute bottom-2 w-full text-center text-[10px]">Not</div></div>
+        <div class="w-1/3 bg-amber-500/20 h-[${(counts.Pending/total)*100}%] min-h-[20px] rounded-t relative group"><span class="absolute -top-5 w-full text-center text-xs text-amber-400 font-bold">${counts.Pending}</span><div class="absolute bottom-2 w-full text-center text-[10px]">Wait</div></div>
+      `;
+    });
+    document.getElementById('closeChartBtn').addEventListener('click', () => toggleModal('chartModal', false));
 
-      // Modals
-      document.getElementById('shortcutsBtn').addEventListener('click', () => toggleModal('shortcutsModal', true));
-      document.getElementById('closeShortcutsBtn').addEventListener('click', () => toggleModal('shortcutsModal', false));
-      
-      document.getElementById('chartBtn').addEventListener('click', showCharts);
-      document.getElementById('closeChartBtn').addEventListener('click', () => toggleModal('chartModal', false));
+    document.getElementById('resetBtn').addEventListener('click', () => toggleModal('pwModal', true));
+    document.getElementById('cancelPwBtn').addEventListener('click', () => toggleModal('pwModal', false));
+    document.getElementById('confirmPwBtn').addEventListener('click', () => {
+      if (document.getElementById('pwInput').value === RESET_PASSWORD) {
+        localStorage.clear();
+        location.reload();
+      } else showToast('Error', 'Wrong Password', '⛔');
+    });
 
-      document.getElementById('targetBtn').addEventListener('click', () => {
-        toggleModal('targetModal', true);
-        const t = getTarget();
-        document.getElementById('targetInput').value = (t && t.monthKey === monthSelector.value) ? t.targetRevenue : '';
+    // Bulk Delete
+    document.getElementById('selectAll').addEventListener('change', e => {
+      document.querySelectorAll('.row-cb').forEach(cb => {
+        cb.checked = e.target.checked;
+        e.target.checked ? selectedRows.add(cb.dataset.id) : selectedRows.delete(cb.dataset.id);
       });
-      document.getElementById('editTargetBtn').addEventListener('click', () => document.getElementById('targetBtn').click());
-      document.getElementById('cancelTargetBtn').addEventListener('click', () => toggleModal('targetModal', false));
-      document.getElementById('saveTargetBtn').addEventListener('click', () => {
-        saveTarget(monthSelector.value, document.getElementById('targetInput').value);
-        toggleModal('targetModal', false);
-        updateTargetUI();
-        showToast('Target Saved');
-      });
+      updateBulkBtn();
+    });
+    
+    document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
+      if (confirm(`Delete ${selectedRows.size} items?`)) {
+        const newData = loadData().filter(r => !selectedRows.has(r.id));
+        saveData(newData);
+        selectedRows.clear();
+        document.getElementById('selectAll').checked = false;
+        render();
+      }
+    });
 
-      // Form
-      entryForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const id = editingIdInput.value;
-        const data = {
-          id: id || uid(),
-          date: document.getElementById('date').value,
-          time: document.getElementById('time').value,
-          crm: document.getElementById('crm').value,
-          childName: document.getElementById('childName').value,
-          course: document.getElementById('course').value,
-          buyOrNot: document.getElementById('buyOrNot').value,
-          layer: document.getElementById('layer').value,
-          revenue: document.getElementById('revenue').value,
-          note: document.getElementById('note').value,
-          monthKey: monthKeyFromDateStr(document.getElementById('date').value),
-          createdAt: new Date().toISOString()
-        };
+    // CSV Export/Import
+    document.getElementById('exportAllBtn').addEventListener('click', () => {
+      const data = loadData();
+      if (!data.length) return showToast('Empty', 'No data to export');
+      const headers = Object.keys(data[0]).join(',');
+      const rows = data.map(r => Object.values(r).map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+      const blob = new Blob([headers + '\n' + rows.join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'MiRaj_Backup.csv';
+      a.click();
+    });
 
-        if(id) updateEntry(id, data); else addEntry(data);
-        clearForm(); refresh(); showToast('Success', 'Record saved successfully');
-      });
-
-      document.getElementById('duplicateBtn').addEventListener('click', () => duplicateRecord(editingIdInput.value));
-
-      // Bulk
-      document.getElementById('selectAll').addEventListener('change', (e) => {
-        document.querySelectorAll('.row-checkbox').forEach(cb => {
-          cb.checked = e.target.checked;
-          e.target.checked ? selectedRows.add(cb.dataset.id) : selectedRows.delete(cb.dataset.id);
-        });
-        updateBulkDeleteBtn();
-      });
-      document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
-        if(confirm(`Delete ${selectedRows.size} items?`)) {
-          bulkDelete(Array.from(selectedRows)); selectedRows.clear(); refresh(); showToast('Deleted Batch');
-        }
-      });
-
-      // Sort
-      document.querySelectorAll('[data-sort]').forEach(el => el.addEventListener('click', () => {
-        currentSort.direction = (currentSort.field === el.dataset.sort && currentSort.direction === 'desc') ? 'asc' : 'desc';
-        currentSort.field = el.dataset.sort;
-        renderTable();
-      }));
-
-      // Export/Import/Reset
-      document.getElementById('exportCurrentBtn').addEventListener('click', () => exportCSV(false));
-      document.getElementById('exportAllBtn').addEventListener('click', () => exportCSV(true));
-      
-      document.getElementById('importBtn').addEventListener('click', () => toggleModal('importModal', true));
-      document.getElementById('cancelImportBtn').addEventListener('click', () => toggleModal('importModal', false));
-      document.getElementById('confirmImportBtn').addEventListener('click', () => {
-        const f = document.getElementById('importFile').files[0];
-        if(f) importCSV(f); else showToast('Error', 'Select file first', '⚠️');
-      });
-
-      document.getElementById('resetBtn').addEventListener('click', () => toggleModal('pwModal', true));
-      document.getElementById('cancelPwBtn').addEventListener('click', () => toggleModal('pwModal', false));
-      document.getElementById('confirmPwBtn').addEventListener('click', () => {
-        if(document.getElementById('pwInput').value === RESET_PASSWORD) {
-          localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(TARGET_KEY);
-          toggleModal('pwModal', false); refresh(); showToast('Reset Complete', 'System wiped clean', '💥');
-        } else showToast('Access Denied', 'Wrong password', '⛔');
-      });
-
-      // Keys
-      document.addEventListener('keydown', e => {
-        if((e.ctrlKey||e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-        if((e.ctrlKey||e.metaKey) && e.key === 'n') { e.preventDefault(); clearForm(); document.getElementById('date').focus(); }
-        if((e.ctrlKey||e.metaKey) && e.key === 'e') { e.preventDefault(); exportCSV(false); }
-        if((e.ctrlKey||e.metaKey) && e.key === 'r') { e.preventDefault(); refresh(); }
-        if(e.key === 'Escape') document.querySelectorAll('.fixed.z-50').forEach(m => m.classList.add('hidden'));
-      });
+    document.getElementById('importBtn').addEventListener('click', () => toggleModal('importModal', true));
+    document.getElementById('cancelImportBtn').addEventListener('click', () => toggleModal('importModal', false));
+    document.getElementById('confirmImportBtn').addEventListener('click', () => {
+       const file = document.getElementById('importFile').files[0];
+       if (!file) return;
+       const reader = new FileReader();
+       reader.onload = e => {
+         const lines = e.target.result.split('\n');
+         const headers = lines[0].split(',').map(h => h.trim());
+         const newData = [];
+         for (let i=1; i<lines.length; i++) {
+           if (!lines[i].trim()) continue;
+           const vals = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g).map(v => v.replace(/^"|"$/g,'').replace(/""/g,'"'));
+           const obj = {};
+           headers.forEach((h, idx) => obj[h] = vals[idx] || '');
+           if(obj.id) newData.push(obj);
+         }
+         saveData([...loadData(), ...newData]);
+         toggleModal('importModal', false);
+         render();
+         showToast('Imported', `${newData.length} records loaded`);
+       };
+       reader.readAsText(file);
     });
   </script>
 </body>
 </html>
+```
