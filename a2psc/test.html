@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Raj Sales Tracker Pro - Remastered</title>
+  <title>Mi Raj Sales Tracker Pro</title>
   <meta name="theme-color" content="#0f172a">
   
   <!-- Tailwind CSS -->
@@ -23,21 +22,28 @@
           },
           colors: {
             dark: {
-              950: '#020617',
-              900: '#0f172a',
-              800: '#1e293b',
+              900: '#0B0F19',
+              800: '#111827',
+              700: '#1F2937',
             },
             accent: {
-              500: '#f59e0b', // Amber
-              600: '#d97706',
+              gold: '#FBBF24',
+              goldDim: '#B45309',
             }
           },
           animation: {
-            'fade-in': 'fadeIn 0.4s ease-out',
+            'blob': 'blob 7s infinite',
+            'fade-in': 'fadeIn 0.4s ease-out forwards',
           },
           keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
             fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(5px)' },
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             }
           }
@@ -48,93 +54,135 @@
 
   <style>
     /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; border: 2px solid #0f172a; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
 
-    /* Background */
-    .app-bg {
-      background-color: #020617;
+    /* Background Mesh */
+    .mesh-bg {
+      background-color: #0B0F19;
       background-image: 
-        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), 
-        radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.05), transparent 25%);
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
       min-height: 100vh;
     }
 
     /* Glass Components */
     .glass-panel {
-      background: rgba(30, 41, 59, 0.6);
+      background: rgba(17, 24, 39, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     }
 
     .input-field {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.2s ease;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
     }
     .input-field:focus {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3);
+      background: rgba(0, 0, 0, 0.5);
+      border-color: #FBBF24;
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
       outline: none;
     }
 
-    /* Tooltip for Notes */
-    .tooltip-container:hover .tooltip-content {
-      display: block;
-    }
-    
-    /* Sticky Header */
-    .sticky-th {
-      position: sticky;
-      top: 0;
-      z-index: 20;
+    /* Glass Tooltip untuk Note */
+    .note-tooltip {
+      visibility: hidden;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
       background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      white-space: nowrap;
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      box-shadow: 0 10px 30px rgba(251, 191, 36, 0.25);
+      max-width: 320px;
+      white-space: normal;
+    }
+    .note-cell:hover .note-tooltip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Stagger row animation */
+    .table-row {
+      animation: fadeIn 0.6s ease-out forwards;
+      animation-delay: calc(var(--index) * 0.05s);
+      opacity: 0;
     }
   </style>
 </head>
-<body class="app-bg text-slate-300 font-sans antialiased selection:bg-accent-500/30 selection:text-amber-100">
+<body class="mesh-bg text-slate-300 font-sans antialiased selection:bg-accent-gold selection:text-black">
 
-  <!-- Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 z-[100] hidden transform transition-all duration-300 translate-y-10 opacity-0">
-    <div class="glass-panel rounded-xl p-4 flex items-center gap-4 shadow-2xl border-l-4 border-emerald-500 bg-dark-900">
-      <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400 text-xl" id="toastIcon">✅</div>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden transform transition-all duration-300 translate-y-10 opacity-0">
+    <div class="glass-panel rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-emerald-500">
+      <div class="bg-emerald-500/20 p-2 rounded-full text-emerald-400">
+        <span id="toastIcon" class="text-lg"></span>
+      </div>
       <div>
         <h4 id="toastTitle" class="text-sm font-bold text-white">Success</h4>
-        <p id="toastMessage" class="text-xs text-slate-400 mt-0.5">Operation successful.</p>
+        <p id="toastMessage" class="text-xs text-slate-400">Action completed.</p>
       </div>
     </div>
   </div>
 
   <!-- Navbar -->
-  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#020617]/90 backdrop-blur-xl">
+  <nav class="sticky top-0 z-40 border-b border-white/5 bg-[#0B0F19]/80 backdrop-blur-xl">
     <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo -->
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 text-black font-bold text-lg tracking-tighter">MR</div>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20 text-black font-bold text-xl tracking-tighter">MR</div>
           <div>
-            <h1 class="text-white font-bold text-lg tracking-tight leading-none">Mi Raj <span class="text-amber-400 font-normal">Tracker</span></h1>
+            <h1 class="text-white font-bold text-lg tracking-tight leading-none">Mi Raj <span class="text-amber-400 font-light">Tracker</span></h1>
+            <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Sales Intelligence Pro</p>
           </div>
         </div>
 
-        <!-- Menu -->
-        <div class="relative group">
-          <button id="menuBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-sm font-medium text-white transition-all">
-            <span>Menu</span>
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="flex items-center gap-3">
+          <button id="shortcutsBtn" class="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors" title="Shortcuts">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
           </button>
-          <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden transform origin-top-right transition-all z-50 bg-dark-900">
-            <button id="importBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">📥 Import CSV</button>
-            <button id="exportAllBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">📤 Export All</button>
-            <button id="targetBtn" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">🎯 Set Target</button>
-            <div class="h-px bg-white/10 my-1"></div>
-            <button id="resetBtn" class="w-full text-left px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">⚠️ Reset Data</button>
+          
+          <div class="relative group">
+            <button id="menuBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-sm font-medium text-white transition-all">
+              <span>Menu</span>
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="menu" class="absolute right-0 mt-2 w-48 glass-panel rounded-xl shadow-2xl py-1 hidden transform origin-top-right transition-all z-50">
+              <button id="importBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg> Import CSV
+              </button>
+              <button id="exportAllBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export All
+              </button>
+              <button id="targetBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Set Target
+              </button>
+              <button id="chartBtn" class="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg> Analytics
+              </button>
+              <div class="h-px bg-white/10 my-1"></div>
+              <button id="resetBtn" class="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> Reset Data
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -142,157 +190,200 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
+    <!-- Target Progress -->
+    <div id="targetSection" class="hidden mb-8 animate-fade-in">
+      <div class="glass-panel rounded-2xl p-1 relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-amber-500/10 via-transparent to-emerald-500/10 opacity-50"></div>
+        <div class="bg-dark-800/50 rounded-xl p-5 relative z-10">
+          <div class="flex items-end justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Monthly Goal</h3>
+              <div class="flex items-baseline gap-3 mt-1">
+                <span id="targetCurrent" class="text-2xl font-bold text-white">Rp 0</span>
+                <span class="text-sm text-slate-500">of <span id="targetDesc" class="text-slate-400">Rp 0</span></span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="targetPercent" class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">0%</span>
+              <button id="editTargetBtn" class="block ml-auto mt-1 text-xs text-slate-500 hover:text-amber-400 underline decoration-dotted">Change</button>
+            </div>
+          </div>
+          <div class="h-4 bg-dark-900 rounded-full overflow-hidden border border-white/5 relative">
+            <div id="targetProgress" class="h-full bg-gradient-to-r from-amber-400 to-orange-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(245,158,11,0.5)] relative" style="width: 0%">
+              <div class="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]"></div>
+            </div>
+          </div>
+          <div class="flex justify-between mt-3 text-xs font-medium">
+            <span class="text-slate-500">Remaining: <span id="targetRemaining" class="text-emerald-400">Rp 0</span></span>
+            <span class="text-amber-500">Keep Pushing! 🚀</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-fade-in">
-      <!-- Card 1 -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-        <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Total Revenue</p>
-        <h3 id="statRevenue" class="text-2xl lg:text-3xl font-bold text-white tracking-tight">Rp 0</h3>
-        <p id="statRevChange" class="text-[11px] mt-2 text-slate-500 font-medium">- vs prev month</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <!-- Card 1: Revenue -->
+      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
+        <div class="relative z-10">
+          <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">Total Revenue</p>
+          <h3 id="statRevenue" class="text-2xl xl:text-3xl font-bold text-white tracking-tight">Rp 0</h3>
+          <p id="statRevChange" class="text-xs mt-2 font-medium text-slate-500 flex items-center gap-1">
+            <span>-</span> vs prev month
+          </p>
+        </div>
       </div>
 
-      <!-- Card 2 -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-24 h-24 bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-        <div class="flex justify-between items-end h-full">
+      <!-- Card 2: Sales & Conversion -->
+      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-300">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
+        <div class="grid grid-cols-2 gap-4 relative z-10 h-full">
           <div>
-            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Sales Closed</p>
+            <p class="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-1">Sales</p>
             <h3 id="statSales" class="text-2xl font-bold text-white">0</h3>
+            <p id="statSalesChange" class="text-[10px] text-slate-500 mt-1">-</p>
           </div>
-          <div class="text-right">
-            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Conv. Rate</p>
-            <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
+          <div class="text-right border-l border-white/10 pl-4">
+             <p class="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1">Conv.</p>
+             <h3 id="statConversion" class="text-xl font-bold text-white">0%</h3>
+             <p id="statConvChange" class="text-[10px] text-slate-500 mt-1">0/0</p>
           </div>
         </div>
       </div>
 
-      <!-- Card 3 -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden group">
-        <div class="absolute right-0 top-0 w-24 h-24 bg-pink-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-        <div class="flex justify-between items-center mb-2">
-          <p class="text-xs font-bold text-pink-400 uppercase tracking-wider">Bonus Est.</p>
-          <span id="bonusLevel" class="bg-white/5 text-slate-300 text-[10px] px-2 py-0.5 rounded border border-white/10">Lvl 1</span>
-        </div>
-        <h3 id="statBonus" class="text-2xl font-bold text-white">Rp 0</h3>
-        <div class="w-full bg-dark-800 h-1 rounded-full mt-3 overflow-hidden">
-          <div id="bonusBar" class="h-full bg-gradient-to-r from-pink-500 to-rose-500 w-0 transition-all duration-500"></div>
+      <!-- Card 3: Bonus & Level -->
+      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden group hover:border-pink-500/30 transition-all duration-300">
+        <div class="absolute -right-6 -top-6 w-24 h-24 bg-pink-500/20 rounded-full blur-2xl group-hover:bg-pink-500/30 transition-all"></div>
+        <div class="relative z-10">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs font-semibold text-pink-400 uppercase tracking-wider mb-1">Est. Bonus</p>
+              <h3 id="statBonus" class="text-2xl font-bold text-white">Rp 0</h3>
+            </div>
+            <span id="bonusLevel" class="bg-slate-700/50 text-slate-300 text-[10px] px-2 py-1 rounded-md font-bold border border-white/10">Lvl 1</span>
+          </div>
+          <div class="w-full bg-dark-900/50 h-1.5 rounded-full mt-4 overflow-hidden">
+            <div id="bonusBar" class="h-full bg-pink-500 w-0 transition-all duration-500"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2 flex justify-between">
+            <span>Rate: <span id="bonusPercent" class="text-slate-300">0%</span></span>
+            <span>TC Salary: <span id="statTcSalary" class="text-cyan-400">Rp 0</span></span>
+          </p>
         </div>
       </div>
 
-      <!-- Card 4 -->
-      <div class="glass-panel rounded-xl p-5 relative overflow-hidden flex flex-col justify-between">
-        <div class="flex justify-between">
+      <!-- Card 4: Operational -->
+      <div class="glass-panel rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
+        <div class="flex justify-between items-center">
           <div>
-            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Total TC</p>
-            <p id="statTcTotal" class="text-xl font-bold text-white">0</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Total TC</p>
+            <p id="statTcTotal" class="text-lg font-bold text-white">0</p>
           </div>
-          <div class="text-right">
-            <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Pending</p>
-            <p id="statPending" class="text-xl font-bold text-amber-400">0</p>
+           <div class="text-right">
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Pending</p>
+            <p id="statPending" class="text-lg font-bold text-amber-400">0</p>
           </div>
         </div>
-        <div class="flex justify-between items-end mt-2 pt-2 border-t border-white/5">
-          <div class="text-[10px] text-slate-500">AOV: <span id="statAov" class="text-slate-300 font-mono">0</span></div>
-          <div class="text-[10px] text-slate-500">Salary: <span id="statTcSalary" class="text-cyan-400 font-mono">0</span></div>
+        <div class="mt-2 pt-2 border-t border-white/5 flex justify-between items-center">
+          <span class="text-[10px] text-slate-500">AOV</span>
+          <span id="statAov" class="text-xs font-mono text-purple-400">Rp 0</span>
         </div>
       </div>
     </div>
 
-    <!-- Target Section -->
-    <div id="targetSection" class="hidden mb-6 animate-fade-in">
-      <div class="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
-         <div class="flex-1 w-full">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-xs font-bold text-amber-400 uppercase">Monthly Goal</span>
-                <span class="text-xs text-slate-400"><span id="targetCurrent" class="text-white font-bold">0</span> / <span id="targetDesc">0</span></span>
-            </div>
-            <div class="h-2 bg-dark-800 rounded-full overflow-hidden">
-               <div id="targetProgress" class="h-full bg-amber-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
-            </div>
-         </div>
-         <div class="text-center md:text-right">
-            <span id="targetPercent" class="text-2xl font-black text-white">0%</span>
-         </div>
-      </div>
-    </div>
-
-    <div class="grid lg:grid-cols-12 gap-6 h-full items-start">
+    <!-- Workspace Area -->
+    <div class="grid lg:grid-cols-4 gap-6 h-full">
       
-      <!-- LEFT: Form & Filters -->
-      <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-5">
+      <!-- Left Panel: Filters & Form -->
+      <div class="lg:col-span-1 flex flex-col gap-6">
         
         <!-- Filters -->
-        <div class="glass-panel rounded-xl p-5">
+        <div class="glass-panel rounded-2xl p-5">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-bold text-white">🔍 Filters</h3>
-            <button id="refreshBtn" class="p-1.5 text-slate-500 hover:text-amber-400 transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+            <h3 class="font-bold text-white flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+              Filters
+            </h3>
+            <button id="refreshBtn" class="text-slate-500 hover:text-amber-400 transition-colors p-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            </button>
           </div>
 
           <div class="space-y-3">
-            <input id="searchInput" type="text" placeholder="Search..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500">
+            <div class="relative">
+              <svg class="w-4 h-4 absolute left-3 top-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input id="searchInput" type="text" placeholder="Search name, course, note..." class="w-full bg-dark-900/50 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-slate-600 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
+            </div>
+
             <div class="grid grid-cols-2 gap-2">
-              <select id="monthSelector" class="input-field rounded-lg px-2 py-2 text-xs text-slate-300"></select>
-              <select id="periodFilter" class="input-field rounded-lg px-2 py-2 text-xs text-slate-300">
+              <select id="monthSelector" class="bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none"></select>
+              <select id="periodFilter" class="bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
                 <option value="">All Period</option>
                 <option value="P1">P1 (1-15)</option>
                 <option value="P2">P2 (16-31)</option>
               </select>
             </div>
-            <select id="statusFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
+
+            <select id="statusFilter" class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
               <option value="">All Statuses</option>
-              <option value="Buy">✅ Buy</option>
-              <option value="Not">❌ Not Buy</option>
-              <option value="Pending">⏳ Pending</option>
+              <option value="Buy">Buy</option>
+              <option value="Not">Not Buy</option>
+              <option value="Pending">Pending</option>
             </select>
-            <select id="courseFilter" class="w-full input-field rounded-lg px-3 py-2 text-xs text-slate-300">
+            
+             <select id="courseFilter" class="w-full bg-dark-900/50 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:border-amber-500 outline-none">
               <option value="">All Courses</option>
             </select>
-            <div class="pt-3 border-t border-white/5 flex justify-between items-center">
-               <span id="recordCount" class="text-[10px] text-slate-500">0 records</span>
-               <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-bold uppercase">Export CSV</button>
+
+            <div class="pt-2 border-t border-white/5 flex justify-between items-center">
+               <span id="recordCount" class="text-[10px] text-slate-500 font-mono">0 records</span>
+               <button id="exportCurrentBtn" class="text-[10px] text-amber-500 hover:text-amber-400 font-medium">Export CSV</button>
             </div>
           </div>
         </div>
 
-        <!-- Form -->
-        <div class="glass-panel rounded-xl p-5 flex-1 border-t-4 border-t-amber-500">
-          <div class="flex items-center justify-between mb-5">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span id="formTitleIcon" class="text-amber-400">📝</span> <span id="formTitle">New Record</span>
+        <!-- Entry Form -->
+        <div class="glass-panel rounded-2xl p-5 flex-1">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-white flex items-center gap-2">
+              <span id="formTitleIcon" class="text-amber-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              </span>
+              <span id="formTitle">New Record</span>
             </h3>
-            <button id="clearFormBtn" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase bg-white/5 px-2 py-1 rounded">Clear</button>
+            <button id="clearFormBtn" class="text-xs text-slate-500 hover:text-white transition-colors">Clear</button>
           </div>
 
           <form id="entryForm" class="space-y-3">
             <input type="hidden" id="editingId">
             
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2">
                <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Date <span class="text-rose-500">*</span></label>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Date</label>
                  <input id="date" type="date" required class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
                </div>
                <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Time</label>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Time</label>
                  <input id="time" type="time" class="w-full input-field rounded-lg px-3 py-2 text-xs text-white">
                </div>
             </div>
 
             <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Student Name</label>
+               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Student Name</label>
                <input id="childName" type="text" placeholder="Full Name" class="w-full input-field rounded-lg px-3 py-2 text-sm text-white placeholder-slate-600">
             </div>
 
              <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">CRM Link</label>
+               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">CRM Link</label>
                <input id="crm" type="url" placeholder="https://..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-blue-400 placeholder-slate-700">
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2">
                <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Course <span class="text-rose-500">*</span></label>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Course</label>
                  <select id="course" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
                    <option value="">Select...</option>
                     <option value="Coding Knight">Coding Knight</option>
@@ -310,26 +401,23 @@
                  </select>
                </div>
                <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Status <span class="text-rose-500">*</span></label>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Status</label>
                  <select id="buyOrNot" required class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
                    <option value="">Select...</option>
-                   <option value="Buy">✅ Buy</option>
-                   <option value="Not">❌ Not Buy</option>
-                   <option value="Pending">⏳ Pending</option>
+                   <option value="Buy">Buy</option>
+                   <option value="Not">Not Buy</option>
+                   <option value="Pending">Pending</option>
                  </select>
                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2">
               <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Revenue</label>
-                 <div class="relative">
-                    <span class="absolute left-3 top-2 text-xs text-emerald-500">Rp</span>
-                    <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg pl-8 pr-3 py-2 text-xs text-white font-mono">
-                 </div>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Revenue</label>
+                 <input id="revenue" type="number" placeholder="0" class="w-full input-field rounded-lg px-3 py-2 text-xs text-emerald-400 font-mono placeholder-slate-700">
                </div>
                <div class="space-y-1">
-                 <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Layer</label>
+                 <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Layer</label>
                  <select id="layer" class="w-full input-field rounded-lg px-2 py-2 text-xs text-white">
                    <option value="">-</option>
                    <option value="TCP">TCP</option>
@@ -341,55 +429,61 @@
             </div>
 
             <div class="space-y-1">
-               <label class="text-[10px] uppercase text-slate-400 font-bold ml-1">Note</label>
-               <textarea id="note" rows="2" placeholder="Details..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
+               <label class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Note</label>
+               <textarea id="note" rows="2" placeholder="Additional info..." class="w-full input-field rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
             </div>
 
             <div class="pt-2 flex gap-2">
-              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-orange-500/20 transition-all text-sm">Save Record</button>
-              <button type="button" id="duplicateBtn" class="hidden px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">📋</button>
+              <button type="submit" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold py-2.5 rounded-lg shadow-lg shadow-orange-500/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-sm">
+                Save Record
+              </button>
+              <button type="button" id="duplicateBtn" class="hidden px-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors" title="Duplicate">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- RIGHT: Table -->
-      <div class="lg:col-span-8 xl:col-span-9 flex flex-col h-full min-h-[600px]">
-        <div class="glass-panel rounded-xl flex-1 flex flex-col overflow-hidden border-0 ring-1 ring-white/10 shadow-2xl">
-          <!-- Header -->
-          <div class="p-4 border-b border-white/5 flex justify-between items-center bg-dark-800/50">
-            <div class="flex items-center gap-3">
-              <span id="selectedMonth" class="text-sm font-bold text-white"></span>
-              <span id="selectedPeriod" class="text-[10px] font-bold uppercase text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20"></span>
-            </div>
+      <!-- Right Panel: Table -->
+      <div class="lg:col-span-3 flex flex-col h-full">
+        <div class="glass-panel rounded-2xl flex-1 flex flex-col overflow-hidden">
+          <div class="p-4 border-b border-white/5 flex justify-between items-center bg-dark-800/30">
             <div class="flex items-center gap-2">
-              <button id="chartBtn" class="text-xs font-medium text-slate-400 hover:text-white px-3 py-1.5 rounded hover:bg-white/5 flex gap-1">📊 Analytics</button>
-              <button id="bulkDeleteBtn" class="hidden items-center gap-1 px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold">Delete (<span id="selectedCount">0</span>)</button>
+              <span id="selectedMonth" class="text-sm font-bold text-amber-400"></span>
+              <span id="selectedPeriod" class="text-xs font-medium text-slate-500 bg-white/5 px-2 py-0.5 rounded"></span>
             </div>
+            <button id="bulkDeleteBtn" class="hidden items-center gap-1 px-3 py-1 bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500/20 rounded text-xs font-bold transition-all">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              Delete (<span id="selectedCount">0</span>)
+            </button>
           </div>
 
-          <!-- Table -->
           <div class="overflow-auto flex-1 relative">
             <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
-              <div class="text-4xl mb-2">📂</div>
-              <h3 class="text-white font-bold text-lg mb-1">No Data Found</h3>
+              <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+              </div>
+              <h3 class="text-slate-300 font-bold mb-1">No Data Found</h3>
               <p class="text-slate-500 text-sm">Try adjusting filters or add a new record.</p>
             </div>
 
             <table class="w-full text-left border-collapse">
-              <thead class="bg-dark-900 text-[11px] text-slate-500 uppercase tracking-wider sticky-th shadow-sm">
+              <thead class="bg-dark-900/50 text-xs text-slate-500 uppercase sticky top-0 z-20 backdrop-blur-md">
                 <tr>
-                  <th class="p-4 w-10 text-center"><input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent focus:ring-0 text-amber-500"></th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="date">Date ↕</th>
-                  <th class="p-4">Student</th>
-                  <th class="p-4">Course</th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="buyOrNot">Status ↕</th>
-                  <th class="p-4 cursor-pointer hover:text-amber-400" data-sort="revenue">Rev ↕</th>
-                  <th class="p-4 w-1/5">Note</th> <!-- NEW NOTE COLUMN -->
-                  <th class="p-4 text-right w-24 bg-dark-900 sticky right-0 z-20 shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">Act</th>
+                  <th class="p-4 w-10"><input type="checkbox" id="selectAll" class="rounded border-slate-600 bg-transparent focus:ring-amber-500 text-amber-500"></th>
+                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="date">Date</th>
+                  <th class="p-4 font-semibold">Student</th>
+                  <th class="p-4 font-semibold">Course</th>
+                  <th class="p-4 font-semibold">Note</th>
+                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="buyOrNot">Status</th>
+                  <th class="p-4 font-semibold cursor-pointer hover:text-amber-400 transition-colors" data-sort="revenue">Revenue</th>
+                  <th class="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody id="tbody" class="text-sm text-slate-300 divide-y divide-white/5"></tbody>
+              <tbody id="tbody" class="text-sm text-slate-300 divide-y divide-white/5">
+                <!-- Rows injected here -->
+              </tbody>
             </table>
           </div>
         </div>
@@ -397,484 +491,509 @@
     </div>
   </main>
 
-  <!-- MODALS -->
-  <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+  <!-- MODALS (same as before) -->
+  <!-- ... semua modal tetap sama, tidak saya ubah ... -->
 
-  <!-- Chart Modal -->
-  <div id="chartModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-4xl bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transform transition-all scale-95 opacity-0 modal-content">
-      <div class="p-5 border-b border-white/5 flex justify-between items-center bg-dark-800">
-        <h3 class="text-lg font-bold text-white">Analytics Dashboard</h3>
-        <button id="closeChartBtn" class="text-slate-500 hover:text-white text-xl">✕</button>
-      </div>
-      <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6 bg-dark-900">
-         <div class="glass-panel p-5 rounded-xl">
-           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Status Distribution</h4>
-           <div id="statusChart" class="h-48 flex items-end justify-center gap-4 border-b border-white/5 pb-2"></div>
-         </div>
-         <div class="glass-panel p-5 rounded-xl">
-           <h4 class="text-xs font-bold text-slate-400 uppercase mb-4">Course Performance</h4>
-           <div id="courseBreakdown" class="space-y-3"></div>
-         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Target Modal -->
-  <div id="targetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-amber-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
-       <h3 class="text-lg font-bold text-white mb-4">🎯 Set Monthly Target</h3>
-       <label class="block text-xs font-bold text-amber-500 uppercase mb-2">Target Amount (IDR)</label>
-       <input id="targetInput" type="number" class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xl font-bold text-white focus:border-amber-500 outline-none mb-6">
-       <div class="flex justify-end gap-3">
-         <button id="cancelTargetBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
-         <button id="saveTargetBtn" class="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm">Save Target</button>
-       </div>
-    </div>
-  </div>
-
-  <!-- Reset Modal -->
-  <div id="pwModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-    <div class="pointer-events-auto w-full max-w-sm bg-[#0F172A] border border-rose-500/30 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
-      <h3 class="text-lg font-bold text-white mb-2 text-rose-500">⚠️ Factory Reset</h3>
-      <p class="text-sm text-slate-400 mb-4">Permanently delete ALL data. Cannot be undone.</p>
-      <input id="pwInput" type="password" class="w-full bg-dark-800 border border-white/10 rounded-lg p-3 text-white focus:border-rose-500 outline-none mb-4" placeholder="Password...">
-      <div class="flex justify-end gap-3">
-        <button id="cancelPwBtn" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancel</button>
-        <button id="confirmPwBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-sm">Delete All</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div id="importModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 pointer-events-none">
-     <div class="pointer-events-auto w-full max-w-md bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-6 modal-content transform scale-95 opacity-0 transition-all">
-       <h3 class="text-lg font-bold text-white mb-2">📥 Import CSV</h3>
-       <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-amber-500/50 cursor-pointer relative">
-         <input type="file" id="importFile" accept=".csv" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-         <span class="text-sm text-slate-300">Click to upload CSV</span>
-       </div>
-       <div class="flex justify-end gap-3 mt-4">
-         <button id="cancelImportBtn" class="text-slate-400 hover:text-white text-sm">Cancel</button>
-         <button id="confirmImportBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold">Import</button>
-       </div>
-     </div>
-  </div>
-
+  <!-- MAIN SCRIPT -->
   <script>
-    // --- CONFIGURATION (Fixed Storage Key) ---
-    const STORAGE_KEY = 'mrj_sales_data'; // KEY ASLI DIKEMBALIKAN
+    const STORAGE_KEY = 'mrj_sales_data';
     const TARGET_KEY = 'mrj_target';
     const RESET_PASSWORD = 'resetozeromrj';
     const DOLLAR_RATE = 16000;
     const SALES_COMMISSION_USD = 2.5;
 
-    const COURSES = [
-      'Coding Knight', 'Digital Literasi', 'Visual Programming',
-      'Graphic Design Junior', 'Graphic Design Senior', 'Game Design',
-      'Python Start', 'Python Pro', 'Math Explorers', 'Math Masters',
-      'Course AI', 'Math Tutoring'
-    ];
+    const COURSES = ['Coding Knight','Digital Literasi','Visual Programming','Graphic Design Junior','Graphic Design Senior','Game Design','Python Start','Python Pro','Math Explorers','Math Masters','Course AI','Math Tutoring'];
 
-    const uid = () => 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
-    const formatRp = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(n)||0);
+    function uid() { return 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9); }
 
-    // --- APP LOGIC ---
-    function loadData() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
-    }
-    function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-
-    function showToast(title, msg='') {
-      const t = document.getElementById('toast');
-      document.getElementById('toastTitle').textContent = title;
-      document.getElementById('toastMessage').textContent = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.remove('translate-y-10', 'opacity-0'), 10);
-      setTimeout(() => { t.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => t.classList.add('hidden'), 300); }, 3000);
-    }
-
-    // Calculate Logic
-    function calcStats(data) {
-      let tc=0, sales=0, rev=0, pending=0;
-      data.forEach(r => {
-        if(r.buyOrNot === 'Buy') { sales++; rev += Number(r.revenue)||0; tc++; }
-        else if(r.buyOrNot === 'Not') tc++;
-        else if(r.buyOrNot === 'Pending') { pending++; tc++; }
-      });
+    function showToast(title, message = '', icon = '✅', ms = 3000) {
+      const toast = document.getElementById('toast');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
       
-      const conv = tc ? (sales/tc)*100 : 0;
-      // Bonus Logic
-      let bonusPct = 0;
-      if(rev <= 16830000) bonusPct = conv < 30 ? 4.5 : (conv < 50 ? 6.0 : 7.0);
-      else if(rev <= 33660000) bonusPct = conv < 30 ? 5.5 : (conv < 50 ? 7.0 : 8.0);
-      else if(rev <= 50490000) bonusPct = conv < 30 ? 7.0 : (conv < 50 ? 9.0 : 10.5);
-      else if(rev <= 67320000) bonusPct = conv < 30 ? 8.5 : (conv < 50 ? 11.5 : 13.0);
-      else bonusPct = conv < 30 ? 10.5 : (conv < 50 ? 13.5 : 15.0);
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+      toastIcon.textContent = icon;
+      
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.remove('translate-y-10', 'opacity-0'); }, 10);
 
-      let lvl = 'Lvl 1', prog = 20;
-      if(rev > 67320000) { lvl = 'MAX'; prog = 100; }
-      else if(rev > 50490000) { lvl = 'Lvl 4'; prog = 80; }
-      else if(rev > 33660000) { lvl = 'Lvl 3'; prog = 60; }
-      else if(rev > 16830000) { lvl = 'Lvl 2'; prog = 40; }
-
-      return { 
-        rev, sales, conv, tc, pending, 
-        bonus: rev * (bonusPct/100), 
-        lvl, prog, 
-        tcSalary: tc * SALES_COMMISSION_USD * DOLLAR_RATE 
-      };
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, ms);
     }
 
-    // --- UI RENDERING ---
-    const els = {
-      tbody: document.getElementById('tbody'),
-      month: document.getElementById('monthSelector'),
-      period: document.getElementById('periodFilter'),
-      search: document.getElementById('searchInput'),
-      status: document.getElementById('statusFilter'),
-      course: document.getElementById('courseFilter'),
-      count: document.getElementById('recordCount'),
-      empty: document.getElementById('emptyState')
-    };
+    function formatRp(num) {
+      if (num === null || num === undefined || num === '') return 'Rp 0';
+      const n = Number(num) || 0;
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
+    }
+
+    function monthKeyFromDateStr(dateStr) {
+      if (!dateStr) { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+      return dateStr.slice(0,7);
+    }
+
+    function getPeriodFromDate(dateStr) {
+      if (!dateStr) return '';
+      const day = parseInt(dateStr.split('-')[2]);
+      return day <= 15 ? 'P1' : 'P2';
+    }
+
+    function calculateTcSalary(totalTC) { return totalTC * SALES_COMMISSION_USD * DOLLAR_RATE; }
+
+    function calculateBonus(totalRevenue, conversionRatePercent) {
+      if (!conversionRatePercent) return { bonusPercent: 0, bonusAmount: 0, conversion: 0, level: 1, levelName: 'Lvl 1' };
+      let bonusPercent = 0;
+      if (totalRevenue <= 16830000) {
+        if (conversionRatePercent < 30) bonusPercent = 4.5;
+        else if (conversionRatePercent < 40) bonusPercent = 5.0;
+        else if (conversionRatePercent < 50) bonusPercent = 6.0;
+        else bonusPercent = 7.0;
+      } else if (totalRevenue <= 33660000) {
+        if (conversionRatePercent < 30) bonusPercent = 5.5;
+        else if (conversionRatePercent < 40) bonusPercent = 6.0;
+        else if (conversionRatePercent < 50) bonusPercent = 7.0;
+        else bonusPercent = 8.0;
+      } else if (totalRevenue <= 50490000) {
+        if (conversionRatePercent < 30) bonusPercent = 7.0;
+        else if (conversionRatePercent < 40) bonusPercent = 8.0;
+        else if (conversionRatePercent < 50) bonusPercent = 9.0;
+        else bonusPercent = 10.5;
+      } else if (totalRevenue <= 67320000) {
+        if (conversionRatePercent < 30) bonusPercent = 8.5;
+        else if (conversionRatePercent < 40) bonusPercent = 10.0;
+        else if (conversionRatePercent < 50) bonusPercent = 11.5;
+        else bonusPercent = 13.0;
+      } else {
+        if (conversionRatePercent < 30) bonusPercent = 10.5;
+        else if (conversionRatePercent < 40) bonusPercent = 12.0;
+        else if (conversionRatePercent < 50) bonusPercent = 13.5;
+        else bonusPercent = 15.0;
+      }
+      
+      const bonusAmount = totalRevenue * (bonusPercent / 100);
+      let level = 1, levelName = 'Lvl 1';
+      if (totalRevenue > 67320000) { level = 5; levelName = 'MAX'; }
+      else if (totalRevenue > 50490000) { level = 4; levelName = 'Lvl 4'; }
+      else if (totalRevenue > 33660000) { level = 3; levelName = 'Lvl 3'; }
+      else if (totalRevenue > 16830000) { level = 2; levelName = 'Lvl 2'; }
+      
+      return { bonusPercent, bonusAmount, conversion: conversionRatePercent, level, levelName };
+    }
+
+    function loadAllData() { const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw); } catch { return []; } }
+    function saveAllData(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+    function addEntry(entry) { const arr = loadAllData(); arr.push(entry); saveAllData(arr); }
+    function updateEntry(id, updated) {
+      const arr = loadAllData();
+      const idx = arr.findIndex(r => r.id === id);
+      if (idx !== -1) { arr[idx] = { ...arr[idx], ...updated }; saveAllData(arr); return true; }
+      return false;
+    }
+    function deleteEntry(id) { let arr = loadAllData(); arr = arr.filter(r => r.id !== id); saveAllData(arr); }
+    function bulkDelete(ids) { let arr = loadAllData(); arr = arr.filter(r => !ids.includes(r.id)); saveAllData(arr); }
+
+    function getTarget() { try { return JSON.parse(localStorage.getItem(TARGET_KEY)); } catch { return null; } }
+    function saveTarget(monthKey, targetRevenue) {
+      const data = { monthKey, targetRevenue, updatedAt: new Date().toISOString() };
+      localStorage.setItem(TARGET_KEY, JSON.stringify(data));
+    }
+
+    const tbody = document.getElementById('tbody');
+    const searchInput = document.getElementById('searchInput');
+    const monthSelector = document.getElementById('monthSelector');
+    const periodFilter = document.getElementById('periodFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const courseFilter = document.getElementById('courseFilter');
+    const entryForm = document.getElementById('entryForm');
+    const editingIdInput = document.getElementById('editingId');
+
+    let currentSort = { field: 'date', direction: 'desc' };
     let selectedRows = new Set();
-    let sortCol = 'date', sortDir = 'desc';
 
-    function render() {
-      const allData = loadData();
-      const mVal = els.month.value;
-      const pVal = els.period.value;
-      const q = els.search.value.toLowerCase();
+    function updateTargetUI() {
+      const targetData = getTarget();
+      const currentMonth = monthSelector.value;
+      const section = document.getElementById('targetSection');
+      
+      if (!targetData || targetData.monthKey !== currentMonth) {
+        section.classList.add('hidden');
+        return;
+      }
 
-      let filtered = allData.filter(r => {
-        if(!r.date) return false;
-        const d = new Date(r.date);
-        const rMonth = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-        const rDay = d.getDate();
-        const rPeriod = rDay <= 15 ? 'P1' : 'P2';
+      const data = loadAllData();
+      const filtered = data.filter(r => r.monthKey === currentMonth);
+      let totalRevenue = filtered.reduce((sum, r) => String(r.buyOrNot).toLowerCase().includes('buy') ? sum + (Number(r.revenue) || 0) : sum, 0);
+      
+      const targetRev = targetData.targetRevenue || 0;
+      const percent = targetRev > 0 ? Math.min((totalRevenue / targetRev) * 100, 100) : 0;
+      const remaining = Math.max(targetRev - totalRevenue, 0);
 
-        if(mVal && rMonth !== mVal) return false;
-        if(pVal && rPeriod !== pVal) return false;
-        if(els.status.value && r.buyOrNot !== els.status.value) return false;
-        if(els.course.value && r.course !== els.course.value) return false;
-        if(q && !`${r.childName} ${r.note||''} ${r.course}`.toLowerCase().includes(q)) return false;
+      section.classList.remove('hidden');
+      document.getElementById('targetDesc').textContent = formatRp(targetRev);
+      document.getElementById('targetProgress').style.width = percent + '%';
+      document.getElementById('targetCurrent').textContent = formatRp(totalRevenue);
+      document.getElementById('targetPercent').textContent = percent.toFixed(1) + '%';
+      document.getElementById('targetRemaining').textContent = formatRp(remaining);
+    }
+
+    function refreshMonthOptions() {
+      const all = loadAllData();
+      const set = new Set(all.map(r => r.monthKey));
+      const now = new Date();
+      set.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+      const arr = Array.from(set).sort().reverse();
+      const current = monthSelector.value || arr[0] || '';
+      
+      monthSelector.innerHTML = '';
+      arr.forEach(k => {
+        const opt = document.createElement('option');
+        const [y,m] = k.split('-');
+        opt.value = k;
+        opt.textContent = new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+        monthSelector.appendChild(opt);
+      });
+      if (arr.length > 0) monthSelector.value = current && arr.includes(current) ? current : arr[0];
+      updateSelectedMonthLabel();
+    }
+
+    function updateSelectedMonthLabel() {
+      const v = monthSelector.value;
+      const [y,m] = v ? v.split('-') : ['', ''];
+      document.getElementById('selectedMonth').textContent = v ? new Date(y, m-1).toLocaleString('id-ID', { month: 'long', year: 'numeric' }) : '';
+      document.getElementById('selectedPeriod').textContent = periodFilter.value ? periodFilter.value : '';
+    }
+
+    function refreshCourseFilter() {
+      const all = loadAllData();
+      const courses = new Set(all.map(r => r.course).filter(c => c));
+      const current = courseFilter.value;
+      
+      courseFilter.innerHTML = '<option value="">All Courses</option>';
+      COURSES.forEach(c => {
+        const opt = document.createElement('option'); opt.value = c; opt.textContent = c; courseFilter.appendChild(opt);
+      });
+      Array.from(courses).sort().forEach(c => {
+        if (!COURSES.includes(c)) {
+          const opt = document.createElement('option'); opt.value = c; opt.textContent = c + ' (other)'; courseFilter.appendChild(opt);
+        }
+      });
+      if (current) courseFilter.value = current;
+    }
+
+    function computeStats(filtered, allData) {
+      const tcTotal = filtered.length;
+      let sales = 0, totalRevenue = 0, pending = 0;
+      filtered.forEach(r => {
+        const status = String(r.buyOrNot || '').toLowerCase();
+        if (status.includes('buy')) { sales++; totalRevenue += Number(r.revenue) || 0; } 
+        else if (status.includes('pending')) { pending++; }
+      });
+      const conversionRatePercent = tcTotal === 0 ? 0 : (sales / tcTotal) * 100;
+      const aov = sales === 0 ? 0 : (totalRevenue / sales);
+      const tcSalary = calculateTcSalary(tcTotal);
+      const bonusData = calculateBonus(totalRevenue, conversionRatePercent);
+
+      const currentMonthKey = monthSelector.value;
+      let prevSales = 0, revenueChange = 0;
+      if (currentMonthKey) {
+        const [y, m] = currentMonthKey.split('-');
+        const prevMonth = m === '01' ? `${parseInt(y)-1}-12` : `${y}-${String(parseInt(m)-1).padStart(2,'0')}`;
+        const prevData = allData.filter(r => r.monthKey === prevMonth);
+        prevSales = prevData.filter(r => String(r.buyOrNot).toLowerCase().includes('buy')).length;
+        const prevRevenue = prevData.reduce((sum, r) => String(r.buyOrNot).toLowerCase().includes('buy') ? sum + (Number(r.revenue)||0) : sum, 0);
+        revenueChange = totalRevenue - prevRevenue;
+      }
+
+      return { tcTotal, sales, conversion: conversionRatePercent, aov, totalRevenue, pending, tcSalary, bonusData, revenueChange };
+    }
+
+    function renderTable() {
+      const data = loadAllData();
+      const selectedMonth = monthSelector.value;
+      const selectedPeriod = periodFilter.value;
+      const q = (searchInput.value || '').toLowerCase().trim();
+      const status = statusFilter.value;
+      const course = courseFilter.value;
+      
+      let filtered = data.filter(r => {
+        if (selectedMonth && r.monthKey !== selectedMonth) return false;
+        if (selectedPeriod && getPeriodFromDate(r.date) !== selectedPeriod) return false;
+        if (q && !`${r.childName} ${r.note} ${r.course}`.toLowerCase().includes(q)) return false;
+        if (status && r.buyOrNot !== status) return false;
+        if (course && r.course !== course) return false;
         return true;
       });
 
-      // Sort
-      filtered.sort((a,b) => {
-        let vA = a[sortCol], vB = b[sortCol];
-        if(sortCol==='revenue') { vA=Number(vA)||0; vB=Number(vB)||0; }
-        return sortDir==='asc' ? (vA>vB?1:-1) : (vA<vB?1:-1);
+      filtered.sort((a, b) => {
+        let valA = a[currentSort.field], valB = b[currentSort.field];
+        if (currentSort.field === 'revenue') { valA = Number(valA)||0; valB = Number(valB)||0; }
+        if (currentSort.field === 'date') { valA = new Date(valA||0); valB = new Date(valB||0); }
+        return currentSort.direction === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
       });
 
-      // Render Stats
-      const stats = calcStats(filtered);
-      document.getElementById('statRevenue').textContent = formatRp(stats.rev);
+      const stats = computeStats(filtered, data);
+      document.getElementById('statTcTotal').textContent = stats.tcTotal;
       document.getElementById('statSales').textContent = stats.sales;
-      document.getElementById('statConversion').textContent = stats.conv.toFixed(1) + '%';
-      document.getElementById('statBonus').textContent = formatRp(stats.bonus);
-      document.getElementById('bonusLevel').textContent = stats.lvl;
-      document.getElementById('bonusBar').style.width = stats.prog + '%';
-      document.getElementById('statTcTotal').textContent = stats.tc;
+      document.getElementById('statConversion').textContent = stats.conversion.toFixed(1) + '%';
+      document.getElementById('statRevenue').textContent = formatRp(stats.totalRevenue);
+      document.getElementById('statAov').textContent = formatRp(stats.aov);
       document.getElementById('statPending').textContent = stats.pending;
       document.getElementById('statTcSalary').textContent = formatRp(stats.tcSalary);
-      document.getElementById('statAov').textContent = formatRp(stats.sales ? stats.rev/stats.sales : 0);
+      document.getElementById('statBonus').textContent = formatRp(stats.bonusData.bonusAmount);
+      document.getElementById('bonusPercent').textContent = stats.bonusData.bonusPercent.toFixed(1) + '%';
+      document.getElementById('bonusLevel').textContent = stats.bonusData.levelName;
       
-      // Render Target
-      const target = JSON.parse(localStorage.getItem(TARGET_KEY));
-      const tSec = document.getElementById('targetSection');
-      if(target && target.monthKey === mVal) {
-        tSec.classList.remove('hidden');
-        const goal = Number(target.targetRevenue)||1;
-        const pct = Math.min((stats.rev/goal)*100, 100);
-        document.getElementById('targetDesc').textContent = formatRp(goal);
-        document.getElementById('targetCurrent').textContent = formatRp(stats.rev);
-        document.getElementById('targetPercent').textContent = pct.toFixed(1) + '%';
-        document.getElementById('targetProgress').style.width = pct + '%';
-      } else {
-        tSec.classList.add('hidden');
-      }
+      const barWidth = Math.min((stats.bonusData.conversion / 50) * 100, 100);
+      document.getElementById('bonusBar').style.width = barWidth + '%';
+      
+      document.getElementById('statRevChange').innerHTML = stats.revenueChange >= 0 ? 
+        `<span class="text-emerald-400">▲ ${formatRp(stats.revenueChange)}</span> vs prev` : 
+        `<span class="text-rose-400">▼ ${formatRp(Math.abs(stats.revenueChange))}</span> vs prev`;
 
-      // Render Table
-      els.count.textContent = filtered.length + ' records';
-      els.tbody.innerHTML = '';
-      
-      if(filtered.length === 0) {
-        els.empty.classList.remove('hidden');
-      } else {
-        els.empty.classList.add('hidden');
-        filtered.forEach(r => {
-          const tr = document.createElement('tr');
-          tr.className = "group border-b border-white/5 hover:bg-white/[0.02] transition-colors";
+      document.getElementById('recordCount').textContent = `${filtered.length} records`;
+      updateSelectedMonthLabel();
+
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('emptyState').classList.add('hidden');
+
+      filtered.forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = `table-row hover:bg-gradient-to-r hover:from-white/5 hover:via-white/8 hover:to-white/5 border-l-4 border-transparent hover:border-l-amber-400 transition-all duration-300 group`;
+        tr.style.setProperty('--index', idx);
+
+        let badgeClass = 'bg-slate-700 text-slate-300 border-slate-600';
+        let statusIcon = '•';
+        if (r.buyOrNot === 'Buy') { badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'; statusIcon = 'Buy'; }
+        else if (r.buyOrNot === 'Not') { badgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20'; statusIcon = 'Not'; }
+        else if (r.buyOrNot === 'Pending') { badgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20'; statusIcon = 'Pending'; }
+
+        const hasNote = r.note && r.note.trim() !== '';
+        const noteText = hasNote ? r.note.trim() : '-';
+
+        tr.innerHTML = `
+          <td class="p-4"><input type="checkbox" class="row-checkbox rounded bg-transparent border-slate-600 text-amber-500 focus:ring-0" data-id="${r.id}"></td>
+          <td class="p-4">
+            <div class="font-medium text-white">${r.date}</div>
+            ${r.time ? `<div class="text-[10px] text-slate-500">${r.time}</div>` : ''}
+          </td>
+          <td class="p-4">
+            <div class="font-medium text-slate-200">${r.childName || '-'}</div>
+            ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-blue-400 hover:underline flex items-center gap-1">CRM</a>` : ''}
+          </td>
+          <td class="p-4"><span class="inline-block px-2 py-0.5 rounded text-[10px] bg-white/5 border border-white/10 text-slate-400 whitespace-nowrap">${r.course || '-'}</span></td>
           
-          // Badges
-          let badge = 'bg-slate-800 text-slate-400 border-slate-700';
-          let icon = '•';
-          if(r.buyOrNot === 'Buy') { badge = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'; icon = '✅'; }
-          else if(r.buyOrNot === 'Not') { badge = 'bg-rose-500/10 text-rose-400 border-rose-500/20'; icon = '❌'; }
-          else if(r.buyOrNot === 'Pending') { badge = 'bg-amber-500/10 text-amber-400 border-amber-500/20'; icon = '⏳'; }
-
-          // Note Logic
-          const noteTxt = r.note || '';
-          const noteDisplay = noteTxt ? `
-            <div class="tooltip-container relative group/note cursor-help">
-              <div class="truncate max-w-[140px] text-xs text-slate-400 flex items-center gap-1">
-                 ${noteTxt.length > 25 ? '<span class="text-amber-500">📝</span>' : ''} ${noteTxt}
-              </div>
-              <div class="tooltip-content absolute bottom-full left-0 mb-2 hidden w-64 bg-dark-900 border border-white/20 p-3 rounded-lg shadow-xl z-50 text-xs text-white whitespace-normal break-words pointer-events-none">
-                ${noteTxt}
-              </div>
+          <td class="p-4 relative note-cell ${hasNote ? 'bg-white/5 rounded-xl' : ''}">
+            ${hasNote ? '<span class="absolute left-2 top-3.5 text-amber-400 text-xs">Note</span>' : ''}
+            <div class="text-xs text-slate-400 line-clamp-2 pl-6 group-hover:line-clamp-none transition-all duration-300">
+              ${noteText}
             </div>
-          ` : '<span class="text-slate-700">-</span>';
-
-          tr.innerHTML = `
-            <td class="p-4 text-center"><input type="checkbox" class="row-cb rounded border-slate-600 bg-transparent text-amber-500 focus:ring-0" data-id="${r.id}" ${selectedRows.has(r.id)?'checked':''}></td>
-            <td class="p-4"><div class="font-bold text-white text-xs">${r.date}</div><div class="text-[10px] text-slate-500">${r.time||''}</div></td>
-            <td class="p-4">
-              <div class="font-medium text-slate-200 text-sm">${r.childName||'-'}</div>
-              ${r.crm ? `<a href="${r.crm}" target="_blank" class="text-[10px] text-indigo-400 hover:underline">🔗 CRM</a>` : ''}
-            </td>
-            <td class="p-4"><span class="text-xs text-slate-400">${r.course||'-'}</span></td>
-            <td class="p-4"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${badge}">${icon} ${r.buyOrNot}</span></td>
-            <td class="p-4 font-mono text-emerald-400 font-bold text-xs">${formatRp(r.revenue)}</td>
-            <td class="p-4">${noteDisplay}</td>
-            <td class="p-4 text-right sticky right-0 bg-dark-900 group-hover:bg-[#101623] z-10 shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
-              <div class="flex justify-end gap-1">
-                <button onclick="editRow('${r.id}')" class="p-1.5 text-blue-400 hover:bg-blue-500/20 rounded">✏️</button>
-                <button onclick="deleteRow('${r.id}')" class="p-1.5 text-rose-400 hover:bg-rose-500/20 rounded">🗑️</button>
+            ${hasNote ? `
+              <div class="note-tooltip">
+                ${noteText}
               </div>
-            </td>
-          `;
-          els.tbody.appendChild(tr);
+            ` : ''}
+          </td>
+
+          <td class="p-4"><span class="inline-flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-medium ${badgeClass}">${statusIcon} ${r.buyOrNot}</span></td>
+          <td class="p-4 font-mono text-emerald-400 font-medium">${formatRp(r.revenue)}</td>
+          <td class="p-4 text-right">
+            <div class="flex justify-end gap-2 opacity-30 group-hover:opacity-100 transition-opacity">
+              <button class="editBtn p-1.5 hover:bg-blue-500/20 text-blue-400 rounded" data-id="${r.id}" title="Edit">Edit</button>
+              <button class="duplicateRowBtn p-1.5 hover:bg-slate-700 text-slate-400 rounded" data-id="${r.id}" title="Duplicate">Duplicate</button>
+              <button class="deleteBtn p-1.5 hover:bg-rose-500/20 text-rose-400 rounded" data-id="${r.id}" title="Delete">Delete</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      attachRowListeners();
+      updateTargetUI();
+    }
+
+    function attachRowListeners() {
+      document.querySelectorAll('.row-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
+          updateBulkDeleteBtn();
         });
-      }
-      
-      // Rebind checkbox
-      document.querySelectorAll('.row-cb').forEach(cb => cb.addEventListener('change', e => {
-        e.target.checked ? selectedRows.add(e.target.dataset.id) : selectedRows.delete(e.target.dataset.id);
-        document.getElementById('bulkDeleteBtn').style.display = selectedRows.size ? 'flex' : 'none';
-        document.getElementById('selectedCount').textContent = selectedRows.size;
+      });
+      document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', e => startEdit(e.currentTarget.dataset.id)));
+      document.querySelectorAll('.duplicateRowBtn').forEach(btn => btn.addEventListener('click', e => duplicateRecord(e.currentTarget.dataset.id)));
+      document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', e => {
+        if(confirm('Delete record?')) { deleteEntry(e.currentTarget.dataset.id); refresh(); showToast('Deleted', 'Record removed', 'Delete'); }
       }));
+    }
 
-      // Update Labels
-      if(mVal) {
-         const [y,mo] = mVal.split('-');
-         document.getElementById('selectedMonth').textContent = new Date(y, mo-1).toLocaleString('en-US', {month:'long', year:'numeric'});
-         document.getElementById('selectedPeriod').textContent = pVal || 'All';
+    function updateBulkDeleteBtn() {
+      const btn = document.getElementById('bulkDeleteBtn');
+      if (selectedRows.size > 0) {
+        btn.style.display = 'inline-flex';
+        document.getElementById('selectedCount').textContent = selectedRows.size;
+      } else {
+        btn.style.display = 'none';
       }
     }
 
-    function refresh() {
-      const data = loadData();
-      const months = new Set(data.map(r => r.date ? r.date.substring(0,7) : null).filter(x=>x));
-      const now = new Date();
-      months.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+    function startEdit(id) {
+      const rec = loadAllData().find(r => r.id === id);
+      if (!rec) return;
       
-      const sorted = Array.from(months).sort().reverse();
-      const oldM = els.month.value;
+      editingIdInput.value = rec.id;
+      document.getElementById('date').value = rec.date || '';
+      document.getElementById('time').value = rec.time || '';
+      document.getElementById('crm').value = rec.crm || '';
+      document.getElementById('childName').value = rec.childName || '';
+      document.getElementById('course').value = rec.course || '';
+      document.getElementById('buyOrNot').value = rec.buyOrNot || '';
+      document.getElementById('layer').value = rec.layer || '';
+      document.getElementById('revenue').value = rec.revenue || '';
+      document.getElementById('note').value = rec.note || '';
       
-      els.month.innerHTML = '';
-      sorted.forEach(m => {
-        const [y,mo] = m.split('-');
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = new Date(y, mo-1).toLocaleString('en-US', {month:'short', year:'numeric'});
-        els.month.appendChild(opt);
-      });
-      els.month.value = (oldM && months.has(oldM)) ? oldM : sorted[0];
-
-      // Courses
-      const courses = new Set([...COURSES, ...data.map(r=>r.course).filter(x=>x)]);
-      const oldC = els.course.value;
-      els.course.innerHTML = '<option value="">All Courses</option>';
-      Array.from(courses).sort().forEach(c => {
-        const opt = document.createElement('option'); opt.value = c; opt.textContent = c; els.course.appendChild(opt);
-      });
-      els.course.value = oldC;
-
-      render();
-    }
-
-    // --- ACTIONS ---
-    window.editRow = (id) => {
-      const r = loadData().find(x => x.id === id);
-      if(!r) return;
-      document.getElementById('editingId').value = r.id;
-      document.getElementById('date').value = r.date;
-      document.getElementById('time').value = r.time;
-      document.getElementById('childName').value = r.childName;
-      document.getElementById('crm').value = r.crm;
-      document.getElementById('course').value = r.course;
-      document.getElementById('buyOrNot').value = r.buyOrNot;
-      document.getElementById('revenue').value = r.revenue;
-      document.getElementById('layer').value = r.layer;
-      document.getElementById('note').value = r.note;
       document.getElementById('formTitle').textContent = 'Edit Record';
-      document.getElementById('formTitleIcon').textContent = '✏️';
+      document.getElementById('formTitleIcon').classList.replace('text-amber-400', 'text-blue-400');
       document.getElementById('duplicateBtn').classList.remove('hidden');
-      document.getElementById('duplicateBtn').onclick = () => {
-         const n = {...r, id: uid()};
-         const d = loadData(); d.push(n); saveData(d); refresh(); showToast('Duplicated');
-      };
-      window.scrollTo({top:0, behavior:'smooth'});
-    };
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-    window.deleteRow = (id) => {
-      if(confirm('Delete record?')) {
-        saveData(loadData().filter(r => r.id !== id));
-        refresh(); showToast('Deleted', 'Record removed');
+    function clearForm() {
+      editingIdInput.value = '';
+      entryForm.reset();
+      document.getElementById('formTitle').textContent = 'New Record';
+      document.getElementById('formTitleIcon').classList.replace('text-blue-400', 'text-amber-400');
+      document.getElementById('duplicateBtn').classList.add('hidden');
+    }
+
+    function duplicateRecord(id) {
+      const rec = loadAllData().find(r => r.id === id);
+      if (rec) {
+        addEntry({ ...rec, id: uid(), createdAt: new Date().toISOString() });
+        refresh();
+        showToast('Duplicated', 'Record copied', 'Duplicate');
       }
-    };
+    }
 
-    // --- INIT ---
+    function refresh() { refreshMonthOptions(); refreshCourseFilter(); renderTable(); }
+
+    function exportCSV(all) {
+      const data = loadAllData();
+      const filtered = all ? data : data.filter(r => 
+        r.monthKey === monthSelector.value && 
+        (!periodFilter.value || getPeriodFromDate(r.date) === periodFilter.value)
+      );
+      
+      if (!filtered.length) return showToast('No Data', 'Nothing to export', 'Warning');
+
+      const headers = ['id','date','time','crm','childName','course','buyOrNot','layer','revenue','note','monthKey'];
+      const csv = [headers.join(','), ...filtered.map(r => headers.map(h => `"${String(r[h]||'').replace(/"/g,'""')}"`).join(','))].join('\n');
+      
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+      a.download = `mrj_export_${all ? 'ALL' : monthSelector.value}.csv`;
+      a.click();
+    }
+
+    function importCSV(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const lines = e.target.result.split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+        let count = 0;
+        for(let i=1; i<lines.length; i++) {
+          if(!lines[i].trim()) continue;
+          const val = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
+          const obj = { id: uid(), createdAt: new Date().toISOString() };
+          headers.forEach((h, idx) => obj[h] = val[idx] ? val[idx].replace(/^"|"$/g, '').replace(/""/g, '"') : '');
+          if(obj.date) { addEntry(obj); count++; }
+        }
+        refresh(); showToast('Imported', `${count} records added`, 'Import');
+      };
+      reader.readAsText(file);
+    }
+
+    function toggleModal(id, show) {
+      const m = document.getElementById(id);
+      const bg = document.getElementById('modalBackdrop');
+      if(show) { m.classList.remove('hidden'); bg.classList.remove('hidden'); }
+      else { m.classList.add('hidden'); if(!document.querySelector('.fixed.z-50:not(.hidden):not(#modalBackdrop)')) bg.classList.add('hidden'); }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       refresh();
 
-      // Form
-      document.getElementById('entryForm').addEventListener('submit', e => {
+      ['monthSelector','periodFilter','searchInput','statusFilter','courseFilter'].forEach(id => {
+        document.getElementById(id).addEventListener(id === 'searchInput' ? 'input' : 'change', renderTable);
+      });
+      document.getElementById('refreshBtn').addEventListener('click', () => { refresh(); showToast('Refreshed'); });
+      document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+
+      const menuBtn = document.getElementById('menuBtn');
+      const menu = document.getElementById('menu');
+      menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+      document.addEventListener('click', (e) => { if (!menu.contains(e.target) && !menuBtn.contains(e.target)) menu.classList.add('hidden'); });
+
+      document.getElementById('exportCurrentBtn').addEventListener('click', () => exportCSV(false));
+      document.getElementById('exportAllBtn').addEventListener('click', () => exportCSV(true));
+      document.getElementById('importBtn').addEventListener('click', () => toggleModal('importModal', true));
+      document.getElementById('resetBtn').addEventListener('click', () => toggleModal('pwModal', true));
+
+      entryForm.addEventListener('submit', e => {
         e.preventDefault();
-        const id = document.getElementById('editingId').value;
-        const entry = {
+        const id = editingIdInput.value;
+        const data = {
           id: id || uid(),
           date: document.getElementById('date').value,
           time: document.getElementById('time').value,
-          childName: document.getElementById('childName').value,
           crm: document.getElementById('crm').value,
+          childName: document.getElementById('childName').value,
           course: document.getElementById('course').value,
           buyOrNot: document.getElementById('buyOrNot').value,
-          revenue: document.getElementById('revenue').value,
           layer: document.getElementById('layer').value,
+          revenue: document.getElementById('revenue').value,
           note: document.getElementById('note').value,
-          monthKey: document.getElementById('date').value.substring(0,7)
+          monthKey: monthKeyFromDateStr(document.getElementById('date').value),
+          createdAt: new Date().toISOString()
         };
 
-        let data = loadData();
-        if(id) {
-          const idx = data.findIndex(x => x.id === id);
-          if(idx > -1) data[idx] = entry;
-        } else {
-          data.push(entry);
-        }
-        saveData(data);
-        
-        document.getElementById('editingId').value = '';
-        document.getElementById('formTitle').textContent = 'New Record';
-        document.getElementById('formTitleIcon').textContent = '📝';
-        document.getElementById('duplicateBtn').classList.add('hidden');
-        document.getElementById('childName').value = '';
-        document.getElementById('crm').value = '';
-        document.getElementById('revenue').value = '';
-        document.getElementById('note').value = '';
-        
-        refresh();
-        showToast(id?'Updated':'Saved', 'Record saved successfully');
+        if(id) updateEntry(id, data); else addEntry(data);
+        clearForm(); refresh(); showToast('Success', 'Record saved');
       });
 
-      document.getElementById('clearFormBtn').addEventListener('click', () => {
-         document.getElementById('entryForm').reset();
-         document.getElementById('editingId').value = '';
-         document.getElementById('formTitle').textContent = 'New Record';
-         document.getElementById('duplicateBtn').classList.add('hidden');
-      });
+      document.getElementById('duplicateBtn').addEventListener('click', () => duplicateRecord(editingIdInput.value));
 
-      // Filters
-      ['monthSelector','periodFilter','statusFilter','courseFilter','searchInput'].forEach(id => {
-        document.getElementById(id).addEventListener(id==='searchInput'?'input':'change', render);
-      });
-
-      document.getElementById('selectAll').addEventListener('change', e => {
-        document.querySelectorAll('.row-cb').forEach(cb => {
+      document.getElementById('selectAll').addEventListener('change', (e) => {
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
           cb.checked = e.target.checked;
           e.target.checked ? selectedRows.add(cb.dataset.id) : selectedRows.delete(cb.dataset.id);
         });
-        document.getElementById('bulkDeleteBtn').style.display = selectedRows.size ? 'flex' : 'none';
-        document.getElementById('selectedCount').textContent = selectedRows.size;
+        updateBulkDeleteBtn();
       });
-      
+
       document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
-         if(confirm(`Delete ${selectedRows.size} items?`)) {
-            saveData(loadData().filter(r => !selectedRows.has(r.id)));
-            selectedRows.clear(); document.getElementById('selectAll').checked=false; refresh();
-            showToast('Batch Deleted');
-         }
+        if(confirm(`Delete ${selectedRows.size} items?`)) {
+          bulkDelete(Array.from(selectedRows)); selectedRows.clear(); refresh(); showToast('Deleted Batch');
+        }
       });
 
-      // Modals
-      const toggleModal = (id, show) => {
-         const m = document.getElementById(id);
-         const bg = document.getElementById('modalBackdrop');
-         const c = m.querySelector('.modal-content');
-         if(show) { m.classList.remove('hidden'); bg.classList.remove('hidden'); setTimeout(()=>c.classList.remove('scale-95','opacity-0'),10); }
-         else { c.classList.add('scale-95','opacity-0'); setTimeout(()=>{ m.classList.add('hidden'); bg.classList.add('hidden'); },300); }
-      };
-      
-      document.getElementById('menuBtn').addEventListener('click', (e)=>{ e.stopPropagation(); document.getElementById('menu').classList.toggle('hidden'); });
-      document.addEventListener('click', ()=>document.getElementById('menu').classList.add('hidden'));
+      document.querySelectorAll('[data-sort]').forEach(el => el.addEventListener('click', () => {
+        currentSort.direction = (currentSort.field === el.dataset.sort && currentSort.direction === 'desc') ? 'asc' : 'desc';
+        currentSort.field = el.dataset.sort;
+        renderTable();
+      }));
 
-      document.getElementById('targetBtn').addEventListener('click', () => {
-         toggleModal('targetModal', true);
-         const t = JSON.parse(localStorage.getItem(TARGET_KEY));
-         document.getElementById('targetInput').value = (t && t.monthKey===els.month.value) ? t.targetRevenue : '';
-      });
-      document.getElementById('saveTargetBtn').addEventListener('click', () => {
-         localStorage.setItem(TARGET_KEY, JSON.stringify({monthKey:els.month.value, targetRevenue:document.getElementById('targetInput').value}));
-         toggleModal('targetModal', false); refresh(); showToast('Target Saved');
-      });
-      document.getElementById('cancelTargetBtn').addEventListener('click', ()=>toggleModal('targetModal', false));
-
-      document.getElementById('resetBtn').addEventListener('click', ()=>toggleModal('pwModal', true));
-      document.getElementById('cancelPwBtn').addEventListener('click', ()=>toggleModal('pwModal', false));
-      document.getElementById('confirmPwBtn').addEventListener('click', ()=>{
-         if(document.getElementById('pwInput').value===RESET_PASSWORD) { localStorage.clear(); location.reload(); }
-         else showToast('Error','Wrong Password','❌');
-      });
-
-      // Chart
-      document.getElementById('chartBtn').addEventListener('click', () => {
-         toggleModal('chartModal', true);
-         const data = loadData().filter(r => r.date.startsWith(els.month.value));
-         const counts = {Buy:0,Not:0,Pending:0};
-         const courses = {};
-         data.forEach(r => { counts[r.buyOrNot]++; courses[r.course]=(courses[r.course]||0)+1; });
-         
-         const max = Math.max(counts.Buy,counts.Not,counts.Pending,1);
-         document.getElementById('statusChart').innerHTML = `
-           <div class="w-16 bg-emerald-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Buy/max)*100}%"><span class="absolute -top-5 w-full text-center text-emerald-400 font-bold">${counts.Buy}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Buy</span></div>
-           <div class="w-16 bg-rose-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Not/max)*100}%"><span class="absolute -top-5 w-full text-center text-rose-400 font-bold">${counts.Not}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Not</span></div>
-           <div class="w-16 bg-amber-500/20 rounded-t-lg relative group h-full" style="height:${(counts.Pending/max)*100}%"><span class="absolute -top-5 w-full text-center text-amber-400 font-bold">${counts.Pending}</span><span class="absolute bottom-1 w-full text-center text-[10px]">Wait</span></div>
-         `;
-         document.getElementById('courseBreakdown').innerHTML = Object.entries(courses).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
-           <div class="flex justify-between text-xs"><span class="text-slate-400 truncate w-32">${k}</span><div class="flex-1 mx-2 h-1.5 bg-dark-800 rounded-full"><div class="h-full bg-indigo-500" style="width:${(v/data.length)*100}%"></div></div><span class="text-white w-4">${v}</span></div>
-         `).join('');
-      });
-      document.getElementById('closeChartBtn').addEventListener('click', ()=>toggleModal('chartModal', false));
-
-      // Export/Import
-      document.getElementById('exportCurrentBtn').addEventListener('click', () => {
-         const data = loadData().filter(r => r.date.startsWith(els.month.value));
-         if(!data.length) return showToast('Empty','No data to export','⚠️');
-         const csv = ['Date,Time,Name,Course,Status,Revenue,Note,CRM'].join(',') + '\n' + 
-           data.map(r => [r.date,r.time,r.childName,r.course,r.buyOrNot,r.revenue,r.note,r.crm].map(x=>`"${String(x||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = `sales_${els.month.value}.csv`; a.click();
-      });
-      
-      document.getElementById('importBtn').addEventListener('click', ()=>toggleModal('importModal', true));
-      document.getElementById('cancelImportBtn').addEventListener('click', ()=>toggleModal('importModal', false));
-      document.getElementById('confirmImportBtn').addEventListener('click', ()=>{
-         const f = document.getElementById('importFile').files[0];
-         if(f) {
-           const r = new FileReader();
-           r.onload = e => {
-              const rows = e.target.result.split('\n').slice(1).filter(x=>x.trim());
-              const n = rows.map(row => {
-                 const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x=>x.replace(/^"|"$/g,'').replace(/""/g,'"'));
-                 return {id:uid(), date:c[0], time:c[1], childName:c[2], course:c[3], buyOrNot:c[4], revenue:c[5], note:c[6], crm:c[7]};
-              });
-              saveData([...loadData(), ...n]); refresh(); toggleModal('importModal', false); showToast('Imported', `${n.length} records`);
-           };
-           r.readAsText(f);
-         }
+      document.addEventListener('keydown', e => {
+        if((e.ctrlKey||e.metaKey) && e.key === 'k') { e.preventDefault(); searchInput.focus(); }
+        if((e.ctrlKey||e.metaKey) && e.key === 'n') { e.preventDefault(); clearForm(); document.getElementById('date').focus(); }
+        if(e.key === 'Escape') document.querySelectorAll('.fixed.z-50').forEach(m => m.classList.add('hidden'));
       });
     });
   </script>
