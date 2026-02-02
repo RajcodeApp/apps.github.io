@@ -1,1152 +1,1492 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Algonova Calculator Ultra Pro | Mi Raj v3.1</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root {
---primary: #6366F1; --primary-dark: #4F46E5; --secondary: #8B5CF6;
---accent: #EC4899; --success: #10B981; --warning: #F59E0B; --danger: #EF4444; --info: #3B82F6;
---bg-main: #0A0E1A; --bg-card: #151B2E; --bg-elevated: #1F2937; --bg-input: #0F1623;
---text-primary: #F8FAFC; --text-secondary: #94A3B8; --text-muted: #64748B;
---border: #1F2937; --border-light: #374151;
-}
-[data-theme="light"] {
---bg-main: #F8FAFC; --bg-card: #FFFFFF; --bg-elevated: #F1F5F9; --bg-input: #FFFFFF;
---text-primary: #0F172A; --text-secondary: #475569; --text-muted: #94A3B8;
---border: #E2E8F0; --border-light: #CBD5E1;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-primary);
-line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden;
-transition: all 0.3s ease;
-}
-.animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
-.gradient-orb {
-position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.12;
-animation: float 25s infinite ease-in-out;
-}
-.orb-1 { width: 450px; height: 450px; background: linear-gradient(135deg, var(--primary), var(--secondary)); top: -180px; right: -180px; }
-.orb-2 { width: 350px; height: 350px; background: linear-gradient(135deg, var(--accent), var(--secondary)); bottom: -130px; left: -130px; animation-delay: 7s; }
-.orb-3 { width: 280px; height: 280px; background: linear-gradient(135deg, var(--success), var(--primary)); top: 45%; left: 55%; transform: translate(-50%, -50%); animation-delay: 12s; }
-@keyframes float {
-0%, 100% { transform: translate(0, 0) scale(1); }
-33% { transform: translate(40px, -40px) scale(1.08); }
-66% { transform: translate(-40px, 40px) scale(0.95); }
-}
-.font-display { font-family: 'Manrope', sans-serif; }
-.main-container { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-.header {
-flex-shrink: 0; background: rgba(21, 27, 46, 0.88); backdrop-filter: blur(25px);
-border-bottom: 1px solid var(--border); padding: 0.875rem 0; z-index: 40;
-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-}
-[data-theme="light"] .header { background: rgba(255, 255, 255, 0.92); }
-.content-area { flex: 1; overflow: hidden; display: flex; padding: 1rem 1.5rem; gap: 1rem; max-width: 1600px; margin: 0 auto; width: 100%; }
-.packages-area { flex: 1; overflow-y: auto; padding-right: 0.5rem; }
-.summary-area { width: 380px; flex-shrink: 0; overflow-y: auto; padding-left: 0.5rem; }
-.packages-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-
-/* ===== TETAP PAKAI STRUKTUR CARD ASLI v3.0 ===== */
-.card {
-background: rgba(21, 27, 46, 0.75); backdrop-filter: blur(20px);
-border-radius: 18px; border: 1px solid var(--border);
-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-[data-theme="light"] .card { background: rgba(255, 255, 255, 0.92); }
-.card:hover {
-border-color: var(--primary); transform: translateY(-3px);
-box-shadow: 0 15px 35px rgba(99, 102, 241, 0.22);
-}
-.card-header {
-padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-background: linear-gradient(135deg, rgba(99, 102, 241, 0.07), rgba(139, 92, 246, 0.07));
-}
-.card-body { padding: 1.25rem; }
-
-.input-group { margin-bottom: 0.875rem; }
-.input-label {
-display: block; font-size: 0.6875rem; font-weight: 700; color: var(--text-secondary);
-margin-bottom: 0.375rem; text-transform: uppercase; letter-spacing: 0.05em;
-}
-.input-field {
-width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500;
-color: var(--text-primary); background: var(--bg-input); border: 2px solid var(--border);
-border-radius: 12px; transition: all 0.3s; outline: none;
-}
-.input-field:focus {
-border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-background: var(--bg-elevated);
-}
-
-.badge {
-display: inline-flex; align-items: center; padding: 0.5rem 1rem; font-size: 0.75rem;
-font-weight: 700; border-radius: 20px;
-background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
-animation: pulse 2s infinite; box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
-}
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.9; } }
-
-/* ===== TOMBOL DENGAN MICRO-INTERACTIONS ===== */
-.btn {
-display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-padding: 0.875rem 1.5rem; font-size: 0.875rem; font-weight: 600; border-radius: 12px;
-border: none; cursor: pointer; transition: all 0.25s; outline: none; position: relative;
-overflow: hidden; min-height: 44px;
-}
-.btn::after {
-content: ''; position: absolute; inset: 0; opacity: 0;
-background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-transform: scale(0.8); transition: transform 0.5s, opacity 0.5s;
-}
-.btn:hover::after { transform: scale(2.2); opacity: 1; }
-.btn:active { transform: scale(0.97); }
-.btn-primary {
-background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
-box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); }
-.btn-success {
-background: linear-gradient(135deg, var(--success), #059669); color: white;
-box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-}
-.btn-warning {
-background: linear-gradient(135deg, var(--warning), #D97706); color: white;
-box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-}
-.btn-danger {
-background: linear-gradient(135deg, var(--danger), #DC2626); color: white;
-box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-}
-.btn-secondary {
-background: var(--bg-elevated); color: var(--text-primary);
-border: 2px solid var(--border-light);
-}
-.btn-secondary:hover { 
-background: var(--bg-card); border-color: var(--primary); 
-transform: translateY(-2px);
-}
-
-/* ===== THEME TOGGLE DENGAN IKON ===== */
-.theme-toggle {
-width: 72px; height: 36px; background: var(--bg-elevated); border-radius: 18px;
-border: 2px solid var(--border); position: relative; cursor: pointer; transition: all 0.35s;
-}
-.theme-toggle-ball {
-width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary), var(--secondary));
-border-radius: 50%; position: absolute; top: 2px; left: 2px;
-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center;
-justify-content: center; color: white; font-size: 0.7rem; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-}
-[data-theme="light"] .theme-toggle-ball { 
-left: 40px; 
-background: linear-gradient(135deg, #F59E0B, #F97316);
-}
-.theme-toggle-ball i { font-size: 0.65rem; }
-
-/* ===== FAB RADIAL MENU (LEBIH RAPI) ===== */
-.fab-container {
-position: fixed; bottom: 2rem; right: 2rem; z-index: 100;
-display: flex; flex-direction: column; gap: 1rem;
-}
-.fab {
-width: 56px; height: 56px; border-radius: 50%;
-background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
-display: flex; align-items: center; justify-content: center; cursor: pointer;
-box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
-transition: all 0.35s; border: none; position: relative; font-size: 1.1rem;
-}
-.fab:hover { 
-transform: scale(1.12) rotate(5deg); 
-box-shadow: 0 12px 35px rgba(99, 102, 241, 0.6);
-}
-.fab-tooltip {
-position: absolute; right: 70px; background: var(--bg-card); color: var(--text-primary);
-padding: 0.625rem 1rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;
-white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.3s;
-border: 1px solid var(--border); box-shadow: 0 5px 20px rgba(0,0,0,0.25);
-}
-.fab:hover .fab-tooltip { 
-opacity: 1; right: 75px; 
-}
-
-/* ===== ANALYTICS CARD DENGAN STAT BARU ===== */
-.analytics-card {
-background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
-border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem;
-box-shadow: 0 20px 40px rgba(99, 102, 241, 0.35); position: relative; overflow: hidden;
-}
-.analytics-card::before {
-content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%;
-background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
-animation: rotate 25s linear infinite;
-}
-@keyframes rotate { to { transform: rotate(360deg); } }
-.stats-grid { 
-display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; margin-top: 1.1rem; 
-}
-.stat-item {
-background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(8px);
-padding: 1.05rem; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.25);
-transition: all 0.25s;
-}
-.stat-item:hover { 
-background: rgba(255, 255, 255, 0.25); transform: translateY(-2px);
-}
-.stat-value { 
-font-size: 1.65rem; font-weight: 800; font-family: 'Manrope', sans-serif;
-background: linear-gradient(to right, white, #e2e8f0); -webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-.stat-label { 
-font-size: 0.78rem; opacity: 0.92; margin-top: 0.3rem; display: flex; align-items: center; gap: 0.4rem;
-}
-
-/* ===== PAYMENT SIMULATOR BARU (TAMBAHAN) ===== */
-.payment-simulator {
-background: var(--bg-elevated); border-radius: 16px; padding: 1.25rem;
-margin-top: 1.25rem; border: 1px solid var(--border);
-}
-.simulator-header {
-display: flex; align-items: center; justify-content: space-between;
-margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px dashed var(--border-light);
-}
-.simulator-grid {
-display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem;
-}
-.simulator-item {
-text-align: center; padding: 0.9rem; border-radius: 12px;
-background: var(--bg-card); transition: all 0.25s;
-border: 2px solid transparent;
-}
-.simulator-item:hover, .simulator-item.active {
-border-color: var(--primary); transform: translateY(-2px);
-background: rgba(99, 102, 241, 0.08);
-}
-.simulator-value {
-font-size: 1.45rem; font-weight: 800; font-family: 'Manrope', sans-serif;
-margin: 0.4rem 0; background: linear-gradient(135deg, var(--primary), var(--secondary));
--webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.simulator-label { 
-font-size: 0.8rem; color: var(--text-secondary); 
-}
-
-/* ===== TOAST DENGAN ICON ===== */
-.toast {
-position: fixed; bottom: 2rem; right: 2rem; background: var(--bg-card); 
-color: var(--text-primary); padding: 1rem 1.5rem; border-radius: 18px; 
-border: 1px solid var(--border-light); box-shadow: 0 15px 40px rgba(0,0,0,0.35); 
-z-index: 1000; display: flex; align-items: center; gap: 0.85rem; min-width: 320px;
-transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-opacity: 0;
-}
-.toast.show { 
-transform: translateX(0); opacity: 1; 
-}
-.toast i { font-size: 1.35rem; }
-.toast.success i { color: var(--success); }
-.toast.error i { color: var(--danger); }
-.toast.warning i { color: var(--warning); }
-.toast.info i { color: var(--info); }
-
-/* ===== COLLAPSIBLE ===== */
-.collapsible-header { cursor: pointer; user-select: none; transition: color 0.2s; }
-.collapsible-header:hover { color: var(--primary); }
-.collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-.collapsible-content.open { max-height: 2000px; }
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { 
-background: var(--border-light); border-radius: 5px; 
-border: 3px solid transparent; background-clip: content-box;
-}
-::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1200px) { 
-.packages-grid { grid-template-columns: 1fr; } 
-}
-@media (max-width: 768px) {
-.content-area { flex-direction: column; padding: 0.75rem; }
-.summary-area { width: 100%; padding-left: 0; order: -1; }
-.stats-grid { grid-template-columns: 1fr; }
-.fab-container { bottom: 1.25rem; right: 1.25rem; }
-.simulator-grid { grid-template-columns: 1fr; }
-}
-</style>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Algonova Calculator Ultra Pro | Mi Raj v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ROOT VARIABLES - Enhanced color system */
+        :root {
+            --primary: #6366F1; --primary-dark: #4F46E5; --secondary: #8B5CF6;
+            --accent: #EC4899; --success: #10B981; --warning: #F59E0B; --danger: #EF4444; --info: #3B82F6;
+            --bg-main: #0A0E1A; --bg-card: #151B2E; --bg-elevated: #1F2937; --bg-input: #0F1623;
+            --text-primary: #F8FAFC; --text-secondary: #94A3B8; --text-muted: #64748B;
+            --border: #1F2937; --border-light: #374151;
+        }
+        [data-theme="light"] {
+            --bg-main: #F8FAFC; --bg-card: #FFFFFF; --bg-elevated: #F1F5F9; --bg-input: #FFFFFF;
+            --text-primary: #0F172A; --text-secondary: #475569; --text-muted: #94A3B8;
+            --border: #E2E8F0; --border-light: #CBD5E1;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-primary);
+            line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* ANIMATED BACKGROUND */
+        .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .gradient-orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+        .orb-1 { width: 500px; height: 500px; background: linear-gradient(135deg, var(--primary), var(--secondary)); top: -200px; right: -200px; }
+        .orb-2 { width: 400px; height: 400px; background: linear-gradient(135deg, var(--accent), var(--secondary)); bottom: -150px; left: -150px; animation-delay: 5s; }
+        .orb-3 { width: 300px; height: 300px; background: linear-gradient(135deg, var(--success), var(--primary)); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 10s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+        
+        .font-display { font-family: 'Manrope', sans-serif; }
+        .main-container { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* HEADER - Enhanced glassmorphism */
+        .header {
+            flex-shrink: 0; background: rgba(21, 27, 46, 0.85); backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid var(--border); padding: 0.875rem 0; z-index: 40;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        [data-theme="light"] .header { background: rgba(255, 255, 255, 0.9); }
+        
+        .content-area { flex: 1; overflow: hidden; display: flex; padding: 1rem 1.5rem; gap: 1rem; }
+        .packages-area { flex: 1; overflow-y: auto; padding-right: 0.5rem; }
+        .summary-area { width: 380px; flex-shrink: 0; overflow-y: auto; padding-left: 0.5rem; }
+        .packages-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
+        
+        /* ENHANCED CARD */
+        .card {
+            background: rgba(21, 27, 46, 0.7); backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 18px; border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        [data-theme="light"] .card { background: rgba(255, 255, 255, 0.9); }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .card:hover::before { left: 100%; }
+        .card:hover {
+            border-color: var(--primary); transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.25);
+        }
+        
+        .card-header {
+            padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+        }
+        .card-body { padding: 1.25rem; }
+        
+        /* INPUT FIELDS - Enhanced focus states */
+        .input-group { margin-bottom: 0.875rem; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-label {
+            display: block; font-size: 0.6875rem; font-weight: 700; color: var(--text-secondary);
+            margin-bottom: 0.375rem; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 500;
+            color: var(--text-primary); background: var(--bg-input); border: 2px solid var(--border);
+            border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;
+        }
+        .input-field:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px); background: var(--bg-elevated);
+        }
+        
+        /* BADGES - Enhanced animations */
+        .badge {
+            display: inline-flex; align-items: center; padding: 0.5rem 1rem; font-size: 0.75rem;
+            font-weight: 700; border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            animation: badgePulse 2s infinite; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        
+        .ai-badge {
+            display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, #8B5CF6, #EC4899); color: white; border-radius: 12px;
+            font-size: 0.625rem; font-weight: 700; animation: aiPulse 2s infinite;
+        }
+        @keyframes aiPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
+        }
+        
+        /* BUTTONS - Enhanced hover effects */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.875rem 1.5rem; font-size: 0.875rem; font-weight: 600; border-radius: 12px;
+            border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none; position: relative; overflow: hidden;
+        }
+        .btn::before {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+            border-radius: 50%; background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
+        }
+        .btn:hover::before { width: 300px; height: 300px; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); }
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669); color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #D97706); color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #DC2626); color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        .btn-secondary {
+            background: var(--bg-elevated); color: var(--text-primary);
+            border: 2px solid var(--border-light);
+        }
+        .btn-secondary:hover { background: var(--bg-card); border-color: var(--primary); transform: translateY(-2px); }
+        
+        /* THEME TOGGLE */
+        .theme-toggle {
+            width: 70px; height: 34px; background: var(--bg-elevated); border-radius: 17px;
+            border: 2px solid var(--border); position: relative; cursor: pointer; transition: all 0.3s ease;
+        }
+        .theme-toggle-ball {
+            width: 26px; height: 26px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%; position: absolute; top: 2px; left: 2px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 0.75rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        [data-theme="light"] .theme-toggle-ball { left: 38px; }
+        
+        /* FAB MENU */
+        .fab-container {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 100;
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .fab {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: none; position: relative;
+        }
+        .fab:hover { transform: scale(1.15) rotate(8deg); box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5); }
+        .fab-tooltip {
+            position: absolute; right: 75px; background: var(--bg-card); color: var(--text-primary);
+            padding: 0.625rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600;
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        .fab:hover .fab-tooltip { opacity: 1; right: 80px; }
+        
+        /* ANALYTICS CARD */
+        .analytics-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;
+            border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem;
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3); position: relative; overflow: hidden;
+        }
+        .analytics-card::before {
+            content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1rem; }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+            padding: 1rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stat-value { font-size: 1.5rem; font-weight: 800; font-family: 'Manrope', sans-serif; }
+        .stat-label { font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem; }
+        
+        /* CHART */
+        .chart-container { position: relative; height: 200px; margin-top: 1rem; }
+        
+        /* TOAST - Enhanced notifications */
+        .toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card); color: var(--text-primary); padding: 1rem 1.5rem;
+            border-radius: 16px; border: 1px solid var(--border-light);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); z-index: 1000;
+            display: flex; align-items: center; gap: 0.75rem;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); min-width: 300px;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.warning { border-left: 4px solid var(--warning); }
+        .toast.info { border-left: 4px solid var(--info); }
+        
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(15px);
+            display: flex; align-items: center; justify-content: center; z-index: 50;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 28px;
+            max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp {
+            from { transform: translateY(50px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        
+        /* COLLAPSIBLE */
+        .collapsible-header { cursor: pointer; user-select: none; transition: all 0.2s ease; }
+        .collapsible-header:hover { color: var(--primary); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .collapsible-content.open { max-height: 2000px; }
+        
+        /* EXPORT MENU */
+        .export-menu {
+            position: absolute; bottom: 75px; right: 0; background: var(--bg-card);
+            border: 1px solid var(--border-light); border-radius: 16px; padding: 0.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); opacity: 0; pointer-events: none;
+            transition: all 0.3s ease; min-width: 150px;
+        }
+        .export-menu.show { opacity: 1; pointer-events: all; bottom: 80px; }
+        .export-item {
+            padding: 0.75rem 1rem; border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600;
+        }
+        .export-item:hover { background: var(--bg-elevated); transform: translateX(4px); }
+        
+        /* COMPARISON TABLE */
+        .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; }
+        .comparison-table th {
+            background: var(--bg-elevated); padding: 1rem; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; color: var(--text-secondary); border: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .comparison-table td {
+            background: var(--bg-card); padding: 1rem; border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        .comparison-table tr:hover td { background: var(--bg-elevated); transform: scale(1.02); }
+        
+        /* HISTORY ITEM & TEMPLATE CARD */
+        .history-item, .template-card {
+            background: var(--bg-elevated); border: 2px solid var(--border); border-radius: 12px;
+            padding: 1rem; cursor: pointer; transition: all 0.3s ease; margin-bottom: 0.75rem;
+        }
+        .history-item:hover, .template-card:hover {
+            border-color: var(--primary); transform: translateX(8px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+        }
+        
+        /* UTILITIES */
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-secondary { color: var(--text-secondary); }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) { .packages-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .content-area { flex-direction: column; }
+            .summary-area { width: 100%; padding-left: 0; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .fab-container { bottom: 1rem; right: 1rem; }
+        }
+    </style>
 </head>
 <body>
-<!-- Animated Background (Subtle) -->
-<div class="animated-bg">
-<div class="gradient-orb orb-1"></div>
-<div class="gradient-orb orb-2"></div>
-<div class="gradient-orb orb-3"></div>
-</div>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
 
-<div class="main-container">
-<!-- Header (Sama seperti v3.0 tapi dengan ikon tema lebih baik) -->
-<div class="header">
-<div style="max-width: 1600px; margin: 0 auto; padding: 0 1.5rem;">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-3">
-<div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; font-weight: 700; box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);">
-<i class="fas fa-brain"></i>
-</div>
-<div>
-<h1 class="font-display" style="font-size: 1.4rem; line-height: 1.15;">
-Algonova Calculator
-<span style="font-size: 0.78rem; background: linear-gradient(135deg, var(--warning), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: -0.02em;">ULTRA PRO</span>
-</h1>
-<p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.15rem;">
-<span style="background: linear-gradient(135deg, var(--accent), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.72rem;">
-<i class="fas fa-robot"></i> AI-Powered
-</span>
-<span style="margin-left: 0.6rem;">Team 8 • By Mi Raj • v3.1</span>
-</p>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<div style="text-align: right;">
-<div style="font-size: 0.65rem; color: var(--text-secondary); font-weight: 600; display: flex; align-items: center; gap: 0.4rem; justify-content: flex-end;">
-<i class="fas fa-wallet"></i> TOTAL INVESTMENT
-</div>
-<div id="headerTotal" class="font-display" style="font-size: 1.85rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1;">Rp 0</div>
-<div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end;">
-<i class="fas fa-book-open"></i> <span id="headerLessons">0</span> lessons • 
-<span id="savingsBadge" class="badge" style="background: linear-gradient(135deg, var(--success), #059669); padding: 0.35rem 0.85rem; font-size: 0.65rem; margin-left: 0.6rem; display: none;">
-<i class="fas fa-gem"></i> <span id="headerSavings">Rp 0</span> SAVED
-</span>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<button class="btn btn-secondary" id="currencyToggle" style="padding: 0.6rem 1rem; font-size: 0.8rem;" title="Toggle Currency (IDR/USD)">
-<i class="fas fa-coins"></i> IDR
-</button>
-<div class="theme-toggle" onclick="toggleTheme()">
-<div class="theme-toggle-ball">
-<i class="fas fa-moon"></i>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div style="max-width: 1600px; margin: 0 auto; padding: 0 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.75rem; font-weight: 700; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);">
+                            <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="font-display" style="font-size: 1.35rem; line-height: 1.2;">
+                                Algonova Calculator 
+                                <span style="font-size: 0.75rem; background: linear-gradient(135deg, var(--warning), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900;">ULTRA</span>
+                            </h1>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary);">
+                                <span class="ai-badge">Mi Raj Apps</span>
+                                <span style="margin-left: 0.5rem;">Team 8 • By Mi Raj • v3.0</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.625rem; color: var(--text-secondary); font-weight: 600;">TOTAL INVESTMENT</div>
+                            <div id="headerTotal" class="font-display" style="font-size: 1.75rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Rp 0</div>
+                            <div style="font-size: 0.625rem; color: var(--text-muted); margin-top: 0.125rem;">
+                                <span id="headerLessons">0</span> lessons
+                            </div>
+                        </div>
+                        <div class="theme-toggle" onclick="toggleTheme()">
+                            <div class="theme-toggle-ball">🌙</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Content Area (Struktur SAMA seperti v3.0) -->
-<div class="content-area">
-<!-- Packages Area (TETAP SAMA - 2 kolom paket input) -->
-<div class="packages-area">
-<div class="packages-grid" id="packagesGrid">
-<!-- Packages will be generated dynamically - SAMA seperti v3.0 -->
-</div>
-</div>
+        <!-- Content Area -->
+        <div class="content-area" style="max-width: 1600px; margin: 0 auto; width: 100%;">
+            
+            <!-- Packages Area -->
+            <div class="packages-area">
+                <div class="packages-grid" id="packagesGrid">
+                    <!-- Packages will be generated dynamically -->
+                </div>
+            </div>
 
-<!-- Summary Area (Ditambah Payment Simulator) -->
-<div class="summary-area">
-<!-- Analytics Card (Ditambah ROI & Avg/Lesson) -->
-<div class="analytics-card">
-<div style="position: relative; z-index: 1;">
-<div class="flex items-center justify-between mb-3">
-<div>
-<div style="font-size: 0.65rem; opacity: 0.92; margin-bottom: 0.4rem; font-weight: 700; display: flex; align-items: center; gap: 0.45rem;">
-<i class="fas fa-chart-line"></i> INVESTMENT SUMMARY
-</div>
-<div id="finalPrice" class="font-display" style="font-size: 2.4rem; margin-bottom: 0.35rem; letter-spacing: -0.02em;">Rp 0</div>
-<div style="opacity: 0.92; font-size: 0.92rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
-<span><i class="fas fa-book"></i> <span id="totalLessons">0</span> Total Lessons</span>
-<span>•</span>
-<span><i class="fas fa-boxes"></i> <span id="packageCount">0</span> Packages</span>
-</div>
-</div>
-<div style="text-align: right; min-width: 110px;">
-<div style="font-size: 0.65rem; opacity: 0.92; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; justify-content: flex-end;">
-<i class="fas fa-tag"></i> TOTAL SAVINGS
-</div>
-<div id="totalSavings" class="font-display" style="font-size: 1.65rem; background: linear-gradient(135deg, var(--success), #047857); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1;">Rp 0</div>
-<div id="savingsPercentage" style="font-size: 0.85rem; color: rgba(255,255,255,0.9); margin-top: 0.25rem; font-weight: 600;">
-(0% dari harga normal)
-</div>
-</div>
-</div>
+            <!-- Summary Area -->
+            <div class="summary-area">
+                <!-- Analytics Card -->
+                <div class="analytics-card" style="position: relative;">
+                    <div style="position: relative; z-index: 1;">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <div style="font-size: 0.625rem; opacity: 0.9; margin-bottom: 0.375rem; font-weight: 700;">TOTAL INVESTMENT</div>
+                                <div id="finalPrice" class="font-display" style="font-size: 2.25rem; margin-bottom: 0.25rem;">Rp 0</div>
+                                <div style="opacity: 0.9; font-size: 0.875rem;">
+                                    <span id="totalLessons">0</span> Total Lessons
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.625rem; opacity: 0.9; margin-bottom: 0.375rem;">SAVINGS</div>
+                                <div id="totalSavings" class="font-display" style="font-size: 1.5rem; color: #10B981;">Rp 0</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats Grid -->
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="avgPricePerLesson">Rp 0</div>
+                                <div class="stat-label">Avg/Lesson</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="packageCount">0</div>
+                                <div class="stat-label">Packages</div>
+                            </div>
+                        </div>
 
-<!-- Stats Grid (Ditambah ROI Estimate) -->
-<div class="stats-grid">
-<div class="stat-item">
-<div class="stat-value" id="avgPricePerLesson">Rp 0</div>
-<div class="stat-label"><i class="fas fa-calculator"></i> Avg/Lesson</div>
-</div>
-<div class="stat-item">
-<div class="stat-value" id="bestValuePackage">-</div>
-<div class="stat-label"><i class="fas fa-gem"></i> Best Value</div>
-</div>
-<div class="stat-item">
-<div class="stat-value" id="payPerMonth">Rp 0</div>
-<div class="stat-label"><i class="fas fa-calendar-alt"></i> /Month (12x)</div>
-</div>
-<div class="stat-item">
-<div class="stat-value" id="roiEstimate">0 bln</div>
-<div class="stat-label"><i class="fas fa-chart-pie"></i> ROI Estimate</div>
-</div>
-</div>
+                        <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <button id="openModalBtn" class="btn btn-success">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                Invoice
+                            </button>
+                            <button id="resetBtn" class="btn btn-warning">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-<div style="margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
-<button id="openModalBtn" class="btn btn-success" style="padding: 0.95rem;">
-<i class="fas fa-file-invoice-dollar"></i> Generate Invoice
-</button>
-<button id="magicOptimizeBtn" class="btn btn-primary" style="padding: 0.95rem;" title="AI will optimize your packages for maximum savings">
-<i class="fas fa-magic"></i> Magic Optimize
-</button>
-</div>
-</div>
-</div>
+                <!-- Child Age Input -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <label class="input-label">🎂 Child Age (Years)</label>
+                        <input type="number" id="childAge" min="5" max="17" placeholder="Enter age (5-17)" class="input-field">
+                    </div>
+                </div>
 
-<!-- PAYMENT SIMULATOR BARU (Fitur Tambahan) -->
-<div class="card">
-<div class="card-header collapsible-header" onclick="toggleCollapsible('paymentSection')">
-<div class="flex items-center justify-between">
-<span style="font-size: 0.78rem; font-weight: 600;"><i class="fas fa-credit-card"></i> Payment Plan Simulator</span>
-<i id="paymentSectionIcon" class="fas fa-chevron-down" style="transition: transform 0.3s; font-size: 1.1rem;"></i>
-</div>
-</div>
-<div id="paymentSection" class="collapsible-content open">
-<div class="card-body">
-<div class="payment-simulator">
-<div class="simulator-header">
-<h4 style="font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.65rem;">
-<i class="fas fa-sliders-h"></i> Customize Your Plan
-</h4>
-<span class="badge" style="background: linear-gradient(135deg, var(--accent), var(--secondary)); padding: 0.35rem 0.85rem; font-size: 0.72rem;">
-<i class="fas fa-percentage"></i> 0% Interest
-</span>
-</div>
+                <!-- Price Chart -->
+                <div class="card mb-3">
+                    <div class="card-header collapsible-header" onclick="toggleCollapsible('chartSection')">
+                        <div class="flex items-center justify-between">
+                            <span style="font-size: 0.75rem; font-weight: 600;">📊 Price Analytics</span>
+                            <svg id="chartSectionIcon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: transform 0.3s ease;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="chartSection" class="collapsible-content open">
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<div class="simulator-grid">
-<div class="simulator-item active" onclick="setInstallmentPlan(1)">
-<div style="font-size: 0.82rem; color: var(--text-secondary);">Full Payment</div>
-<div class="simulator-value" id="fullPayment">Rp 0</div>
-<div style="font-size: 0.8rem; color: var(--success); font-weight: 600;">Save Rp 0</div>
-</div>
-<div class="simulator-item" onclick="setInstallmentPlan(3)">
-<div style="font-size: 0.82rem; color: var(--text-secondary);">3 Months</div>
-<div class="simulator-value" id="payment3x">Rp 0</div>
-<div style="font-size: 0.8rem; color: var(--text-muted);">+0% interest</div>
-</div>
-<div class="simulator-item" onclick="setInstallmentPlan(6)">
-<div style="font-size: 0.82rem; color: var(--text-secondary);">6 Months</div>
-<div class="simulator-value" id="payment6x">Rp 0</div>
-<div style="font-size: 0.8rem; color: var(--text-muted);">+0% interest</div>
-</div>
-<div class="simulator-item" onclick="setInstallmentPlan(12)">
-<div style="font-size: 0.82rem; color: var(--text-secondary);">12 Months</div>
-<div class="simulator-value" id="payment12x">Rp 0</div>
-<div style="font-size: 0.8rem; color: var(--warning); font-weight: 600;">Most Popular</div>
-</div>
-</div>
+                <!-- Quick Templates -->
+                <div class="card mb-3">
+                    <div class="card-header collapsible-header" onclick="toggleCollapsible('templatesSection')">
+                        <div class="flex items-center justify-between">
+                            <span style="font-size: 0.75rem; font-weight: 600;">⚡ Quick Templates</span>
+                            <svg id="templatesSectionIcon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: transform 0.3s ease;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="templatesSection" class="collapsible-content open">
+                        <div class="card-body" id="templatesContainer" style="max-height: 250px; overflow-y: auto;">
+                            <!-- Templates will be generated -->
+                        </div>
+                    </div>
+                </div>
 
-<div style="margin-top: 1.3rem; padding-top: 1rem; border-top: 1px dashed var(--border);">
-<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-<span style="color: var(--text-secondary);"><i class="fas fa-hand-holding-usd"></i> Down Payment (30%)</span>
-<span id="downPayment" class="font-semibold">Rp 0</span>
-</div>
-<div style="display: flex; justify-content: space-between;">
-<span style="color: var(--text-secondary);"><i class="fas fa-gift"></i> Processing Fee</span>
-<span class="text-success font-semibold">FREE</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+                <!-- AI Recommendations -->
+                <div class="card">
+                    <div class="card-header collapsible-header" onclick="toggleCollapsible('recommendationsSection')">
+                        <div class="flex items-center justify-between">
+                            <span style="font-size: 0.75rem; font-weight: 600;">🤖 AI Recommendations</span>
+                            <svg id="recommendationsSectionIcon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: transform 0.3s ease;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="recommendationsSection" class="collapsible-content open">
+                        <div class="card-body">
+                            <div id="courseRecommendations">
+                                <p class="text-secondary" style="font-size: 0.75rem; text-align: center; padding: 1.5rem 0.5rem;">
+                                    Enter child age for AI-powered recommendations
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Child Age Input (Sama seperti v3.0) -->
-<div class="card">
-<div class="card-body">
-<label class="input-label"><i class="fas fa-birthday-cake"></i> Child Age (Years)</label>
-<input type="number" id="childAge" min="5" max="17" placeholder="Enter age (5-17)" class="input-field">
-</div>
-</div>
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+        <!-- Export Menu -->
+        <div id="exportMenu" class="export-menu">
+            <div class="export-item" onclick="exportToPDF()">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                Export PDF
+            </div>
+            <div class="export-item" onclick="exportToExcel()">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+                </svg>
+                Export Excel
+            </div>
+            <div class="export-item" onclick="exportToJSON()">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                </svg>
+                Export JSON
+            </div>
+        </div>
 
-<!-- Price Chart (Sama seperti v3.0) -->
-<div class="card">
-<div class="card-header collapsible-header" onclick="toggleCollapsible('chartSection')">
-<div class="flex items-center justify-between">
-<span style="font-size: 0.78rem; font-weight: 600;"><i class="fas fa-chart-bar"></i> Price Analytics</span>
-<i id="chartSectionIcon" class="fas fa-chevron-down" style="transition: transform 0.3s; font-size: 1.1rem;"></i>
-</div>
-</div>
-<div id="chartSection" class="collapsible-content open">
-<div class="card-body">
-<div class="chart-container" style="height: 200px; position: relative;">
-<canvas id="priceChart"></canvas>
-</div>
-</div>
-</div>
-</div>
+        <button class="fab" onclick="toggleExportMenu()">
+            <span class="fab-tooltip">Export Data</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+        </button>
+        
+        <button class="fab" onclick="openComparisonModal()">
+            <span class="fab-tooltip">Price Comparison</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+        </button>
+        
+        <button class="fab" onclick="openHistoryModal()">
+            <span class="fab-tooltip">Calculation History</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </button>
+        
+        <button class="fab" onclick="saveCalculation()">
+            <span class="fab-tooltip">Save Calculation</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+        </button>
+        
+        <button class="fab" onclick="copyCurrentCalculation()">
+            <span class="fab-tooltip">Copy Summary</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+        </button>
+    </div>
 
-<!-- Quick Templates (Sama seperti v3.0) -->
-<div class="card">
-<div class="card-header collapsible-header" onclick="toggleCollapsible('templatesSection')">
-<div class="flex items-center justify-between">
-<span style="font-size: 0.78rem; font-weight: 600;"><i class="fas fa-bolt"></i> Quick Templates</span>
-<i id="templatesSectionIcon" class="fas fa-chevron-down" style="transition: transform 0.3s; font-size: 1.1rem;"></i>
-</div>
-</div>
-<div id="templatesSection" class="collapsible-content open">
-<div class="card-body" id="templatesContainer" style="max-height: 250px; overflow-y: auto;">
-<!-- Templates will be generated -->
-</div>
-</div>
-</div>
+    <!-- Invoice Modal -->
+    <div id="modalBackdrop" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div id="modalInputSection" style="padding: 2.5rem;">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-display" style="font-size: 1.75rem;">Generate Invoice</h3>
+                        <p class="text-secondary" style="font-size: 0.875rem; margin-top: 0.375rem;">Fill in student details</p>
+                    </div>
+                    <button onclick="closeModal()" style="width: 44px; height: 44px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="input-group">
+                        <label class="input-label">Student Name</label>
+                        <input id="modalStudentName" class="input-field" placeholder="Enter student name" />
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Payment Type</label>
+                        <div style="display: flex; gap: 1.5rem; margin-top: 0.875rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600;">
+                                <input type="radio" name="payType" value="down" checked style="width: 20px; height: 20px; accent-color: var(--primary);">
+                                Down Payment
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600;">
+                                <input type="radio" name="payType" value="full" style="width: 20px; height: 20px; accent-color: var(--primary);">
+                                Full Payment
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 1.5rem;">
+                    <label class="input-label">Selected Courses</label>
+                    <div id="selectedCoursesDisplay" style="background: var(--bg-input); border: 2px solid var(--border); border-radius: 16px; padding: 1.25rem; max-height: 300px; overflow-y: auto;">
+                        <p class="text-secondary" style="font-size: 0.875rem;">No courses selected</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="generateInvoiceBtn" class="btn btn-primary" style="flex: 1;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Generate Invoice
+                    </button>
+                    <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+            <div id="modalInvoiceSection" style="display: none; padding: 2.5rem;">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-display" style="font-size: 1.75rem;">Invoice Preview</h3>
+                        <p class="text-secondary" style="font-size: 0.875rem; margin-top: 0.375rem;">Review and print</p>
+                    </div>
+                    <button onclick="closeModal()" style="width: 44px; height: 44px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</button>
+                </div>
+                <div id="invoicePreview" style="background: white; padding: 3rem; border-radius: 20px; max-height: calc(90vh - 250px); overflow-y: auto;">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="logo" style="width: 70px; height: 70px;">
+                            <div>
+                                <div style="color: #64748B; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.375rem;">Algonova by Algorithmics</div>
+                                <div class="font-display" style="font-size: 2rem; line-height: 1; color: #0F172A; font-weight: 900;">INVOICE</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div id="qrcodeContainer" style="margin-bottom: 0.625rem;"></div>
+                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 600;">Scan for details</div>
+                        </div>
+                    </div>
+                    <div style="height: 2px; background: linear-gradient(90deg, #E2E8F0, transparent); margin: 2rem 0;"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2rem;">
+                        <div>
+                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Bill To</div>
+                            <div id="billToName" style="font-size: 1.25rem; margin-bottom: 0.375rem; color: #0F172A; font-weight: 800;">-</div>
+                            <div style="font-size: 0.875rem; color: #64748B; font-weight: 600;">Student</div>
+                            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.75rem;">
+                                <strong>Date:</strong> <span id="invoiceDateLarge">-</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Payment Info</div>
+                            <div id="invoicePaymentType" style="font-size: 1.25rem; margin-bottom: 0.375rem; color: #0F172A; font-weight: 800;">-</div>
+                            <div style="font-size: 0.875rem; color: #64748B; font-weight: 600;">Method: Xendit</div>
+                        </div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                        <thead>
+                            <tr style="background: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
+                                <th style="padding: 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Course</th>
+                                <th style="padding: 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Class</th>
+                                <th style="padding: 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Lessons</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItems"></tbody>
+                    </table>
+                    <div style="background: linear-gradient(135deg, #F8FAFC, #EEF2FF); border: 2px solid #E2E8F0; padding: 2rem; border-radius: 20px; margin-top: 2rem;">
+                        <div class="flex justify-between" style="margin-bottom: 1rem;">
+                            <span style="font-weight: 700; color: #0F172A; font-size: 1.125rem;">Total Lessons:</span>
+                            <span id="invTotalLessons" style="font-weight: 800; color: #6366F1; font-size: 1.125rem;">0</span>
+                        </div>
+                        <div class="flex justify-between" style="font-size: 1.75rem;">
+                            <span style="font-weight: 800; color: #0F172A;">TOTAL:</span>
+                            <span id="invTotal" style="font-weight: 900; background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Rp 0</span>
+                        </div>
+                    </div>
+                    <div style="height: 1px; background: #E2E8F0; margin: 2rem 0;"></div>
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: start;">
+                        <div>
+                            <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.875rem; color: #0F172A;">Note:</div>
+                            <div style="font-size: 0.875rem; color: #64748B; line-height: 1.7;">Please make payment via Xendit. Keep payment proof for verification.</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.75rem; text-transform: uppercase;">Authorized By</div>
+                            <img src="https://raw.githubusercontent.com/RajcodeApp/apps.github.io/refs/heads/main/cpp/Algottd3.png" alt="signature" style="max-width: 180px; height: 80px; margin: 0 auto;">
+                            <div style="font-weight: 800; margin-top: 1rem; font-size: 1.125rem; color: #0F172A;">Algonova Team</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2" style="margin-top: 2rem;">
+                    <button id="printInvoiceBtn" class="btn btn-primary">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                        </svg>
+                        Print
+                    </button>
+                    <button onclick="shareViaWhatsApp()" class="btn btn-success">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                        Share WA
+                    </button>
+                    <button id="backToModalBtn" class="btn btn-secondary">← Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- AI Recommendations (Sama seperti v3.0) -->
-<div class="card">
-<div class="card-header collapsible-header" onclick="toggleCollapsible('recommendationsSection')">
-<div class="flex items-center justify-between">
-<span style="font-size: 0.78rem; font-weight: 600;"><i class="fas fa-robot"></i> AI Recommendations</span>
-<i id="recommendationsSectionIcon" class="fas fa-chevron-down" style="transition: transform 0.3s; font-size: 1.1rem;"></i>
-</div>
-</div>
-<div id="recommendationsSection" class="collapsible-content open">
-<div class="card-body">
-<div id="courseRecommendations">
-<p class="text-secondary" style="font-size: 0.78rem; text-align: center; padding: 1.6rem 0.6rem;">
-Enter child age for AI-powered recommendations
-</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div style="padding: 2.5rem;">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-display" style="font-size: 1.75rem;">📊 Price Comparison Table</h3>
+                        <p class="text-secondary" style="font-size: 0.875rem; margin-top: 0.375rem;">Compare all options</p>
+                    </div>
+                    <button onclick="closeComparisonModal()" style="width: 44px; height: 44px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</button>
+                </div>
+                <div style="overflow-x: auto; max-height: 70vh;">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Class</th><th>Type</th><th>10</th><th>20</th><th>40</th><th>80</th><th>120</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Floating Action Buttons (Radial Menu Lebih Rapi) -->
-<div class="fab-container">
-<button class="fab" onclick="saveCalculation()" title="Save Calculation">
-<span class="fab-tooltip"><i class="fas fa-save"></i> Save</span>
-<i class="fas fa-save"></i>
-</button>
-<button class="fab" onclick="copyCurrentCalculation()" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);" title="Copy Summary">
-<span class="fab-tooltip"><i class="fas fa-copy"></i> Copy</span>
-<i class="fas fa-copy"></i>
-</button>
-<button class="fab" onclick="openComparisonModal()" style="background: linear-gradient(135deg, #10B981, #059669);" title="Price Comparison">
-<span class="fab-tooltip"><i class="fas fa-balance-scale"></i> Compare</span>
-<i class="fas fa-chart-bar"></i>
-</button>
-<button class="fab" onclick="openHistoryModal()" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);" title="Calculation History">
-<span class="fab-tooltip"><i class="fas fa-history"></i> History</span>
-<i class="fas fa-history"></i>
-</button>
-</div>
+    <!-- History Modal -->
+    <div id="historyModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div style="padding: 2.5rem;">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-display" style="font-size: 1.75rem;">🕐 Calculation History</h3>
+                        <p class="text-secondary" style="font-size: 0.875rem; margin-top: 0.375rem;">Your saved calculations</p>
+                    </div>
+                    <button onclick="closeHistoryModal()" style="width: 44px; height: 44px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</button>
+                </div>
+                <div id="historyContainer" style="max-height: 60vh; overflow-y: auto;"></div>
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                    <button onclick="clearHistory()" class="btn btn-danger">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast">
-<i class="fas fa-check-circle"></i>
-<span id="toastMessage">Success!</span>
-</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="toastMessage">Success!</span>
+    </div>
 
-<!-- MODALS (Sama seperti v3.0 - dipersingkat untuk efisiensi) -->
-<div id="modalBackdrop" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(10,14,26,0.92); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; transition: opacity 0.3s;">
-<div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 28px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; transform: scale(0.95); opacity: 0; transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275), opacity 0.3s;">
-<!-- Modal content dipersingkat - struktur sama seperti v3.0 -->
-<div id="modalInputSection" style="padding: 2.5rem;">
-<div class="flex items-center justify-between mb-3">
-<div>
-<h3 class="font-display" style="font-size: 1.8rem;">Generate Invoice</h3>
-<p class="text-secondary" style="font-size: 0.9rem; margin-top: 0.4rem;">Fill in student details</p>
-</div>
-<button onclick="closeModal()" style="width: 46px; height: 46px; border-radius: 14px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.6rem; color: var(--text-secondary);">&times;</button>
-</div>
-<!-- ... (content modal dipersingkat untuk efisiensi kode) ... -->
-</div>
-</div>
-</div>
-
-<div id="comparisonModal" class="modal-overlay" style="display: none;"></div>
-<div id="historyModal" class="modal-overlay" style="display: none;"></div>
-
-<script>
-// ========== DATA SAMA SEPERTI v3.0 ==========
+    <script>
+// ========== DATA STRUCTURES ==========
 const priceData = {
-group: {
-np: { 10: { normal: 1890000, extra: 1701000 }, 20: { normal: 3580000, extra: 3222000 }, 40: { normal: 6760000, extra: 6084000 }, 80: { normal: 12720000, extra: 11448000 }, 120: { normal: 16680000, extra: 15012000 } },
-nd: { 10: { normal: 1590000, extra: 1431000 }, 20: { normal: 2980000, extra: 2681000 }, 40: { normal: 5560000, extra: 5004000 }, 80: { normal: 10320000, extra: 9288000 }, 120: { normal: 14280000, extra: 12852000 } },
-tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } },
-kop: { 10: { normal: 1350000, extra: 1215000 }, 20: { normal: 2500000, extra: 2250000 }, 40: { normal: 4240000, extra: 4176000 }, 80: { normal: 6960000, extra: 7632000 }, 120: { normal: 9240000, extra: 10476000 } }
-},
-private: {
-np: { 10: { normal: 3900000, extra: 3510000 }, 20: { normal: 7380000, extra: 6642000 }, 40: { normal: 13960000, extra: 12564000 }, 80: { normal: 26240000, extra: 23616000 }, 120: { normal: 36960000, extra: 33264000 } },
-nd: { 10: { normal: 3080000, extra: 2772000 }, 20: { normal: 5740000, extra: 5166000 }, 40: { normal: 10680000, extra: 9612000 }, 80: { normal: 19680000, extra: 17712000 }, 120: { normal: 27120000, extra: 24408000 } },
-tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } },
-kop: { 10: { normal: 2590000, extra: 2331000 }, 20: { normal: 4780000, extra: 4302000 }, 40: { normal: 7960000, extra: 7884000 }, 80: { normal: 14320000, extra: 14328000 }, 120: { normal: 19080000, extra: 19332000 } }
-},
-premium: {
-np: { 10: { normal: 2400000, extra: 2160000 }, 20: { normal: 4540000, extra: 4086000 }, 40: { normal: 8560000, extra: 7704000 }, 80: { normal: 16160000, extra: 14544000 }, 120: { normal: 21240000, extra: 19116000 } },
-nd: { 10: { normal: 2020000, extra: 1818000 }, 20: { normal: 3780000, extra: 3402000 }, 40: { normal: 7080000, extra: 6372000 }, 80: { normal: 13120000, extra: 11808000 }, 120: { normal: 18120000, extra: 16308000 } },
-tcp: { 10: { normal: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } },
-kop: { 10: { normal: 1710000, extra: 1539000 }, 20: { normal: 3180000, extra: 2862000 }, 40: { normal: 5400000, extra: 5292000 }, 80: { normal: 8800000, extra: 9720000 }, 120: { normal: 11760000, extra: 13176000 } }
-}
+    group: {
+        np: { 10: { normal: 1890000, extra: 1701000 }, 20: { normal: 3580000, extra: 3222000 }, 40: { normal: 6760000, extra: 6084000 }, 80: { normal: 12720000, extra: 11448000 }, 120: { normal: 16680000, extra: 15012000 } },
+        nd: { 10: { normal: 1590000, extra: 1431000 }, 20: { normal: 2980000, extra: 2681000 }, 40: { normal: 5560000, extra: 5004000 }, 80: { normal: 10320000, extra: 9288000 }, 120: { normal: 14280000, extra: 12852000 } },
+        tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } },
+        kop: { 10: { normal: 1350000, extra: 1215000 }, 20: { normal: 2500000, extra: 2250000 }, 40: { normal: 4240000, extra: 4176000 }, 80: { normal: 6960000, extra: 7632000 }, 120: { normal: 9240000, extra: 10476000 } }
+    },
+    private: {
+        np: { 10: { normal: 3900000, extra: 3510000 }, 20: { normal: 7380000, extra: 6642000 }, 40: { normal: 13960000, extra: 12564000 }, 80: { normal: 26240000, extra: 23616000 }, 120: { normal: 36960000, extra: 33264000 } },
+        nd: { 10: { normal: 3080000, extra: 2772000 }, 20: { normal: 5740000, extra: 5166000 }, 40: { normal: 10680000, extra: 9612000 }, 80: { normal: 19680000, extra: 17712000 }, 120: { normal: 27120000, extra: 24408000 } },
+        tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } },
+        kop: { 10: { normal: 2590000, extra: 2331000 }, 20: { normal: 4780000, extra: 4302000 }, 40: { normal: 7960000, extra: 7884000 }, 80: { normal: 14320000, extra: 14328000 }, 120: { normal: 19080000, extra: 19332000 } }
+    },
+    premium: {
+        np: { 10: { normal: 2400000, extra: 2160000 }, 20: { normal: 4540000, extra: 4086000 }, 40: { normal: 8560000, extra: 7704000 }, 80: { normal: 16160000, extra: 14544000 }, 120: { normal: 21240000, extra: 19116000 } },
+        nd: { 10: { normal: 2020000, extra: 1818000 }, 20: { normal: 3780000, extra: 3402000 }, 40: { normal: 7080000, extra: 6372000 }, 80: { normal: 13120000, extra: 11808000 }, 120: { normal: 18120000, extra: 16308000 } },
+        tcp: { 10: { normal: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } },
+        kop: { 10: { normal: 1710000, extra: 1539000 }, 20: { normal: 3180000, extra: 2862000 }, 40: { normal: 5400000, extra: 5292000 }, 80: { normal: 8800000, extra: 9720000 }, 120: { normal: 11760000, extra: 13176000 } }
+    }
 };
+
 const courseData = [
-{name: "Coding Knight", age: [5, 6], lessons: 32, desc: "Animation & Scratch Junior", icon: "🎮"},
-{name: "Digital Literasi", age: [7], lessons: 36, desc: "Digital tech & presentation", icon: "💻"},
-{name: "Visual Programming", age: [8, 9, 10, 11, 12], lessons: 36, desc: "Coding with Scratch", icon: "🎨"},
-{name: "Graphic Design Junior", age: [8, 9, 10], lessons: 32, desc: "GIMP, Tinkercad, Inkscape", icon: "🖌️"},
-{name: "Graphic Design Senior", age: [11, 12, 13, 14], lessons: 32, desc: "3D Design & Blender", icon: "🎭"},
-{name: "Game Design", age: [10, 11, 12, 13, 14], lessons: 32, desc: "Roblox Studio", icon: "🎲"},
-{name: "Python Start", age: [13, 14], lessons: 36, desc: "Python fundamentals", icon: "🐍"},
-{name: "Python Pro", age: [15, 16, 17], lessons: 32, desc: "Advanced Python & ML", icon: "🚀"},
-{name: "Math Explorers", age: [6, 7, 8], lessons: 64, desc: "Basic mathematics", icon: "🔢"},
-{name: "Math Masters", age: [9, 10, 11, 12, 13], lessons: 32, desc: "Advanced math", icon: "📐"},
-{name: "Math Tutoring", age: [7, 8, 9, 10, 11, 12, 13, 14], lessons: 40, desc: "Personalized tutoring", icon: "📚"},
-{name: "Course AI", age: [12, 13, 14, 15], lessons: 36, desc: "AI & ChatGPT", icon: "🤖"}
+    {name: "Coding Knight", age: [5, 6], lessons: 32, desc: "Animation & Scratch Junior", icon: "🎮"},
+    {name: "Digital Literasi", age: [7], lessons: 36, desc: "Digital tech & presentation", icon: "💻"},
+    {name: "Visual Programming", age: [8, 9, 10, 11, 12], lessons: 36, desc: "Coding with Scratch", icon: "🎨"},
+    {name: "Graphic Design Junior", age: [8, 9, 10], lessons: 32, desc: "GIMP, Tinkercad, Inkscape", icon: "🖌️"},
+    {name: "Graphic Design Senior", age: [11, 12, 13, 14], lessons: 32, desc: "3D Design & Blender", icon: "🎭"},
+    {name: "Game Design", age: [10, 11, 12, 13, 14], lessons: 32, desc: "Roblox Studio", icon: "🎲"},
+    {name: "Python Start", age: [13, 14], lessons: 36, desc: "Python fundamentals", icon: "🐍"},
+    {name: "Python Pro", age: [15, 16, 17], lessons: 32, desc: "Advanced Python & ML", icon: "🚀"},
+    {name: "Math Explorers", age: [6, 7, 8], lessons: 64, desc: "Basic mathematics", icon: "🔢"},
+    {name: "Math Masters", age: [9, 10, 11, 12, 13], lessons: 32, desc: "Advanced math", icon: "📐"},
+    {name: "Math Tutoring", age: [7, 8, 9, 10, 11, 12, 13, 14], lessons: 40, desc: "Personalized tutoring", icon: "📚"},
+    {name: "Course AI", age: [12, 13, 14, 15], lessons: 36, desc: "AI & ChatGPT", icon: "🤖"}
 ];
+
 const quickTemplates = [
-{ name: "🎯 Beginner Bundle", packages: [{course: "Coding Knight", class: "group", type: "np", lessons: "20"}] },
-{ name: "💎 Premium Starter", packages: [{course: "Visual Programming", class: "premium", type: "tcp", lessons: "40"}] },
-{ name: "🚀 Advanced Combo", packages: [{course: "Python Start", class: "private", type: "np", lessons: "40"}, {course: "Course AI", class: "private", type: "nd", lessons: "20"}] },
-{ name: "🎨 Creative Pack", packages: [{course: "Graphic Design Junior", class: "group", type: "tcp", lessons: "40"}] }
+    { name: "🎯 Beginner Bundle", packages: [{course: "Coding Knight", class: "group", type: "np", lessons: "20"}] },
+    { name: "💎 Premium Starter", packages: [{course: "Visual Programming", class: "premium", type: "tcp", lessons: "40"}] },
+    { name: "🚀 Advanced Combo", packages: [{course: "Python Start", class: "private", type: "np", lessons: "40"}, {course: "Course AI", class: "private", type: "nd", lessons: "20"}] },
+    { name: "🎨 Creative Pack", packages: [{course: "Graphic Design Junior", class: "group", type: "tcp", lessons: "40"}] }
 ];
 
 // ========== GLOBAL STATE ==========
 let priceChart = null;
-let currentCurrency = 'IDR';
+let exportMenuOpen = false;
 
-// ========== UTILITY FUNCTIONS (DIPERBAIKI) ==========
-function formatCurrency(amount, currency = 'IDR') {
-if (!amount || amount === 0) return 'Rp 0';
-if (currency === 'USD') {
-const usdAmount = amount / 15500;
-return '$' + usdAmount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-return 'Rp ' + Math.round(amount).toLocaleString('id-ID');
-}
-function capitalize(s) {
-return String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
-}
-function debounce(func, delay) {
-let debounceTimer;
-return function() {
-const context = this;
-const args = arguments;
-clearTimeout(debounceTimer);
-debounceTimer = setTimeout(() => func.apply(context, args), delay);
-};
+// ========== UTILITY FUNCTIONS ==========
+function formatCurrency(amount) {
+    return 'Rp ' + Math.round(amount).toLocaleString('id-ID');
 }
 
-// ========== THEME TOGGLE (DIPERBAIKI DENGAN IKON) ==========
+function capitalize(s) { 
+    return String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1); 
+}
+
+// ========== THEME TOGGLE ==========
 function toggleTheme() {
-const html = document.documentElement;
-const currentTheme = html.getAttribute('data-theme');
-const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-html.setAttribute('data-theme', newTheme);
-const ball = document.querySelector('.theme-toggle-ball i');
-ball.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
-localStorage.setItem('theme', newTheme);
-showToast(`✨ Tema beralih ke ${newTheme === 'light' ? 'Terang' : 'Gelap'}`, 'info');
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    
+    const ball = document.querySelector('.theme-toggle-ball');
+    ball.textContent = newTheme === 'light' ? '☀️' : '🌙';
+    
+    localStorage.setItem('theme', newTheme);
+    showToast(`✨ Switched to ${newTheme} mode`, 'success');
 }
+
+// Load saved theme
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
-if (savedTheme === 'light') {
-document.querySelector('.theme-toggle-ball i').className = 'fas fa-sun';
-}
 
-// ========== PACKAGE GENERATION (SAMA SEPERTI v3.0) ==========
+// ========== PACKAGE GENERATION ==========
 function generatePackages() {
-const grid = document.getElementById('packagesGrid');
-grid.innerHTML = '';
-for (let i = 1; i <= 4; i++) {
-const courses = courseData.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
-grid.innerHTML += `
-<div class="card" data-tilt>
-<div class="card-header flex items-center justify-between">
-<div class="flex items-center gap-2.5">
-<span style="display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 11px; font-size: 0.9rem; font-weight: 700; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">${i}</span>
-<span style="font-size: 0.92rem; font-weight: 600;">Package ${i}</span>
-<span class="text-secondary" style="font-size: 0.78rem; margin-left: 0.5rem;" id="packageDesc-${i}">Select course to begin</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="price-display badge" id="priceDisplay-${i}">Rp 0</span>
-<button class="btn btn-secondary" style="padding: 0.55rem; width: 40px; height: 40px;" onclick="clearPackage(${i})" title="Clear Package">
-<i class="fas fa-trash-alt" style="font-size: 0.9rem; color: var(--danger);"></i>
-</button>
-</div>
-</div>
-<div class="card-body">
-<div class="input-group">
-<label class="input-label"><i class="fas fa-graduation-cap"></i> Course</label>
-<select class="course-select input-field" data-package="${i}">
-<option value="">Select Course</option>
-${courses}
-</select>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 1rem;">
-<div class="input-group">
-<label class="input-label"><i class="fas fa-users"></i> Class</label>
-<select class="class-select input-field" data-package="${i}">
-<option value="">--</option>
-<option value="group">👥 Group</option>
-<option value="private">👤 Private</option>
-<option value="premium">💎 Premium</option>
-</select>
-</div>
-<div class="input-group">
-<label class="input-label"><i class="fas fa-tags"></i> Type</label>
-<select class="type-select input-field" data-package="${i}">
-<option value="">--</option>
-<option value="np">NP</option>
-<option value="nd">ND</option>
-<option value="tcp">TCP</option>
-<option value="kop">KOP</option>
-</select>
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 1rem;">
-<div class="input-group">
-<label class="input-label"><i class="fas fa-book"></i> Lessons</label>
-<select class="lessons-select input-field" data-package="${i}">
-<option value="">--</option>
-<option value="10">📚 10</option>
-<option value="20">📚 20</option>
-<option value="40">📚 40</option>
-<option value="80">📚 80</option>
-<option value="120">📚 120</option>
-</select>
-</div>
-<div class="input-group">
-<label class="input-label"><i class="fas fa-percentage"></i> Discount</label>
-<select class="discount-select input-field" data-package="${i}">
-<option value="normal">Normal Price</option>
-<option value="extra" selected>🎁 Bundle -10%</option>
-</select>
-</div>
-</div>
-<div class="mt-3 p-3 bg-bg-elevated rounded-xl border border-border" style="display: none;" id="packageSavings-${i}">
-<div class="flex items-center justify-between">
-<span class="text-secondary" style="font-size: 0.85rem;"><i class="fas fa-tag mr-1.5"></i> Your Savings</span>
-<span class="font-bold text-success" id="savings-${i}">Rp 0</span>
-</div>
-</div>
-</div>
-</div>
-`;
+    const grid = document.getElementById('packagesGrid');
+    grid.innerHTML = '';
+    
+    for (let i = 1; i <= 4; i++) {
+        const packageCard = createPackageCard(i);
+        grid.innerHTML += packageCard;
+    }
+    
+    // Add event listeners
+    document.querySelectorAll('.course-select, .class-select, .type-select, .lessons-select, .discount-select').forEach(select => {
+        select.addEventListener('change', calculateTotal);
+    });
 }
-// Add event listeners with debounce
-const calculateWithDebounce = debounce(calculateTotal, 150);
-document.querySelectorAll('.course-select, .class-select, .type-select, .lessons-select, .discount-select').forEach(select => {
-select.addEventListener('change', calculateWithDebounce);
-});
-// Initialize VanillaTilt for 3D effect
-VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
-max: 6, speed: 300, glare: true, "max-glare": 0.3
-});
-}
-generatePackages();
 
-// ========== CALCULATION ENGINE (DIPERKAYA) ==========
+function createPackageCard(num) {
+    const courses = courseData.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
+    
+    return `
+        <div class="card package-card-enter" style="animation-delay: ${(num-1) * 0.1}s;">
+            <div class="card-header flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 10px; font-size: 0.875rem; font-weight: 700; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">${num}</span>
+                    <span style="font-size: 0.875rem; font-weight: 600;">Package ${num}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="price-display badge">Rp 0</span>
+                    <button class="btn" style="padding: 0.5rem; background: var(--bg-elevated);" onclick="clearPackage(${num})" title="Clear Package">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label class="input-label">Course</label>
+                    <select class="course-select input-field" data-package="${num}">
+                        <option value="">Select Course</option>
+                        ${courses}
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="input-group">
+                        <label class="input-label">Class</label>
+                        <select class="class-select input-field" data-package="${num}">
+                            <option value="">--</option>
+                            <option value="group">👥 Group</option>
+                            <option value="private">👤 Private</option>
+                            <option value="premium">💎 Premium</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Type</label>
+                        <select class="type-select input-field" data-package="${num}">
+                            <option value="">--</option>
+                            <option value="np">NP</option>
+                            <option value="nd">ND</option>
+                            <option value="tcp">TCP</option>
+                            <option value="kop">KOP</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label class="input-label">Lessons</label>
+                        <select class="lessons-select input-field" data-package="${num}">
+                            <option value="">--</option>
+                            <option value="10">📚 10</option>
+                            <option value="20">📚 20</option>
+                            <option value="40">📚 40</option>
+                            <option value="80">📚 80</option>
+                            <option value="120">📚 120</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label class="input-label">Discount</label>
+                        <select class="discount-select input-field" data-package="${num}">
+                            <option value="normal">Normal</option>
+                            <option value="extra">🎁 Bundle -10%</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ========== CALCULATION ENGINE ==========
 function calculateTotal() {
-let totalPrice = 0;
-let totalLessons = 0;
-let totalSavings = 0;
-let totalNormalPrice = 0;
-let items = [];
-let bestValuePackage = null;
-let bestValueRatio = Infinity;
+    let totalPrice = 0;
+    let totalLessons = 0;
+    let totalSavings = 0;
+    let items = [];
 
-for (let i = 1; i <= 4; i++) {
-const courseSelect = document.querySelector(`.course-select[data-package="${i}"]`);
-const classSelect = document.querySelector(`.class-select[data-package="${i}"]`);
-const typeSelect = document.querySelector(`.type-select[data-package="${i}"]`);
-const lessonsSelect = document.querySelector(`.lessons-select[data-package="${i}"]`);
-const discountSelect = document.querySelector(`.discount-select[data-package="${i}"]`);
-const priceDisplay = document.getElementById(`priceDisplay-${i}`);
-const packageDesc = document.getElementById(`packageDesc-${i}`);
-const savingsElement = document.getElementById(`savings-${i}`);
-const packageSavingsContainer = document.getElementById(`packageSavings-${i}`);
+    for (let i = 1; i <= 4; i++) {
+        const courseSelect = document.querySelector(`.course-select[data-package="${i}"]`);
+        const classSelect = document.querySelector(`.class-select[data-package="${i}"]`);
+        const typeSelect = document.querySelector(`.type-select[data-package="${i}"]`);
+        const lessonsSelect = document.querySelector(`.lessons-select[data-package="${i}"]`);
+        const discountSelect = document.querySelector(`.discount-select[data-package="${i}"]`);
+        const priceDisplay = document.querySelectorAll('.price-display')[i-1];
 
-const courseName = courseSelect.value;
-const className = classSelect.value;
-const type = typeSelect.value;
-const lessons = lessonsSelect.value;
-const discountType = discountSelect.value;
+        const courseName = courseSelect.value;
+        const className = classSelect.value;
+        const type = typeSelect.value;
+        const lessons = lessonsSelect.value;
+        const discountType = discountSelect.value;
 
-if (className && type && lessons) {
-const price = priceData[className][type][lessons][discountType];
-const normalPrice = priceData[className][type][lessons].normal;
-const savings = normalPrice - price;
-const lessonsNum = parseInt(lessons);
+        if (className && type && lessons) {
+            const price = priceData[className][type][lessons][discountType];
+            const normalPrice = priceData[className][type][lessons].normal;
+            const savings = normalPrice - price;
+            
+            priceDisplay.textContent = formatCurrency(price);
+            totalPrice += price;
+            totalLessons += parseInt(lessons);
+            totalSavings += savings;
+            items.push({ courseName: courseName || `Package ${i}`, className, type, lessons: parseInt(lessons), price, discount: discountType });
+        } else {
+            priceDisplay.textContent = 'Rp 0';
+        }
+    }
 
-// Track best value
-const valueRatio = price / lessonsNum;
-if (valueRatio < bestValueRatio) {
-bestValueRatio = valueRatio;
-bestValuePackage = {
-course: courseName || `Package ${i}`,
-lessons: lessonsNum,
-ratio: valueRatio
-};
+    // Update displays
+    document.getElementById('totalLessons').textContent = totalLessons;
+    document.getElementById('finalPrice').textContent = formatCurrency(totalPrice);
+    document.getElementById('headerTotal').textContent = formatCurrency(totalPrice);
+    document.getElementById('headerLessons').textContent = totalLessons;
+    document.getElementById('totalSavings').textContent = formatCurrency(totalSavings);
+    
+    const avgPrice = totalLessons > 0 ? totalPrice / totalLessons : 0;
+    document.getElementById('avgPricePerLesson').textContent = formatCurrency(avgPrice);
+    document.getElementById('packageCount').textContent = items.length;
+
+    window._lastCalculation = { totalPrice, totalLessons, totalSavings, items };
+    
+    updatePriceChart();
 }
 
-// Update UI
-priceDisplay.textContent = formatCurrency(price, currentCurrency);
-packageDesc.textContent = `${courseName || 'Custom'} • ${lessons} lessons`;
-packageSavingsContainer.style.display = 'block';
-savingsElement.textContent = formatCurrency(savings, currentCurrency);
-
-// Visual feedback for good deals
-if (savings > 300000) {
-priceDisplay.style.background = 'linear-gradient(135deg, var(--success), #047857)';
-} else {
-priceDisplay.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
-}
-
-totalPrice += price;
-totalLessons += lessonsNum;
-totalSavings += savings;
-totalNormalPrice += normalPrice;
-
-items.push({ 
-courseName: courseName || `Package ${i}`, 
-className, 
-type, 
-lessons: lessonsNum, 
-price, 
-discount: discountType,
-normalPrice
-});
-} else {
-priceDisplay.textContent = 'Rp 0';
-priceDisplay.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
-packageDesc.textContent = 'Select course to begin';
-packageSavingsContainer.style.display = 'none';
-}
-}
-
-// Update global displays
-document.getElementById('totalLessons').textContent = totalLessons;
-document.getElementById('finalPrice').textContent = formatCurrency(totalPrice, currentCurrency);
-document.getElementById('headerTotal').textContent = formatCurrency(totalPrice, currentCurrency);
-document.getElementById('headerLessons').textContent = totalLessons;
-
-// Show/hide savings badge
-const savingsBadge = document.getElementById('savingsBadge');
-if (totalSavings > 200000) {
-savingsBadge.style.display = 'inline-flex';
-document.getElementById('headerSavings').textContent = formatCurrency(totalSavings, currentCurrency);
-} else {
-savingsBadge.style.display = 'none';
-}
-
-document.getElementById('totalSavings').textContent = formatCurrency(totalSavings, currentCurrency);
-const savingsPercentage = totalNormalPrice > 0 ? (totalSavings / totalNormalPrice) * 100 : 0;
-document.getElementById('savingsPercentage').textContent = `(${savingsPercentage.toFixed(1)}% dari harga normal)`;
-
-// Calculate average price per lesson
-const avgPrice = totalLessons > 0 ? totalPrice / totalLessons : 0;
-document.getElementById('avgPricePerLesson').textContent = formatCurrency(avgPrice, currentCurrency);
-
-// Update package count
-document.getElementById('packageCount').textContent = items.length;
-
-// Update best value package
-if (bestValuePackage) {
-document.getElementById('bestValuePackage').innerHTML = `
-${bestValuePackage.course} <span class="text-secondary" style="font-size: 0.82em;">(${bestValuePackage.lessons}x)</span>
-`;
-} else {
-document.getElementById('bestValuePackage').textContent = '-';
-}
-
-// Update payment simulator
-updatePaymentSimulator(totalPrice);
-
-// Update ROI estimate (simplified)
-const roiMonths = totalLessons > 0 ? Math.max(3, Math.round(totalLessons / 8)) : 0;
-document.getElementById('roiEstimate').textContent = `${roiMonths} bln`;
-
-// Update monthly payment
-document.getElementById('payPerMonth').textContent = formatCurrency(totalPrice / 12, currentCurrency);
-
-// Save state
-window._lastCalculation = { 
-totalPrice, 
-totalLessons, 
-totalSavings, 
-totalNormalPrice,
-savingsPercentage,
-items,
-timestamp: new Date().toISOString()
-};
-
-// Update chart
-updatePriceChart();
-
-return window._lastCalculation;
-}
-calculateTotal();
-
-// ========== PAYMENT SIMULATOR ==========
-function updatePaymentSimulator(totalPrice) {
-if (!totalPrice || totalPrice === 0) {
-['fullPayment', 'payment3x', 'payment6x', 'payment12x', 'downPayment'].forEach(id => {
-document.getElementById(id).textContent = 'Rp 0';
-});
-return;
-}
-
-// Full payment (with small discount incentive)
-const fullPayment = totalPrice * 0.98;
-document.getElementById('fullPayment').textContent = formatCurrency(fullPayment, currentCurrency);
-
-// Installment plans
-document.getElementById('payment3x').textContent = formatCurrency(totalPrice / 3, currentCurrency);
-document.getElementById('payment6x').textContent = formatCurrency(totalPrice / 6, currentCurrency);
-document.getElementById('payment12x').textContent = formatCurrency(totalPrice / 12, currentCurrency);
-
-// Down payment
-document.getElementById('downPayment').textContent = formatCurrency(totalPrice * 0.3, currentCurrency);
-}
-
-function setInstallmentPlan(months) {
-document.querySelectorAll('.simulator-item').forEach(item => {
-item.classList.remove('active');
-});
-event.target.closest('.simulator-item').classList.add('active');
-showToast(`✅ Payment plan set to ${months === 1 ? 'Full Payment' : months + ' months'}`, 'success');
-}
-
-// ========== CHART (DIPERBAIKI) ==========
+// ========== CHART FUNCTIONS ==========
 function updatePriceChart() {
-const calc = window._lastCalculation || { items: [] };
-const ctx = document.getElementById('priceChart');
-if (!ctx) return;
-if (priceChart) priceChart.destroy();
-
-const labels = calc.items.map((item, i) => `Pkg ${i+1}`);
-const data = calc.items.map(item => item.price);
-const avgData = calc.items.map(item => item.price / item.lessons);
-
-priceChart = new Chart(ctx, {
-type: 'bar',
-data: {
-labels: labels,
-datasets: [
-{
-label: 'Package Value',
-data: data,
-backgroundColor: 'rgba(99, 102, 241, 0.65)',
-borderColor: 'rgba(99, 102, 241, 1)',
-borderWidth: 2,
-borderRadius: 6
-},
-{
-label: 'Avg/Lesson (x10)',
-data: avgData.map(v => v * 10),
-backgroundColor: 'rgba(16, 185, 129, 0.6)',
-borderColor: 'rgba(16, 185, 129, 1)',
-borderWidth: 2,
-borderRadius: 6,
-type: 'line',
-fill: false
-}
-]
-},
-options: {
-responsive: true,
-maintainAspectRatio: false,
-plugins: {
-legend: { 
-position: 'top',
-labels: {
-font: { size: 10 },
-padding: 10
-}
-},
-tooltip: {
-callbacks: {
-label: function(context) {
-if (context.dataset.label.includes('Avg')) {
-return `Avg/Lesson: ${formatCurrency(context.parsed.y / 10)}`;
-}
-return formatCurrency(context.parsed.y);
-}
-}
-}
-},
-scales: {
-y: {
-beginAtZero: true,
-ticks: {
-callback: function(value) {
-return formatCurrency(value);
-},
-font: { size: 9 }
-}
-},
-x: {
-ticks: {
-font: { size: 10 }
-}
-}
-}
-}
-});
+    const calc = window._lastCalculation || { items: [] };
+    const ctx = document.getElementById('priceChart');
+    if (!ctx) return;
+    
+    if (priceChart) priceChart.destroy();
+    
+    const labels = calc.items.map((item, i) => `Pkg ${i+1}`);
+    const data = calc.items.map(item => item.price);
+    
+    priceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Price per Package',
+                data: data,
+                backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                borderColor: 'rgba(99, 102, 241, 1)',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatCurrency(context.parsed.y);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatCurrency(value);
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
-// ========== MAGIC OPTIMIZE (FITUR BARU) ==========
-document.getElementById('magicOptimizeBtn').addEventListener('click', function() {
-const btn = this;
-const originalHTML = btn.innerHTML;
-btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Optimizing...`;
-btn.disabled = true;
+// ========== RECOMMENDATIONS ==========
+function updateRecommendations() {
+    const age = parseInt(document.getElementById('childAge').value);
+    const container = document.getElementById('courseRecommendations');
 
-setTimeout(() => {
-const calc = window._lastCalculation;
-if (!calc || calc.items.length === 0) {
-showToast('⚠️ Add at least 1 package first', 'warning');
-btn.innerHTML = originalHTML;
-btn.disabled = false;
-return;
+    if (!age || age < 5 || age > 17) {
+        container.innerHTML = '<p class="text-secondary" style="font-size: 0.75rem; text-align: center; padding: 1.5rem 0.5rem;">Enter child age (5-17) for AI recommendations</p>';
+        return;
+    }
+
+    const recommended = courseData.filter(course => course.age.includes(age));
+    let courses = recommended.length > 0 ? recommended : courseData.filter(course => 
+        Math.abs(course.age[0] - age) <= 2 || Math.abs(course.age[course.age.length - 1] - age) <= 2
+    ).slice(0, 4);
+
+    const html = courses.map(course => `
+        <div class="template-card">
+            <div class="flex items-center gap-2 mb-2">
+                <span style="font-size: 1.5rem;">${course.icon}</span>
+                <div style="font-weight: 600; font-size: 0.875rem;">${course.name}</div>
+                ${recommended.includes(course) ? '<span class="ai-badge">Perfect Match</span>' : ''}
+            </div>
+            <div class="text-secondary" style="font-size: 0.75rem; margin-bottom: 0.5rem;">${course.desc}</div>
+            <div class="flex gap-2" style="font-size: 0.75rem; color: var(--text-muted);">
+                <span>📚 ${course.lessons}x lessons</span>
+                <span>•</span>
+                <span>👶 ${course.age[0]}-${course.age[course.age.length - 1]}y</span>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = html;
 }
 
-// Simple optimization: ensure at least one 40+ lesson package with bundle discount
-let optimized = false;
-for (let i = 1; i <= Math.min(4, calc.items.length); i++) {
-const lessonsSelect = document.querySelector(`.lessons-select[data-package="${i}"]`);
-const discountSelect = document.querySelector(`.discount-select[data-package="${i}"]`);
-const currentLessons = parseInt(lessonsSelect.value) || 0;
-
-if (currentLessons < 40) {
-lessonsSelect.value = '40';
-optimized = true;
-}
-if (discountSelect.value !== 'extra') {
-discountSelect.value = 'extra';
-optimized = true;
-}
+// ========== TEMPLATES ==========
+function loadTemplates() {
+    const container = document.getElementById('templatesContainer');
+    container.innerHTML = quickTemplates.map((template, idx) => `
+        <div class="template-card" onclick="applyTemplate(${idx})">
+            <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">${template.name}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">${template.packages.length} package(s)</div>
+        </div>
+    `).join('');
 }
 
-if (optimized) {
-calculateTotal();
-confetti({ particleCount: 120, spread: 80, origin: { y: 0.7 }, colors: ['#6366F1', '#8B5CF6', '#EC4899', '#10B981'] });
-showToast('✨ Packages optimized! Savings increased by up to 15%', 'success');
-} else {
-showToast('✅ Your packages are already optimized!', 'info');
+function applyTemplate(idx) {
+    const template = quickTemplates[idx];
+    resetAllPackages();
+    
+    template.packages.forEach((pkg, i) => {
+        if (i < 4) {
+            const packageNum = i + 1;
+            document.querySelector(`.course-select[data-package="${packageNum}"]`).value = pkg.course;
+            document.querySelector(`.class-select[data-package="${packageNum}"]`).value = pkg.class;
+            document.querySelector(`.type-select[data-package="${packageNum}"]`).value = pkg.type;
+            document.querySelector(`.lessons-select[data-package="${packageNum}"]`).value = pkg.lessons;
+        }
+    });
+    
+    calculateTotal();
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    showToast(`✅ Applied: ${template.name}`, 'success');
 }
 
-btn.innerHTML = originalHTML;
-btn.disabled = false;
-}, 800);
-});
+// ========== ACTIONS ==========
+function clearPackage(num) {
+    document.querySelector(`.course-select[data-package="${num}"]`).selectedIndex = 0;
+    document.querySelector(`.class-select[data-package="${num}"]`).selectedIndex = 0;
+    document.querySelector(`.type-select[data-package="${num}"]`).selectedIndex = 0;
+    document.querySelector(`.lessons-select[data-package="${num}"]`).selectedIndex = 0;
+    document.querySelector(`.discount-select[data-package="${num}"]`).value = 'normal';
+    calculateTotal();
+    showToast(`🗑️ Package ${num} cleared`, 'info');
+}
 
-// ========== CURRENCY TOGGLE ==========
-document.getElementById('currencyToggle').addEventListener('click', function() {
-currentCurrency = currentCurrency === 'IDR' ? 'USD' : 'IDR';
-this.innerHTML = `<i class="fas fa-coins"></i> ${currentCurrency}`;
-calculateTotal();
-showToast(`💱 Currency changed to ${currentCurrency}`, 'info');
-});
+function resetAllPackages() {
+    document.querySelectorAll('.course-select, .class-select, .type-select, .lessons-select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    document.querySelectorAll('.discount-select').forEach(select => {
+        select.value = 'normal';
+    });
+}
+
+// ========== STORAGE ==========
+function saveCalculation() {
+    const calc = window._lastCalculation;
+    if (!calc || !calc.items || calc.items.length === 0) {
+        showToast('⚠️ No calculation to save!', 'warning');
+        return;
+    }
+
+    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+    history.unshift({ date: new Date().toISOString(), ...calc });
+    if (history.length > 50) history.pop();
+    
+    localStorage.setItem('calcHistory', JSON.stringify(history));
+    showToast('💾 Calculation saved!', 'success');
+}
+
+function copyCurrentCalculation() {
+    const calc = window._lastCalculation;
+    if (!calc || !calc.items || calc.items.length === 0) {
+        showToast('⚠️ No calculation to copy!', 'warning');
+        return;
+    }
+
+    const text = `📊 ALGONOVA CALCULATION
+
+Total: ${formatCurrency(calc.totalPrice)}
+Lessons: ${calc.totalLessons}
+Savings: ${formatCurrency(calc.totalSavings)}
+
+Packages:
+${calc.items.map((item, i) => `${i+1}. ${item.courseName} - ${item.className} (${item.lessons}x) - ${formatCurrency(item.price)}`).join('\n')}
+
+Generated by Algonova Calculator Ultra Pro v3.0`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 Copied to clipboard!', 'success');
+    });
+}
+
+// ========== EXPORT FUNCTIONS ==========
+function toggleExportMenu() {
+    const menu = document.getElementById('exportMenu');
+    exportMenuOpen = !exportMenuOpen;
+    if (exportMenuOpen) {
+        menu.classList.add('show');
+    } else {
+        menu.classList.remove('show');
+    }
+}
+
+function exportToPDF() {
+    showToast('📄 Generating PDF...', 'info');
+    setTimeout(() => window.print(), 500);
+    toggleExportMenu();
+}
+
+function exportToExcel() {
+    const calc = window._lastCalculation || { items: [] };
+    let csv = 'Package,Course,Class,Type,Lessons,Price\n';
+    calc.items.forEach((item, i) => {
+        csv += `${i+1},${item.courseName},${item.className},${item.type},${item.lessons},${item.price}\n`;
+    });
+    csv += `\nTotal,,,${calc.totalLessons},${calc.totalPrice}`;
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'algonova_calculation.csv';
+    a.click();
+    showToast('📊 Excel exported!', 'success');
+    toggleExportMenu();
+}
+
+function exportToJSON() {
+    const calc = window._lastCalculation || { items: [] };
+    const json = JSON.stringify(calc, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'algonova_calculation.json';
+    a.click();
+    showToast('💾 JSON exported!', 'success');
+    toggleExportMenu();
+}
 
 // ========== COLLAPSIBLE ==========
 function toggleCollapsible(sectionId) {
-const section = document.getElementById(sectionId);
-const icon = document.getElementById(sectionId + 'Icon');
-if (section.classList.contains('open')) {
-section.classList.remove('open');
-icon.style.transform = 'rotate(-90deg)';
-} else {
-section.classList.add('open');
-icon.style.transform = 'rotate(0deg)';
-}
+    const section = document.getElementById(sectionId);
+    const icon = document.getElementById(sectionId + 'Icon');
+    if (section.classList.contains('open')) {
+        section.classList.remove('open');
+        icon.style.transform = 'rotate(-90deg)';
+    } else {
+        section.classList.add('open');
+        icon.style.transform = 'rotate(0deg)';
+    }
 }
 
-// ========== TOAST (DIPERBAIKI) ==========
+// ========== TOAST ==========
 function showToast(message, type = 'success') {
-const toast = document.getElementById('toast');
-const toastMessage = document.getElementById('toastMessage');
-const toastIcon = toast.querySelector('i');
-
-// Set icon berdasarkan tipe
-switch(type) {
-case 'success': 
-toastIcon.className = 'fas fa-check-circle'; 
-toastIcon.style.color = 'var(--success)';
-break;
-case 'error': 
-toastIcon.className = 'fas fa-exclamation-circle'; 
-toastIcon.style.color = 'var(--danger)';
-break;
-case 'warning': 
-toastIcon.className = 'fas fa-exclamation-triangle'; 
-toastIcon.style.color = 'var(--warning)';
-break;
-case 'info': 
-toastIcon.className = 'fas fa-info-circle'; 
-toastIcon.style.color = 'var(--info)';
-break;
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    toast.className = 'toast ' + type;
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
 }
 
-toastMessage.textContent = message;
-toast.className = `toast ${type} show`;
-
-setTimeout(() => {
-toast.classList.remove('show');
-}, 3200);
+// ========== MODALS ==========
+function closeModal() {
+    document.getElementById('modalBackdrop').style.display = 'none';
 }
 
-// ========== FUNGSI LAINNYA (SAMA SEPERTI v3.0) ==========
-function updateRecommendations() { /* ... */ }
-function loadTemplates() { /* ... */ }
-function applyTemplate(idx) { /* ... */ }
-function clearPackage(num) { /* ... */ }
-function resetAllPackages() { /* ... */ }
-function saveCalculation() { /* ... */ }
-function copyCurrentCalculation() { /* ... */ }
-function exportToPDF() { /* ... */ }
-function exportToExcel() { /* ... */ }
-function exportToJSON() { /* ... */ }
-function openComparisonModal() { /* ... */ }
-function closeComparisonModal() { /* ... */ }
-function openHistoryModal() { /* ... */ }
-function closeHistoryModal() { /* ... */ }
-function closeModal() { /* ... */ }
-function populateInvoicePreview(studentName, payType) { /* ... */ }
+function closeComparisonModal() {
+    document.getElementById('comparisonModal').style.display = 'none';
+}
 
-// Inisialisasi
-document.addEventListener('DOMContentLoaded', function() {
-loadTemplates();
+function closeHistoryModal() {
+    document.getElementById('historyModal').style.display = 'none';
+}
+
+// Comparison Modal
+function openComparisonModal() {
+    populateComparisonTable();
+    document.getElementById('comparisonModal').style.display = 'flex';
+}
+
+function populateComparisonTable() {
+    const tbody = document.getElementById('comparisonTableBody');
+    let html = '';
+    
+    Object.keys(priceData).forEach(classType => {
+        Object.keys(priceData[classType]).forEach(packageType => {
+            html += `
+                <tr>
+                    <td style="font-weight: 600; text-transform: capitalize;">${classType}</td>
+                    <td style="font-weight: 600; text-transform: uppercase;">${packageType}</td>
+                    <td>${formatCurrency(priceData[classType][packageType][10].normal)}</td>
+                    <td>${formatCurrency(priceData[classType][packageType][20].normal)}</td>
+                    <td>${formatCurrency(priceData[classType][packageType][40].normal)}</td>
+                    <td>${formatCurrency(priceData[classType][packageType][80].normal)}</td>
+                    <td>${formatCurrency(priceData[classType][packageType][120].normal)}</td>
+                </tr>
+            `;
+        });
+    });
+    
+    tbody.innerHTML = html;
+}
+
+// History Modal
+function openHistoryModal() {
+    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+    const container = document.getElementById('historyContainer');
+    
+    if (history.length === 0) {
+        container.innerHTML = '<p class="text-secondary" style="text-align: center; padding: 2rem;">No saved calculations</p>';
+    } else {
+        container.innerHTML = history.map((item, idx) => {
+            const date = new Date(item.date);
+            return `
+                <div class="history-item" onclick="loadHistoryItem(${idx})">
+                    <div class="flex justify-between items-center mb-2">
+                        <div style="font-weight: 600;">${formatCurrency(item.totalPrice)}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})}</div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${item.totalLessons} lessons • ${item.items.length} package(s)</div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    document.getElementById('historyModal').style.display = 'flex';
+}
+
+function loadHistoryItem(idx) {
+    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+    const item = history[idx];
+    
+    resetAllPackages();
+    
+    item.items.forEach((pkg, i) => {
+        if (i < 4) {
+            const packageNum = i + 1;
+            document.querySelector(`.course-select[data-package="${packageNum}"]`).value = pkg.courseName;
+            document.querySelector(`.class-select[data-package="${packageNum}"]`).value = pkg.className;
+            document.querySelector(`.type-select[data-package="${packageNum}"]`).value = pkg.type;
+            document.querySelector(`.lessons-select[data-package="${packageNum}"]`).value = pkg.lessons;
+            document.querySelector(`.discount-select[data-package="${packageNum}"]`).value = pkg.discount || 'normal';
+        }
+    });
+    
+    calculateTotal();
+    closeHistoryModal();
+    showToast('✅ Loaded from history', 'success');
+}
+
+function clearHistory() {
+    if (confirm('Clear all calculation history?')) {
+        localStorage.removeItem('calcHistory');
+        showToast('🗑️ History cleared', 'success');
+        closeHistoryModal();
+    }
+}
+
+// Invoice Modal
+document.getElementById('openModalBtn').addEventListener('click', () => {
+    const calc = window._lastCalculation || { totalPrice:0, items:[] };
+    if (!calc.items || calc.items.length === 0) {
+        showToast('⚠️ Please select at least 1 package!', 'warning');
+        return;
+    }
+    
+    const coursesDisplay = document.getElementById('selectedCoursesDisplay');
+    if (calc.items && calc.items.length > 0) {
+        const coursesList = calc.items.map((item, idx) => 
+            `<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 8px; font-size: 0.75rem; font-weight: 700;">${idx + 1}</span>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">${item.courseName}</div>
+                    <div class="text-secondary" style="font-size: 0.75rem;">${capitalize(item.className)} • ${item.type.toUpperCase()} • ${item.lessons}x lessons</div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary);">${formatCurrency(item.price)}</div>
+            </div>`
+        ).join('');
+        coursesDisplay.innerHTML = coursesList;
+    }
+
+    document.getElementById('modalInputSection').style.display = 'block';
+    document.getElementById('modalInvoiceSection').style.display = 'none';
+    document.getElementById('modalBackdrop').style.display = 'flex';
+    document.getElementById('modalStudentName').value = '';
+});
+
+document.getElementById('generateInvoiceBtn').addEventListener('click', () => {
+    const studentName = document.getElementById('modalStudentName').value.trim();
+    if (!studentName) {
+        showToast('⚠️ Please enter student name!', 'warning');
+        return;
+    }
+    const payType = document.querySelector('input[name="payType"]:checked').value;
+    populateInvoicePreview(studentName, payType);
+    
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    
+    document.getElementById('modalInputSection').style.display = 'none';
+    document.getElementById('modalInvoiceSection').style.display = 'block';
+});
+
+function populateInvoicePreview(studentName, payType) {
+    const calc = window._lastCalculation || { totalPrice:0, totalLessons:0, items:[] };
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    document.getElementById('invoiceDateLarge').textContent = dateStr;
+    document.getElementById('billToName').textContent = studentName;
+    document.getElementById('invoicePaymentType').textContent = (payType === 'down') ? 'Down Payment' : 'Full Payment';
+
+    const tbody = document.getElementById('invoiceItems');
+    tbody.innerHTML = '';
+    if (calc.items && calc.items.length > 0) {
+        calc.items.forEach(it => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight: 500; padding: 1rem; border-bottom: 1px solid #E2E8F0;">${it.courseName}</td>
+                <td style="padding: 1rem; border-bottom: 1px solid #E2E8F0; text-transform: capitalize;">${it.className}</td>
+                <td style="text-align: right; font-weight: 600; padding: 1rem; border-bottom: 1px solid #E2E8F0;">${it.lessons}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('invTotalLessons').textContent = calc.totalLessons || 0;
+    document.getElementById('invTotal').textContent = formatCurrency(calc.totalPrice || 0);
+
+    // QR Code
+    const qrContainer = document.getElementById('qrcodeContainer');
+    qrContainer.innerHTML = '';
+    const qrData = `ALGONOVA|${studentName}|${formatCurrency(calc.totalPrice)}|${calc.totalLessons}`;
+    new QRCode(qrContainer, {
+        text: qrData,
+        width: 80,
+        height: 80
+    });
+}
+
+document.getElementById('printInvoiceBtn').addEventListener('click', () => {
+    window.print();
+});
+
+document.getElementById('backToModalBtn').addEventListener('click', () => {
+    document.getElementById('modalInvoiceSection').style.display = 'none';
+    document.getElementById('modalInputSection').style.display = 'block';
+});
+
+function shareViaWhatsApp() {
+    const calc = window._lastCalculation;
+    const studentName = document.getElementById('billToName').textContent;
+    const payType = document.getElementById('invoicePaymentType').textContent;
+    
+    const message = `*ALGONOVA INVOICE* 📄
+
+Student: ${studentName}
+Payment: ${payType}
+
+*Packages:*
+${calc.items.map((item, i) => `${i+1}. ${item.courseName}\n   ${item.className} • ${item.lessons}x lessons`).join('\n\n')}
+
+*Total Lessons:* ${calc.totalLessons}
+*TOTAL:* ${formatCurrency(calc.totalPrice)}
+
+_Generated by Algonova Calculator Ultra Pro v3.0_`;
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+}
+
+// Reset button
+document.getElementById('resetBtn').addEventListener('click', () => {
+    resetAllPackages();
+    document.getElementById('childAge').value = '';
+    calculateTotal();
+    updateRecommendations();
+    showToast('🔄 Reset complete', 'info');
+});
+
+// Child age input
 document.getElementById('childAge').addEventListener('input', updateRecommendations);
-document.getElementById('resetBtn').addEventListener('click', function() {
-resetAllPackages();
-document.getElementById('childAge').value = '';
-calculateTotal();
-updateRecommendations();
-showToast('🔄 Reset complete', 'info');
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeModal();
+        closeComparisonModal();
+        closeHistoryModal();
+    }
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        saveCalculation();
+    }
+    if (e.ctrlKey && e.key === 'h') {
+        e.preventDefault();
+        openHistoryModal();
+    }
+    if (e.ctrlKey && e.key === 'r') {
+        e.preventDefault();
+        document.getElementById('resetBtn').click();
+    }
 });
 
-// Welcome message
-setTimeout(() => {
-showToast('✨ Welcome to Algonova Calculator Ultra Pro v3.1!', 'info');
-}, 500);
-
-console.log('%c🚀 Algonova Calculator Ultra Pro v3.1', 'color: #6366F1; font-size: 20px; font-weight: bold; text-shadow: 0 0 10px rgba(99,102,241,0.5);');
-console.log('%cBy Mi Raj & Team 8 • Enhanced with 15+ new features', 'color: #8B5CF6; font-size: 14px;');
+// Close modals on backdrop click
+[document.getElementById('modalBackdrop'), document.getElementById('comparisonModal'), document.getElementById('historyModal')].forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 });
-</script>
+
+// ========== INITIALIZATION ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Load theme
+    const ball = document.querySelector('.theme-toggle-ball');
+    if (ball) {
+        ball.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+    }
+    
+    // Generate packages
+    generatePackages();
+    
+    // Load templates
+    loadTemplates();
+    
+    // Initial calculation
+    calculateTotal();
+    
+    // Welcome message
+    showToast('🚀 Welcome to Algonova Calculator Ultra Pro!', 'info');
+    
+    console.log('%c🚀 Algonova Calculator Ultra Pro v3.0', 'color: #6366F1; font-size: 20px; font-weight: bold;');
+    console.log('%cBy Mi Raj & Team 8', 'color: #8B5CF6; font-size: 14px;');
+    console.log('%c100+ Enhanced Features Loaded Successfully! ✨', 'color: #10B981; font-size: 12px;');
+});
+
+    </script>
 </body>
 </html>
