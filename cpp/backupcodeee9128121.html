@@ -293,6 +293,46 @@
             box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
         }
         
+        /* BUDGET AI CARD */
+        .budget-ai-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 18px; padding: 1.25rem; margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .budget-ai-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+        }
+        
+        .budget-input-group {
+            display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: end;
+        }
+        
+        .budget-option-btn {
+            padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid var(--border);
+            background: var(--bg-input); color: var(--text-primary); font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; text-align: center;
+        }
+        .budget-option-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .budget-option-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border-color: transparent; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .budget-result {
+            background: var(--bg-card); border-radius: 12px; padding: 1rem; margin-top: 1rem;
+            border: 1px solid var(--border);
+        }
+        
+        .budget-item {
+            display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+        .budget-item:last-child { border-bottom: none; }
+        .budget-item .course { font-weight: 600; }
+        .budget-item .price { color: var(--success); font-weight: 700; }
+        
         /* UTILITIES */
         .flex { display: flex; }
         .items-center { align-items: center; }
@@ -425,6 +465,48 @@
                     </div>
                 </div>
 
+                <!-- Budget AI Card -->
+                <div class="budget-ai-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="font-size: 1.25rem;">🧠</span>
+                            <span style="font-weight: 700; font-size: 0.875rem;">Budget AI</span>
+                            <span class="ai-badge">Smart</span>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">Find best packages</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Budget Amount (Million Rp)</label>
+                        <div class="budget-input-group">
+                            <input type="number" id="budgetAmount" min="1" max="100" placeholder="e.g., 5" class="input-field" style="margin-bottom: 0;">
+                            <button id="calculateBudgetBtn" class="btn btn-primary" style="padding: 0.75rem 1rem;">
+                                Calculate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Number of Packages</label>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                            <div class="budget-option-btn" data-packages="1">1 Package</div>
+                            <div class="budget-option-btn" data-packages="2">2 Packages</div>
+                            <div class="budget-option-btn" data-packages="3">3 Packages</div>
+                        </div>
+                    </div>
+                    
+                    <div id="budgetResult" class="budget-result" style="display: none;">
+                        <div style="font-weight: 700; margin-bottom: 0.75rem; font-size: 0.875rem;">Recommended Packages:</div>
+                        <div id="budgetItems"></div>
+                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                            <button id="applyBudgetBtn" class="btn btn-success" style="flex: 1; font-size: 0.75rem; padding: 0.625rem;">
+                                Apply to Calculator
+                            </button>
+                            <button id="clearBudgetBtn" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.625rem;">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Child Age Input -->
                 <div class="card mb-3">
                     <div class="card-body">
@@ -549,6 +631,14 @@
             <span class="fab-tooltip">Copy Summary</span>
             <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+        </button>
+        
+        <!-- Budget AI FAB -->
+        <button class="fab" onclick="openBudgetAI()">
+            <span class="fab-tooltip">Budget AI</span>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
             </svg>
         </button>
     </div>
@@ -752,20 +842,19 @@ const priceData = {
     group: {
         np: { 10: { normal: 1890000, extra: 1701000 }, 20: { normal: 3580000, extra: 3222000 }, 40: { normal: 6760000, extra: 6084000 }, 80: { normal: 12720000, extra: 11448000 }, 120: { normal: 16680000, extra: 15012000 } },
         nd: { 10: { normal: 1590000, extra: 1431000 }, 20: { normal: 2980000, extra: 2681000 }, 40: { normal: 5560000, extra: 5004000 }, 80: { normal: 10320000, extra: 9288000 }, 120: { normal: 14280000, extra: 12852000 } },
-        tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } },
-        kop: { 10: { normal: 1350000, extra: 1215000 }, 20: { normal: 2500000, extra: 2250000 }, 40: { normal: 4240000, extra: 4176000 }, 80: { normal: 6960000, extra: 7632000 }, 120: { normal: 9240000, extra: 10476000 } }
+        tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } }
+        
     },
     private: {
         np: { 10: { normal: 3900000, extra: 3510000 }, 20: { normal: 7380000, extra: 6642000 }, 40: { normal: 13960000, extra: 12564000 }, 80: { normal: 26240000, extra: 23616000 }, 120: { normal: 36960000, extra: 33264000 } },
         nd: { 10: { normal: 3080000, extra: 2772000 }, 20: { normal: 5740000, extra: 5166000 }, 40: { normal: 10680000, extra: 9612000 }, 80: { normal: 19680000, extra: 17712000 }, 120: { normal: 27120000, extra: 24408000 } },
-        tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } },
-        kop: { 10: { normal: 2590000, extra: 2331000 }, 20: { normal: 4780000, extra: 4302000 }, 40: { normal: 7960000, extra: 7884000 }, 80: { normal: 14320000, extra: 14328000 }, 120: { normal: 19080000, extra: 19332000 } }
+        tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } }
     },
     premium: {
         np: { 10: { normal: 2400000, extra: 2160000 }, 20: { normal: 4540000, extra: 4086000 }, 40: { normal: 8560000, extra: 7704000 }, 80: { normal: 16160000, extra: 14544000 }, 120: { normal: 21240000, extra: 19116000 } },
         nd: { 10: { normal: 2020000, extra: 1818000 }, 20: { normal: 3780000, extra: 3402000 }, 40: { normal: 7080000, extra: 6372000 }, 80: { normal: 13120000, extra: 11808000 }, 120: { normal: 18120000, extra: 16308000 } },
-        tcp: { 10: { normal: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } },
-        kop: { 10: { normal: 1710000, extra: 1539000 }, 20: { normal: 3180000, extra: 2862000 }, 40: { normal: 5400000, extra: 5292000 }, 80: { normal: 8800000, extra: 9720000 }, 120: { normal: 11760000, extra: 13176000 } }
+        tcp: { 10: { normal: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } }
+       
     }
 };
 
@@ -791,9 +880,19 @@ const quickTemplates = [
     { name: "🎨 Creative Pack", packages: [{course: "Graphic Design Junior", class: "group", type: "tcp", lessons: "40"}] }
 ];
 
+// Budget AI Configuration
+const budgetAIConfig = {
+    minBudget: 1, // million Rp
+    maxBudget: 100, // million Rp
+    defaultPackageCount: 2,
+    defaultBudget: 5 // million Rp
+};
+
 // ========== GLOBAL STATE ==========
 let priceChart = null;
 let exportMenuOpen = false;
+let selectedBudgetPackages = 1;
+let budgetRecommendations = [];
 
 // ========== UTILITY FUNCTIONS ==========
 function formatCurrency(amount) {
@@ -961,6 +1060,199 @@ function calculateTotal() {
     window._lastCalculation = { totalPrice, totalLessons, totalSavings, items };
     
     updatePriceChart();
+}
+
+// ========== BUDGET AI FUNCTIONS ==========
+function openBudgetAI() {
+    // Scroll to budget AI card
+    const budgetCard = document.querySelector('.budget-ai-card');
+    budgetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Highlight animation
+    budgetCard.style.transform = 'scale(1.02)';
+    budgetCard.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.4)';
+    setTimeout(() => {
+        budgetCard.style.transform = '';
+        budgetCard.style.boxShadow = '';
+    }, 1000);
+    
+    // Set focus to input
+    document.getElementById('budgetAmount').focus();
+}
+
+function calculateBudgetRecommendations() {
+    const budgetInput = document.getElementById('budgetAmount');
+    const budgetValue = parseFloat(budgetInput.value);
+    
+    if (!budgetValue || budgetValue < budgetAIConfig.minBudget || budgetValue > budgetAIConfig.maxBudget) {
+        showToast(`⚠️ Masukkan budget antara ${budgetAIConfig.minBudget} - ${budgetAIConfig.maxBudget} juta!`, 'warning');
+        return;
+    }
+    
+    const budgetInRupiah = budgetValue * 1000000;
+    const numPackages = selectedBudgetPackages;
+    
+    // Clear previous recommendations
+    budgetRecommendations = [];
+    
+    // Find best combinations
+    const allPackages = [];
+    
+    // Generate all possible package combinations
+    for (const className of Object.keys(priceData)) {
+        for (const packageType of Object.keys(priceData[className])) {
+            for (const lessons of Object.keys(priceData[className][packageType])) {
+                for (const course of courseData) {
+                    // Check if course is suitable for any age (we'll use a generic approach)
+                    const price = priceData[className][packageType][lessons].normal;
+                    allPackages.push({
+                        course: course.name,
+                        className: className,
+                        type: packageType,
+                        lessons: parseInt(lessons),
+                        price: price,
+                        icon: course.icon
+                    });
+                }
+            }
+        }
+    }
+    
+    // Sort by price to find best matches
+    allPackages.sort((a, b) => a.price - b.price);
+    
+    // Find combinations that fit the budget
+    let bestCombinations = [];
+    
+    if (numPackages === 1) {
+        // For 1 package, find the best package within budget
+        const validPackages = allPackages.filter(pkg => pkg.price <= budgetInRupiah);
+        if (validPackages.length > 0) {
+            // Get the package with maximum lessons within budget
+            validPackages.sort((a, b) => b.lessons - a.lessons);
+            bestCombinations = [validPackages[0]];
+        }
+    } else {
+        // For 2-3 packages, find combinations
+        const maxAttempts = 1000; // Prevent infinite loops
+        let attempts = 0;
+        
+        while (bestCombinations.length === 0 && attempts < maxAttempts) {
+            attempts++;
+            
+            // Try random combinations
+            const combination = [];
+            let totalPrice = 0;
+            
+            // Shuffle packages
+            const shuffled = [...allPackages].sort(() => Math.random() - 0.5);
+            
+            for (let i = 0; i < numPackages && i < shuffled.length; i++) {
+                const pkg = shuffled[i];
+                if (totalPrice + pkg.price <= budgetInRupiah) {
+                    combination.push(pkg);
+                    totalPrice += pkg.price;
+                }
+            }
+            
+            if (combination.length === numPackages) {
+                // Calculate score based on total lessons and variety
+                const totalLessons = combination.reduce((sum, pkg) => sum + pkg.lessons, 0);
+                const uniqueClasses = new Set(combination.map(pkg => pkg.className)).size;
+                const score = totalLessons + (uniqueClasses * 10); // Reward variety
+                
+                bestCombinations.push({ combination, totalPrice, score });
+            }
+        }
+        
+        // Sort by score and get the best one
+        if (bestCombinations.length > 0) {
+            bestCombinations.sort((a, b) => b.score - a.score);
+            budgetRecommendations = bestCombinations[0].combination;
+        }
+    }
+    
+    // Display results
+    if (budgetRecommendations.length > 0) {
+        displayBudgetResults(budgetInRupiah);
+        showToast(`✨ Found ${budgetRecommendations.length} package(s) within budget!`, 'success');
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    } else {
+        showToast(`❌ No packages found within budget. Try increasing budget or reducing packages.`, 'error');
+        document.getElementById('budgetResult').style.display = 'none';
+    }
+}
+
+function displayBudgetResults(budgetInRupiah) {
+    const resultDiv = document.getElementById('budgetResult');
+    const itemsDiv = document.getElementById('budgetItems');
+    
+    let html = '';
+    let totalPrice = 0;
+    
+    budgetRecommendations.forEach((pkg, idx) => {
+        totalPrice += pkg.price;
+        html += `
+            <div class="budget-item">
+                <div>
+                    <span class="course">${pkg.icon} ${pkg.course}</span>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${capitalize(pkg.className)} • ${pkg.type.toUpperCase()} • ${pkg.lessons}x</div>
+                </div>
+                <div class="price">${formatCurrency(pkg.price)}</div>
+            </div>
+        `;
+    });
+    
+    // Add summary
+    html += `
+        <div class="budget-item" style="margin-top: 0.5rem; border-top: 2px solid var(--border); padding-top: 0.75rem; font-weight: 700;">
+            <div>Total:</div>
+            <div>${formatCurrency(totalPrice)}</div>
+        </div>
+        <div class="budget-item" style="font-size: 0.75rem; color: var(--text-secondary);">
+            <div>Budget:</div>
+            <div>${formatCurrency(budgetInRupiah)}</div>
+        </div>
+        <div class="budget-item" style="font-size: 0.75rem; color: ${totalPrice <= budgetInRupiah ? 'var(--success)' : 'var(--danger)'};">
+            <div>Status:</div>
+            <div>${totalPrice <= budgetInRupiah ? '✅ Within Budget' : '❌ Over Budget'}</div>
+        </div>
+    `;
+    
+    itemsDiv.innerHTML = html;
+    resultDiv.style.display = 'block';
+}
+
+function applyBudgetRecommendations() {
+    if (budgetRecommendations.length === 0) return;
+    
+    // Reset all packages first
+    resetAllPackages();
+    
+    // Apply recommendations to available packages
+    budgetRecommendations.forEach((pkg, i) => {
+        if (i < 4) {
+            const packageNum = i + 1;
+            document.querySelector(`.course-select[data-package="${packageNum}"]`).value = pkg.course;
+            document.querySelector(`.class-select[data-package="${packageNum}"]`).value = pkg.className;
+            document.querySelector(`.type-select[data-package="${packageNum}"]`).value = pkg.type;
+            document.querySelector(`.lessons-select[data-package="${packageNum}"]`).value = pkg.lessons;
+        }
+    });
+    
+    calculateTotal();
+    showToast(`✅ Applied ${budgetRecommendations.length} package(s) from Budget AI!`, 'success');
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function clearBudgetResults() {
+    budgetRecommendations = [];
+    document.getElementById('budgetResult').style.display = 'none';
+    document.getElementById('budgetAmount').value = '';
+    showToast('🗑️ Budget AI cleared', 'info');
 }
 
 // ========== CHART FUNCTIONS ==========
@@ -1432,6 +1724,23 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 // Child age input
 document.getElementById('childAge').addEventListener('input', updateRecommendations);
 
+// Budget AI Event Listeners
+document.getElementById('calculateBudgetBtn').addEventListener('click', calculateBudgetRecommendations);
+document.getElementById('applyBudgetBtn').addEventListener('click', applyBudgetRecommendations);
+document.getElementById('clearBudgetBtn').addEventListener('click', clearBudgetResults);
+
+// Budget package selection
+document.querySelectorAll('.budget-option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.budget-option-btn').forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
+        // Update selected packages
+        selectedBudgetPackages = parseInt(this.getAttribute('data-packages'));
+    });
+});
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -1450,6 +1759,10 @@ document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'r') {
         e.preventDefault();
         document.getElementById('resetBtn').click();
+    }
+    if (e.ctrlKey && e.key === 'b') {
+        e.preventDefault();
+        openBudgetAI();
     }
 });
 
@@ -1479,6 +1792,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial calculation
     calculateTotal();
     
+    // Set default budget option
+    document.querySelector(`.budget-option-btn[data-packages="${budgetAIConfig.defaultPackageCount}"]`).classList.add('active');
+    
+    // Set default budget value
+    document.getElementById('budgetAmount').value = budgetAIConfig.defaultBudget;
+    
     // Welcome message
     showToast('🚀 Welcome to Algonova Calculator Ultra Pro!', 'info');
     
@@ -1490,4 +1809,3 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 </body>
 </html>
-
