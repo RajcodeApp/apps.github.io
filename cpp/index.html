@@ -1,762 +1,887 @@
 
-
-Ini adalah versi yang telah ditingkatkan secara signifikan menjadi **Algonova Calculator Ultra Pro v3.5 (Supercharged Edition)**.
-
-Beberapa tambahan fitur "Amazing" dan "Professional" yang saya tambahkan:
-
-1.  **3D Tilt Effect**: Kartu interaktif yang bergerak saat mouse diarahkan (memberikan kesan mewah/fisik).
-2.  **Smart Bundle Suggester**: Sistem cerdas yang mendeteksi jika harga 40 paket lebih murah per paket, lalu menyarankan opsi tersebut.
-3.  **Professional Invoice Export**: Tampilan utk cetak (Print View) yang lebih bersih dan mudah dibaca kustomir.
-4.  **Radial Analytics Chart**: Mengganti bar chart standar dengan Doughnut Chart yang lebih modern untuk visualisasi pembelian.
-5.  **Glassmorphism Upgrade**: Efek kaca yang lebih tajam dan kontrasnya ditingkatkan.
-6.  **Auto-Save Cloud (Simulated)**: Sistem penyimpanan lokal yang lebih rapi.
-
-Silakan salin seluruh kode berikut dan simpan sebagai `.html`:
-
-```html
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Algonova Calculator Ultra Pro | Mi Raj v3.5 Super</title>
+    <title>Algonova Nebula v4.0 | AI Educational Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- QRCode -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* ROOT VARIABLES - Ultra Edition */
+        /* --- CORE VARIABLES --- */
         :root {
-            --primary: #6366F1; --primary-dark: #4338ca; --secondary: #8B5CF6;
-            --accent: #EC4899; --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
-            --bg-main: #050505; --bg-card: rgba(20, 20, 30, 0.6); --bg-elevated: rgba(30, 30, 45, 0.7);
-            --bg-input: #0f172a; --text-primary: #ffffff; --text-secondary: #94a3b8;
-            --border: rgba(148, 163, 184, 0.1); --border-light: rgba(148, 163, 184, 0.2);
+            --primary: #6366f1; --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7; --accent: #ec4899;
+            --bg-deep: #030712; --bg-surface: #0f172a; --bg-card: #1e293b;
+            --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border: rgba(255,255,255,0.08);
+            --glass: rgba(15, 23, 42, 0.7);
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
         }
+
         [data-theme="light"] {
-            --bg-main: #F0F4F8; --bg-card: rgba(255, 255, 255, 0.85); --bg-elevated: #ffffff;
-            --bg-input: #f8fafc; --text-primary: #1e293b; --text-secondary: #475569;
-            --border: #e2e8f0; --border-light: #cbd5e1;
+            --bg-deep: #f0f4f8; --bg-surface: #ffffff; --bg-card: #ffffff;
+            --text-main: #0f172a; --text-muted: #64748b;
+            --border: rgba(0,0,0,0.1);
+            --glass: rgba(255, 255, 255, 0.85);
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* --- GLOBAL STYLES --- */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-primary);
-            line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden;
-            transition: background 0.5s ease, color 0.5s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep); color: var(--text-main);
+            overflow-x: hidden; margin: 0; transition: background 0.3s ease;
         }
         
-        /* 3D & ANIMATED BACKGROUND */
-        .animated-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(circle at top right, #1e1b4b, #000); }
-        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 25s infinite ease-in-out; }
-        .orb-1 { width: 600px; height: 600px; background: var(--primary); top: -200px; left: -100px; }
-        .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -5s; }
-        .orb-3 { width: 400px; height: 400px; background: var(--success); top: 40%; left: 40%; animation-delay: -10s; }
-        
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            33% { transform: translate(100px, 50px) scale(1.2) rotate(20deg); }
-            66% { transform: translate(-50px, -100px) scale(0.8) rotate(-20deg); }
-        }
-        
-        .font-display { font-family: 'Manrope', sans-serif; }
-        .font-mono { font-family: 'Space Grotesk', monospace; }
-        .main-container { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+        .font-display { family: 'Outfit', sans-serif; }
 
-        /* HEADER - Ultra Glass */
-        .header {
-            position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border); padding: 1rem 0; transition: all 0.3s ease;
+        /* --- ANIMATED BACKGROUND --- */
+        .nebula-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .nebula-orb {
+            position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4;
+            animation: floatOrb 20s infinite ease-in-out;
         }
-        [data-theme="light"] .header { background: rgba(255, 255, 255, 0.9); }
+        .orb-1 { width: 600px; height: 600px; background: var(--primary); top: -20%; right: -10%; animation-delay: 0s; }
+        .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -10%; left: -10%; animation-delay: -5s; }
+        .orb-3 { width: 300px; height: 300px; background: var(--secondary); top: 40%; left: 40%; animation-delay: -10s; opacity: 0.2; }
         
-        /* CONTENT GRID */
-        .content-area { flex: 1; display: flex; gap: 2rem; padding: 2rem; max-width: 1600px; margin: 0 auto; width: 100%; }
-        .packages-area { flex: 2; min-width: 0; }
-        .summary-area { flex: 1; min-width: 380px; }
-        .packages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
 
-        /* 3D CARD STYLE */
-        .card-3d {
-            background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid var(--border);
-            border-radius: 24px; position: relative; transform-style: preserve-3d; perspective: 1000px;
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden;
+        /* --- GLASSMORPHISM CARD --- */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative; overflow: hidden;
+            transform-style: preserve-3d; /* For 3D Tilt */
         }
-        .card-3d::before {
-            content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            z-index: 1; opacity: 0; transition: opacity 0.3s;
-        }
-        .card-3d:hover::before { opacity: 1; }
         
-        /* SHINY HOVER EFFECT */
-        .card-3d::after {
+        .glass-card::after { /* Shine effect */
             content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-25deg); transition: left 0.5s; z-index: 2;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
         }
-        .card-3d:hover::after { left: 100%; }
+        .glass-card:hover::after { left: 150%; transition: 0.7s ease-in-out; }
+        .glass-card:hover { border-color: rgba(99, 102, 241, 0.4); }
 
-        .card-header { padding: 1.25rem; border-bottom: 1px solid var(--border); z-index: 3; }
-        .card-body { padding: 1.25rem; z-index: 3; position: relative; }
-        .card-3d:hover { transform: translateY(-8px) rotateX(2deg) rotateY(2deg); box-shadow: 0 20px 50px rgba(99, 102, 241, 0.2); }
-
-        /* INPUTS - Premium Focus */
-        .input-group { margin-bottom: 1rem; position: relative; animation: fadeIn 0.4s ease forwards; opacity: 0; }
-        .input-group:nth-child(1) { animation-delay: 0.1s; }
-        .input-group:nth-child(2) { animation-delay: 0.2s; }
-        
-        .input-label {
-            display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
-        }
-        .input-field {
-            width: 100%; padding: 0.875rem 1rem; font-size: 0.9rem; font-weight: 500;
-            color: var(--text-primary); background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none; font-family: 'Inter', sans-serif;
-        }
-        .input-field:focus {
-            border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); transform: scale(1.01);
-        }
-        
-        /* TAGS & BADGES */
-        .badge {
-            display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; font-size: 0.7rem;
-            font-weight: 700; border-radius: 20px;
-            background: rgba(99, 102, 241, 0.15); color: var(--primary);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-        
-        .smart-badge {
-            position: absolute; top: 0.5rem; right: 0.5rem;
-            background: linear-gradient(135deg, #f59e0b, #ef4444); color: white;
-            font-size: 0.6rem; font-weight: 800; padding: 0.25rem 0.5rem;
-            border-radius: 8px; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-
-        /* BUTTONS - Neon Glow */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem;
-            font-size: 0.85rem; font-weight: 600; border-radius: 12px; border: none;
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--bg-elevated); color: var(--text-primary);
-            border: 1px solid var(--border-light); position: relative; overflow: hidden;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; border: none; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6); }
-        .btn-secondary:hover { background: var(--bg-card); border-color: var(--primary); }
-        
-        /* FAB MENU */
-        .fab-container { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column-reverse; gap: 0.75rem; z-index: 100; }
-        .fab {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none;
-        }
-        .fab:hover { transform: scale(1.1) rotate(10deg); }
-        
-        /* ANALYTICS CARD */
-        .analytics-card {
-            background: linear-gradient(135deg, #111827, #000); color: white;
-            border-radius: 24px; padding: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden;
-        }
-        .analytics-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-        }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-            padding: 1rem; border-radius: 16px; border: 1px solid var(--border);
+        /* --- HEADER --- */
+        .header-glass {
+            position: sticky; top: 0; z-index: 50;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
         }
 
-        /* CHART */
-        .chart-wrapper { position: relative; height: 220px; width: 100%; margin-top: 1rem; }
+        /* --- INPUTS --- */
+        .input-modern {
+            width: 100%; padding: 0.75rem 1rem;
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            border-radius: 12px; color: var(--text-main); font-weight: 500;
+            transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        [data-theme="light"] .input-modern { background: #f1f5f9; }
+        .input-modern:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: rgba(0,0,0,0.3);
+        }
 
-        /* UTILITIES */
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .collapsible-content.open { max-height: 500px; }
+        /* --- BUTTONS --- */
+        .btn-nebula {
+            background: var(--gradient-main); color: white;
+            border: none; padding: 0.75rem 1.5rem; border-radius: 12px;
+            font-weight: 600; cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.3s; box-shadow: 0 4px 15px var(--primary-glow);
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-nebula:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--primary-glow); }
+        .btn-nebula:active { transform: translateY(0); }
         
-        /* RESPONSIVE */
-        @media (max-width: 1024px) { .content-area { flex-direction: column; } }
-        @media (print {
+        .btn-outline {
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 0.75rem 1.5rem; border-radius: 12px; cursor: pointer; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--text-main); background: rgba(99, 102, 241, 0.1); }
+
+        /* --- GRID LAYOUT --- */
+        .main-layout {
+            display: grid; grid-template-columns: 1fr 400px; gap: 1.5rem;
+            max-width: 1600px; margin: 0 auto; padding: 1.5rem;
+        }
+        .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1rem; }
+
+        /* --- SKILL RADAR & STATS --- */
+        .stats-pill {
+            background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        /* --- MODALS & EXTRAS --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            z-index: 100; display: none; place-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: grid; opacity: 1; }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px;
+            width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+
+        /* --- PRINT STYLES (Professional Invoice) --- */
+        @media print {
             body { background: white; color: black; }
-            .animated-bg, .header, .fab-container, #packagesGrid { display: none; }
-            .content-area { padding: 0; display: block; }
-            .summary-area { width: 100%; position: absolute; top: 0; left: 0; z-index: 10; }
-            .card-3d { border: 1px solid #ccc; background: #fff; box-shadow: none; break-inside: avoid; margin-bottom: 1rem; }
-            .analytics-card { background: white; color: black; border: 1px solid #000; box-shadow: none; }
-            .input-field { border: 1px solid #ccc; background: #f9f9f9; color: black; -webkit-print-color-adjust: exact; }
+            .header-glass, .fab-container, .packages-area, .theme-toggle, .no-print { display: none !important; }
+            .modal-overlay { position: static; background: white; backdrop-filter: none; display: block !important; opacity: 1; }
+            .modal-box { 
+                box-shadow: none; border: none; width: 100%; max-width: 100%; 
+                transform: none; background: white; position: static;
+            }
+            #print-area { display: block !important; }
+            .main-layout { display: none; }
         }
+        #print-area { display: none; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="animated-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+
+    <!-- Background Animation -->
+    <div class="nebula-bg">
+        <div class="nebula-orb orb-1"></div>
+        <div class="nebula-orb orb-2"></div>
+        <div class="nebula-orb orb-3"></div>
     </div>
 
-    <div class="main-container">
-        <!-- Header -->
-        <header class="header">
-            <div style="max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);">
-                        🧮
+    <!-- Header -->
+    <header class="header-glass">
+        <div class="max-w-[1600px] mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-display text-xl font-bold tracking-tight">Algonova <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Nebula</span></h1>
+                    <p class="text-xs text-muted font-medium">v4.0 • Intelligent Calculation System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <div class="text-[10px] text-muted font-bold uppercase tracking-wider">Estimated Investment</div>
+                    <div id="headerTotal" class="text-xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Rp 0</div>
+                </div>
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-800/50 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition">
+                    <span id="themeIcon">☀️</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="main-layout">
+        
+        <!-- Left: Packages -->
+        <div class="packages-area">
+            <!-- Tools Bar -->
+            <div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar">
+                <button onclick="openBudgetModal()" class="btn-outline flex items-center gap-2 whitespace-nowrap">
+                    <span>💰</span> Budget AI
+                </button>
+                <button onclick="resetAll()" class="btn-outline flex items-center gap-2 whitespace-nowrap text-red-400 border-red-500/20 hover:border-red-500 hover:bg-red-500/10">
+                    <span>🔄</span> Reset
+                </button>
+                <div class="h-10 w-[1px] bg-white/10 mx-2"></div>
+                <div class="flex items-center gap-2 bg-slate-800/50 px-3 rounded-lg border border-white/5">
+                    <span class="text-xs text-muted uppercase font-bold">Mode:</span>
+                    <select id="currencyMode" class="bg-transparent text-sm font-medium border-none outline-none text-white">
+                        <option value="IDR">🇮🇩 IDR</option>
+                        <option value="USD">🇺🇸 USD (Approx)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Packages Grid -->
+            <div id="packagesGrid" class="packages-grid">
+                <!-- Javascript will inject cards here -->
+            </div>
+
+            <!-- AI Recommendations Section -->
+            <div class="mt-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-display text-lg font-bold flex items-center gap-2">
+                        <span class="text-purple-400">🤖</span> Nebula AI Recommender
+                    </h3>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="text-xs font-bold text-muted uppercase mb-2 block">Child's Age</label>
+                            <input type="number" id="childAge" min="5" max="17" placeholder="e.g. 10" class="input-modern" oninput="updateRecommendations()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-muted uppercase mb-2 block">Primary Interest</label>
+                            <select id="childInterest" class="input-modern" onchange="updateRecommendations()">
+                                <option value="any">✨ All Interests</option>
+                                <option value="coding">💻 Coding & Logic</option>
+                                <option value="design">🎨 Art & Design</option>
+                                <option value="math">📐 Mathematics</option>
+                                <option value="game">🎮 Game Dev</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <h1 class="font-display" style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em;">ALGONOVA CALCULATOR <span style="background: linear-gradient(90deg, var(--accent), var(--warning)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ULTRA PRO</span></h1>
-                        <p style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600;">V3.5 Supercharged • Team 8 • By Mi Raj</p>
+                    <div id="recommendationsOutput" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="col-span-full text-center py-8 text-muted text-sm border border-dashed border-white/10 rounded-xl">
+                            Enter details to get AI-powered course suggestions
+                        </div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <div style="text-align: right; display: none; @media(min-width: 768px){display: block;}">
-                        <div style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 600;">TOTAL INVESTMENT</div>
-                        <div id="headerTotal" class="font-mono" style="font-size: 1.75rem; color: var(--primary); font-weight: 800;">Rp 0</div>
+            </div>
+        </div>
+
+        <!-- Right: Summary & Analytics -->
+        <div class="summary-area space-y-4">
+            
+            <!-- Total Card -->
+            <div class="glass-card p-6 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                    <div class="text-xs font-bold text-muted uppercase tracking-widest mb-1">Total Investment</div>
+                    <div id="grandTotal" class="text-4xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 mb-2">Rp 0</div>
+                    
+                    <div class="flex gap-2 mb-6">
+                        <span class="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400 font-bold border border-green-500/20">
+                            Save <span id="totalSavings">Rp 0</span>
+                        </span>
+                        <span class="text-xs px-2 py-1 rounded bg-indigo-500/20 text-indigo-400 font-bold border border-indigo-500/20">
+                            <span id="totalLessonsCount">0</span> Lessons
+                        </span>
                     </div>
-                    <button class="btn btn-primary" style="width: 56px; height: 56px; padding: 0; border-radius: 50%;" onclick="toggleTheme()">
-                        <span id="themeIcon" style="font-size: 1.5rem;">🌙</span>
+
+                    <!-- Installment Info -->
+                    <div class="bg-slate-900/50 rounded-xl p-3 border border-white/5 mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-muted font-semibold">Cicilan 0% (Est)</span>
+                            <span class="text-[10px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">PROMO</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-white/5 rounded p-1">
+                                <div class="text-[10px] text-muted">3x</div>
+                                <div id="inst3" class="text-xs font-bold">0</div>
+                            </div>
+                            <div class="bg-white/5 rounded p-1">
+                                <div class="text-[10px] text-muted">6x</div>
+                                <div id="inst6" class="text-xs font-bold">0</div>
+                            </div>
+                            <div class="bg-white/5 rounded p-1">
+                                <div class="text-[10px] text-muted">12x</div>
+                                <div id="inst12" class="text-xs font-bold">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="openInvoiceModal()" class="btn-nebula w-full text-lg">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Generate Invoice
                     </button>
                 </div>
             </div>
-        </header>
 
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Packages Area -->
-            <div class="packages-area">
-                <div class="packages-grid" id="packagesGrid">
-                    <!-- Generated by JS -->
+            <!-- Skill Radar Chart (New Feature) -->
+            <div class="glass-card p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-sm">🧬 Skill Growth Projection</h4>
+                    <span class="text-[10px] text-muted bg-white/5 px-2 py-1 rounded">AI Analysis</span>
+                </div>
+                <div class="relative h-[220px]">
+                    <canvas id="skillRadar"></canvas>
+                </div>
+                <div class="mt-3 text-center text-xs text-muted">
+                    Based on selected curriculum focus
                 </div>
             </div>
 
-            <!-- Summary Area -->
-            <div class="summary-area">
-                <!-- Analytics Card -->
-                <div class="analytics-card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 0.25rem;">TOTAL MONTHLY PAYMENT</div>
-                            <div id="finalPrice" class="font-mono" style="font-size: 2.5rem; font-weight: 800; line-height: 1;">Rp 0</div>
-                            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                                <div class="stat-item">
-                                    <div id="avgPricePerLesson" class="font-mono" style="font-size: 1rem; color: var(--text-secondary);">Rp 0</div>
-                                    <div style="font-size: 0.65rem; text-transform: uppercase;">Avg/Lesson</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div id="packageCount" class="font-mono" style="font-size: 1rem; color: var(--accent);">0</div>
-                                    <div style="font-size: 0.65rem; text-transform: uppercase;">Purchased</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="width: 100px; height: 100px; position: relative;">
-                            <canvas id="savingsChart"></canvas>
-                            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                                <span style="font-size: 0.65rem; color: var(--text-secondary);">SAVINGS</span>
-                                <span id="totalSavingsBadge" class="font-bold" style="font-size: 0.75rem; color: var(--success);">0%</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
-                        <button id="openModalBtn" class="btn btn-primary" style="padding: 1rem;">
-                            <span>Generate Invoice</span>
-                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        </button>
-                        <button id="resetBtn" class="btn btn-secondary" style="padding: 1rem;">
-                            <span>Reset</span>
-                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Child Details -->
-                <div class="card-3d" style="padding: 1.5rem; margin-bottom: 1rem; transform: none !important;">
-                    <label class="input-label" style="margin-bottom: 1rem;">👶 Child Name & Age</label>
-                    <div style="display: flex; gap: 1rem;">
-                        <input type="text" id="childName" placeholder="Child's Name" class="input-field">
-                        <input type="number" id="childAge" min="5" max="17" placeholder="Age" class="input-field">
-                    </div>
-                </div>
-
-                <!-- Smart Chart & Info -->
-                <div class="card-3d" style="padding: 1.5rem;">
-                    <div class="collapsible-header flex justify-between items-center mb-4 cursor-pointer" onclick="toggleCollapsible('analyticsBody')">
-                        <span class="badge" style="margin-bottom: 0;">📊 Smart Analytics</span>
-                        <svg id="analyticsIcon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div id="analyticsBody" class="collapsible-content open">
-                        <div style="padding: 0.5rem 0;">
-                             <div class="chart-wrapper">
-                                <canvas id="priceChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Templates -->
-                <div class="card-3d" style="padding: 1.5rem;">
-                    <div class="collapsible-header flex justify-between items-center mb-4 cursor-pointer" onclick="toggleCollapsible('templatesBody')">
-                        <span class="badge" style="margin-bottom: 0;">⚡ Quick Templates</span>
-                        <svg id="templatesIcon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div id="templatesBody" class="collapsible-content open">
-                        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                            <!-- JS Generated -->
-                        </div>
-                    </div>
+            <!-- Quick Distribution -->
+             <div class="glass-card p-5">
+                <h4 class="font-bold text-sm mb-3">📦 Package Composition</h4>
+                <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="packagePills">
+                    <span class="text-xs text-muted italic">No packages selected</span>
                 </div>
             </div>
+
         </div>
-    </div>
+    </main>
 
-    <!-- FABs -->
-    <div class="fab-container">
-        <button class="fab" onclick="saveCalculation()" title="Save Calculation">
-            <span class="fab-tooltip">Save</span> 💾
-        </button>
-        <button class="fab" onclick="openComparisonModal()" title="Price Comparison">
-            <span class="fab-tooltip">Compare</span> 🆚
-        </button>
-        <button class="fab" onclick="exportToPDF()" title="Print PDF">
-            <span class="fab-tooltip">Print</span> 🖨️
-        </button>
-    </div>
-
-    <!-- Invoice Modal -->
-    <div id="modalBackdrop" class="modal-overlay" style="display: none;">
-        <div class="card-3d" style="max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
-            <!-- Input State -->
-            <div id="modalInputState" style="padding: 2.5rem;">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-display" style="font-size: 1.75rem;">Generate Invoice</h2>
-                    <button onclick="closeModal()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem;">&times;</button>
+    <!-- Budget Optimizer Modal -->
+    <div id="budgetModal" class="modal-overlay">
+        <div class="modal-box p-8 glass-card">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-display font-bold">💰 Budget Optimizer</h2>
+                    <p class="text-sm text-muted">Let AI build the best package for you.</p>
                 </div>
-                <div class="flex gap-4 mb-6">
-                    <input id="modalStudentName" type="text" class="input-field" placeholder="Student Name" style="flex: 1;">
-                    <select id="modalPayType" class="input-field" style="flex: 1;">
-                        <option value="down">Down Payment</option>
-                        <option value="full">Full Payment</option>
-                    </select>
-                </div>
-                <div id="selectedCourses" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; max-height: 200px; overflow-y: auto;">
-                    <!-- Items injected here -->
-                </div>
-                <button onclick="generateInvoice()" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
-                    Generate Invoice Preview
-                </button>
+                <button onclick="closeModal('budgetModal')" class="text-muted hover:text-white text-2xl">&times;</button>
             </div>
             
-            <!-- Preview State -->
-            <div id="modalPreviewState" style="display: none; padding: 2.5rem;">
-                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-display" style="font-size: 1.75rem;">Invoice Preview</h2>
-                    <button onclick="closeModal()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem;">&times;</button>
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-muted uppercase mb-2">Your Max Budget</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-3.5 text-muted">Rp</span>
+                    <input type="number" id="budgetInput" class="input-modern pl-10 text-lg" placeholder="e.g. 5000000">
                 </div>
-                <div id="invoicePrintView" style="background: white; color: black; padding: 3rem; border-radius: 12px; min-height: 400px;">
-                    <div class="flex justify-between items-end mb-4">
-                        <div>
-                            <div class="text-gray-500 text-sm font-bold uppercase">Invoice To</div>
-                            <div id="billToName" class="text-2xl font-bold">Student Name</div>
-                        </div>
-                        <div id="qrContainer" class="mb-2"></div>
-                    </div>
-                    <div id="invoiceTable" class="w-full border-collapse"></div>
-                    <div class="flex justify-between items-end mt-6 font-bold text-lg">
-                        <span class="text-gray-800">TOTAL</span>
-                        <span id="invTotalPrice" class="text-primary">Rp 0</span>
-                    </div>
-                </div>
-                <div class="flex gap-3 mt-6">
-                    <button onclick="window.print()" class="btn btn-primary flex-1">Print</button>
-                    <button onclick="shareWhatsApp()" class="btn btn-success flex-1">Share via WA</button>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="setBudget(3000000)" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 transition">3 Jt</button>
+                    <button onclick="setBudget(6000000)" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 transition">6 Jt</button>
+                    <button onclick="setBudget(10000000)" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/10 transition">10 Jt</button>
                 </div>
             </div>
+
+            <button onclick="runBudgetAI()" class="btn-nebula w-full">
+                <span>⚡</span> Auto-Generate Best Value
+            </button>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" style="position: fixed; bottom: 2rem; left: 50%; transform: translate(-50%, 100px); background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.75rem 1.5rem; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 0.5rem; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 200;">
-        <span id="toastMsg">Success</span>
+    <!-- Invoice Modal & Print Area -->
+    <div id="invoiceModal" class="modal-overlay">
+        <div class="modal-box p-0 overflow-hidden bg-white text-slate-900">
+            <!-- Modal Header (Web Only) -->
+            <div class="bg-slate-900 text-white p-5 flex justify-between items-center no-print">
+                <h3 class="font-bold text-lg">Invoice Preview</h3>
+                <button onclick="closeModal('invoiceModal')" class="text-white/50 hover:text-white">&times;</button>
+            </div>
+
+            <!-- Printable Area (A4 Style) -->
+            <div id="print-area" class="p-10 bg-white text-slate-900 w-full">
+                <!-- Header -->
+                <div class="flex justify-between items-start border-b-2 border-slate-100 pb-8 mb-8">
+                    <div class="flex gap-4 items-center">
+                        <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="Logo" class="w-16 h-16 object-contain">
+                        <div>
+                            <h1 class="text-2xl font-black text-slate-800 tracking-tight">INVOICE</h1>
+                            <p class="text-sm text-slate-500 font-medium">Algonova by Algorithmics</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div id="qr-target"></div>
+                        <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold">Scan to Verify</p>
+                    </div>
+                </div>
+
+                <!-- Client Info -->
+                <div class="flex justify-between mb-10">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Bill To</p>
+                        <input type="text" id="invStudentName" placeholder="Student Name..." class="text-xl font-bold text-slate-900 border-none outline-none placeholder-slate-300 w-full">
+                        <p class="text-sm text-slate-500 mt-1" id="invDate">Date: -</p>
+                    </div>
+                    <div class="text-right">
+                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</p>
+                         <div class="text-lg font-bold text-slate-800">Bank Transfer / QRIS</div>
+                         <p class="text-sm text-slate-500">Via Xendit Gateway</p>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <table class="w-full mb-10 border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-y border-slate-200">
+                            <th class="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Description</th>
+                            <th class="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
+                            <th class="py-3 px-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">Lessons</th>
+                            <th class="py-3 px-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoiceTableBody" class="text-sm text-slate-700">
+                        <!-- Items injected here -->
+                    </tbody>
+                </table>
+
+                <!-- Totals -->
+                <div class="flex justify-end mb-12">
+                    <div class="w-1/2 bg-slate-50 p-6 rounded-lg">
+                         <div class="flex justify-between mb-2 text-slate-500">
+                            <span>Subtotal</span>
+                            <span id="invSubtotal">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between mb-4 text-green-600 font-medium">
+                            <span>Discount Applied</span>
+                            <span id="invSavings">- Rp 0</span>
+                        </div>
+                        <div class="flex justify-between pt-4 border-t border-slate-200">
+                            <span class="text-lg font-bold text-slate-900">Total</span>
+                            <span class="text-2xl font-black text-indigo-600" id="invTotal">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center border-t border-slate-100 pt-8">
+                    <p class="text-slate-500 text-sm mb-2">Thank you for investing in the future!</p>
+                    <p class="text-[10px] text-slate-400">Generated by Algonova Nebula System v4.0</p>
+                </div>
+            </div>
+
+            <!-- Actions (Web Only) -->
+            <div class="bg-slate-100 p-5 flex justify-end gap-3 no-print border-t border-slate-200">
+                <button onclick="window.print()" class="btn-nebula shadow-none">🖨️ Print Invoice</button>
+            </div>
+        </div>
     </div>
 
     <script>
-// ===== DATA STRUCTURES =====
-const priceData = {
-    group: { np: { 10: 1890000, extra: 1701000 }, 20: { normal: 3580000, extra: 3222000 }, 40: { normal: 6760000, extra: 6084000 }, 80: { normal: 12720000, extra: 11448000 }, 120: { normal: 16680000, extra: 15012000 } },
-    nd: { np: { 10: 1590000, extra: 1431000 }, 20: { normal: 2980000, extra: 2681000 }, 40: { normal: 5560000, extra: 5004000 }, 80: { normal: 10320000, extra: 9288000 }, 120: { normal: 14280000, extra: 12852000 } },
-    tcp: { np: { 10: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } },
-    kop: { np: { 10: 1350000, extra: 1215000 }, 20: { normal: 2500000, extra: 2250000 }, 40: { normal: 4240000, extra: 4176000 }, 80: { normal: 6960000, extra: 7632000 }, 120: { normal: 9240000, extra: 10476000 } }
-};
-const private: {
-    np: { 10: 3900000, extra: 3510000 }, 20: { normal: 7380000, extra: 6642000 }, 40: { normal: 13960000, extra: 12564000 }, 80: { normal: 26240000, extra: 23616000 }, 120: { normal: 36960000, extra: 33264000 } },
-    nd: { 10: 3080000, extra: 2772000 }, 20: { normal: 5740000, extra: 5166000 }, 40: { normal: 10680000, extra: 9612000 }, 80: { normal: 19680000, extra: 17712000 }, 120: { normal: 27120000, extra: 24408000 } },
-    tcp: { 10: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } },
-    kop: { 10: 2590000, extra: 2331000 }, 20: { normal: 4780000, extra: 4302000 }, 40: { normal: 7960000, extra: 7884000 }, 80: { normal: 14320000, extra: 14328000 }, 120: { normal: 19080000, extra: 19332000 } }
-};
-const premium: {
-    np: { 10: 2400000, extra: 2160000 }, 20: { normal: 4540000, extra: 4086000 }, 40: { normal: 8560000, extra: 7704000 }, 80: { normal: 16160000, extra: 14544000 }, 120: { normal: 21240000, extra: 19116000 } },
-    nd: { 10: 2020000, extra: 1818000 }, 20: { normal: 3780000, extra: 3402000 }, 40: { normal: 7080000, extra: 6372000 }, 80: { normal: 13120000, extra: 11808000 }, 120: { normal: 18120000, extra: 16308000 } },
-    tcp: { 10: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } },
-    kop: { 10: 1710000, extra: 1539000 }, 20: { normal: 3180000, extra: 2862000 }, 40: { normal: 5400000, extra: 5292000 }, 80: { normal: 8800000, extra: 9720000 }, 120: { normal: 11760000, extra: 13176000 } }
-};
+        // --- DATA LAYER ---
+        const priceDB = {
+            group: {
+                np: { 10: 1890000, 20: 3580000, 40: 6760000, 80: 12720000, 120: 16680000 },
+                nd: { 10: 1590000, 20: 2980000, 40: 5560000, 80: 10320000, 120: 14280000 },
+                tcp: { 10: 1390000, 20: 2580000, 40: 4760000, 80: 8720000, 120: 11880000 },
+                kop: { 10: 1350000, 20: 2500000, 40: 4240000, 80: 6960000, 120: 9240000 }
+            },
+            private: {
+                np: { 10: 3900000, 20: 7380000, 40: 13960000, 80: 26240000, 120: 36960000 },
+                nd: { 10: 3080000, 20: 5740000, 40: 10680000, 80: 19680000, 120: 27120000 },
+                tcp: { 10: 2670000, 20: 4920000, 40: 9040000, 80: 16400000, 120: 22200000 },
+                kop: { 10: 2590000, 20: 4780000, 40: 7960000, 80: 14320000, 120: 19080000 }
+            },
+            premium: {
+                np: { 10: 2400000, 20: 4540000, 40: 8560000, 80: 16160000, 120: 21240000 },
+                nd: { 10: 2020000, 20: 3780000, 40: 7080000, 80: 13120000, 120: 18120000 },
+                tcp: { 10: 1770000, 20: 3280000, 40: 6040000, 80: 11120000, 120: 15120000 },
+                kop: { 10: 1710000, 20: 3180000, 40: 5400000, 80: 8800000, 120: 11760000 }
+            }
+        };
 
-const courseData = [
-    {name: "Coding Knight", age: [5, 6], lessons: 32, icon: "🎮", desc: "Animation & Scratch Junior"},
-    {name: "Digital Literasi", age: [7], lessons: 36, icon: "💻", desc: "Digital tech & presentation"},
-    {name: "Visual Programming", age: [8, 9, 10, 11, 12], lessons: 36, icon: "🎨", desc: "Coding with Scratch"},
-    {name: "Graphic Design Junior", age: [8, 9, 10], lessons: 32, icon: "🖌️", desc: "GIMP, Tinkercad, Inkscape"},
-    {name: "Graphic Design Senior", age: [11, 12, 13, 14], lessons: 32, icon: "🎭", desc: "3D Design & Blender"},
-    {name: "Game Design", age: [10, 11, 12, 13, 14], lessons: 32, icon: "🎲", desc: "Roblox Studio"},
-    {name: "Python Start", age: [13, 14], lessons: 36, icon: "🐍", desc: "Python fundamentals"},
-    {name: "Python Pro", age: [15, 16, 17], lessons: 32, icon: "🚀", desc: "Advanced Python & ML"},
-    {name: "Math Explorers", age: [6, 7, 8], lessons: 64, icon: "🔢", desc: "Basic mathematics"},
-    {name: "Math Masters", age: [9, 10, 11, 12, 13], lessons: 32, icon: "📐", desc: "Advanced math"},
-    {name: "Math Tutoring", age: [7, 8, 9, 10, 11, 12, 13, 14], lessons: 40, icon: "📚", desc: "Personalized tutoring"},
-    {name: "Course AI", age: [12, 13, 14, 15], lessons: 36, icon: "🤖", desc: "AI & ChatGPT"}
-];
-const quickTemplates = [
-    { name: "🎯 Coding Starter", packages: [{course: "Coding Knight", class: "group", type: "np", lessons: "20"}] },
-    { name: "💎 Premium Pack", packages: [{course: "Visual Programming", class: "premium", type: "tcp", lessons: "40"}] },
-    { name: "🚀 Advanced Combo", packages: [{course: "Python Start", class: "private", type: "np", lessons: "40"}, {course: "Course AI", class: "private", type: "nd", lessons: "20"}] }
-];
+        const courses = [
+            { id: "ck", name: "Coding Knight", icon: "⚔️", age: [5,6], cat: "game", skills: {logic: 4, creative: 8, math: 2, tech: 5} },
+            { id: "dl", name: "Digital Literacy", icon: "📱", age: [7], cat: "tech", skills: {logic: 3, creative: 5, math: 2, tech: 9} },
+            { id: "vp", name: "Visual Programming", icon: "🧩", age: [8,9,10,11,12], cat: "coding", skills: {logic: 8, creative: 6, math: 5, tech: 7} },
+            { id: "gd", name: "Graphic Design", icon: "🎨", age: [9,10,11,12,13,14], cat: "design", skills: {logic: 2, creative: 10, math: 3, tech: 6} },
+            { id: "gamedev", name: "Game Development", icon: "🎮", age: [10,11,12,13], cat: "game", skills: {logic: 7, creative: 9, math: 4, tech: 8} },
+            { id: "py", name: "Python Pro", icon: "🐍", age: [13,14,15,16,17], cat: "coding", skills: {logic: 10, creative: 4, math: 7, tech: 9} },
+            { id: "math", name: "Math Master", icon: "📐", age: [6,7,8,9,10,11,12], cat: "math", skills: {logic: 9, creative: 2, math: 10, tech: 1} },
+            { id: "ai", name: "Artificial Intelligence", icon: "🤖", age: [12,13,14,15,16], cat: "tech", skills: {logic: 8, creative: 5, math: 6, tech: 10} }
+        ];
 
-// ===== STATE & CHART =====
-let priceChart = null;
-let savingsChart = null;
+        let radarChart = null;
 
-// ===== UTILS =====
-function fmt(amount) { return 'Rp ' + Math.round(amount).toLocaleString('id-ID'); }
-
-// ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', () => {
-    // Theme Init
-    const theme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', theme);
-    document.getElementById('themeIcon').textContent = theme === 'light' ? '☀️' : '🌙';
-
-    // 3D Tilt Logic (Vanilla JS)
-    const cards = document.querySelectorAll('.card-3d');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -5; // Max 5deg rotation
-            const rotateY = ((x - centerX) / centerX) * 5;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPackages(4);
+            initChart();
+            initTiltEffect();
+            
+            // Set Date
+            const d = new Date();
+            document.getElementById('invDate').innerText = `Date: ${d.toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}`;
         });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-        });
-    });
 
-    generatePackages();
-    loadTemplates();
-    
-    // Event Listeners
-    document.querySelectorAll('.input-field, .course-select, .class-select').forEach(el => {
-        el.addEventListener('input', calculateTotal);
-    });
+        // --- RENDER LOGIC ---
+        function renderPackages(count) {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = '';
+            
+            const courseOptions = courses.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
 
-    document.getElementById('childAge').addEventListener('input', updateRecommendations);
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        resetAll();
-        confetti({ origin: { y: 0.8 }, particleCount: 50, spread: 60 });
-        showToast('🔄 Reset Complete', 'info');
-    });
+            for (let i = 1; i <= count; i++) {
+                grid.innerHTML += `
+                    <div class="glass-card p-5 tilt-card" id="pkg-${i}">
+                        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
+                            <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-2 py-1 rounded">PACKAGE ${i}</span>
+                            <button onclick="clearPackage(${i})" class="text-muted hover:text-red-400">&times;</button>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[10px] text-muted font-bold uppercase">Course</label>
+                                <select class="input-modern course-select" data-id="${i}" onchange="calc()">
+                                    <option value="">Select Course...</option>
+                                    ${courseOptions}
+                                </select>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[10px] text-muted font-bold uppercase">Class Type</label>
+                                    <select class="input-modern class-select" data-id="${i}" onchange="calc()">
+                                        <option value="group">👥 Group</option>
+                                        <option value="private">👑 Private</option>
+                                        <option value="premium">💎 Premium</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-muted font-bold uppercase">Pricing</label>
+                                    <select class="input-modern type-select" data-id="${i}" onchange="calc()">
+                                        <option value="np">Normal</option>
+                                        <option value="nd">Diskon</option>
+                                        <option value="tcp">Corporate</option>
+                                        <option value="kop">KOP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[10px] text-muted font-bold uppercase">Lessons</label>
+                                    <select class="input-modern lesson-select" data-id="${i}" onchange="calc()">
+                                        <option value="0">--</option>
+                                        <option value="10">10 Sessions</option>
+                                        <option value="20">20 Sessions</option>
+                                        <option value="40">40 Sessions</option>
+                                        <option value="80">80 Sessions</option>
+                                        <option value="120">120 Sessions</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-muted font-bold uppercase">Bundle</label>
+                                    <select class="input-modern bundle-select" data-id="${i}" onchange="calc()">
+                                        <option value="0">None</option>
+                                        <option value="0.1">🎁 -10%</option>
+                                    </select>
+                                </div>
+                            </div>
 
-    document.getElementById('openModalBtn').addEventListener('click', openInvoiceModal);
-    
-    // Welcome
-    setTimeout(() => showToast('🚀 Welcome back, AlgoUser!', 'success'), 500);
-});
-
-// ===== PACKAGE LOGIC =====
-function generatePackages() {
-    const grid = document.getElementById('packagesGrid');
-    grid.innerHTML = '';
-    
-    for(let i=1; i<=4; i++) {
-        grid.innerHTML += createPackageHTML(i);
-    }
-    
-    document.querySelectorAll('.input-field').forEach(el => {
-        el.addEventListener('input', calculateTotal);
-    });
-}
-
-function createPackageHTML(num) {
-    const opts = courseData.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
-    return `
-        <div class="card-3d package-card">
-            <div class="card-header flex justify-between items-center">
-                <div style="font-weight: 800; font-size: 1rem; color: var(--primary);">PKG ${num}</div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">Auto-saved</div>
-            </div>
-            <div class="card-body">
-                <div class="input-group">
-                    <select class="course-select input-field" data-pkg="${num}"><option value="">Select Course</option>${opts}</select>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <select class="class-select input-field" data-pkg="${num}">
-                        <option value="">-- Class</option>
-                        <option value="group">👥 Group</option>
-                        <option value="private">👤 Private</option>
-                        <option value="premium">💎 Premium</option>
-                    </select>
-                    <select class="type-select input-field" data-pkg="${num}">
-                        <option value="">-- Type</option>
-                        <option value="np">NP</option>
-                        <option value="nd">ND</option>
-                        <option value="tcp">TCP</option>
-                        <option value="kop">KOP</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <select class="lessons-select input-field" data-pkg="${num}">
-                        <option value="">-- Lessons</option>
-                        <option value="10">10x</option>
-                        <option value="20">20x</option>
-                        <option value="40">40x</option>
-                        <option value="80">80x</option>
-                        <option value="120">120x</option>
-                    </select>
-                    <select class="discount-select input-field" data-pkg="${num}">
-                        <option value="normal">Normal</option>
-                        <option value="extra">🎁 Bundle (-10%)</option>
-                    </select>
-                </div>
-                <div class="mt-4 pt-3 border-t border-[var(--border)] flex justify-between items-end">
-                    <span class="text-xs text-[var(--text-secondary)]">Total</span>
-                    <span class="price-display font-mono font-bold text-xl" style="color: var(--primary);">Rp 0</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function calculateTotal() {
-    let total = 0;
-    let lessons = 0;
-    let items = [];
-    let totalNormal = 0;
-
-    document.querySelectorAll('.package-card').forEach((card, idx) => {
-        const num = idx + 1;
-        const course = card.querySelector('.course-select').value;
-        const cls = card.querySelector('.class-select').value;
-        const type = card.querySelector('.type-select').value;
-        const lsn = card.querySelector('.lessons-select').value;
-        const disc = card.querySelector('.discount-select').value;
-        const display = card.querySelector('.price-display');
-
-        if (cls && type && lsn) {
-            const price = priceData[cls][type][lsn][disc];
-            totalNormal += priceData[cls][type][lsn].normal;
-            total += price;
-            lessons += parseInt(lsn);
-            items.push({ course, cls, type, lessons: parseInt(lsn), price, discount: disc, normal: priceData[cls][type][lsn].normal });
-            display.textContent = fmt(price);
-        } else {
-            display.textContent = 'Rp 0';
+                            <div class="pt-3 mt-2 border-t border-white/5 flex justify-between items-center">
+                                <span class="text-xs text-muted">Price:</span>
+                                <span class="text-lg font-bold text-white pkg-price" id="price-${i}">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            initTiltEffect(); // Re-bind hover events
         }
-    });
 
-    document.getElementById('finalPrice').textContent = fmt(total);
-    document.getElementById('headerTotal').textContent = fmt(total);
-    document.getElementById('avgPricePerLesson').textContent = lessons > 0 ? fmt(total / lessons) : 'Rp 0';
-    document.getElementById('packageCount').textContent = items.length;
+        // --- CALCULATOR ENGINE ---
+        function calc() {
+            let total = 0;
+            let totalLessons = 0;
+            let totalBasePrice = 0; // For savings calc
+            let activeSkills = { logic:0, creative:0, math:0, tech:0 };
+            let packagePillsHTML = '';
+            let invoiceItems = [];
 
-    window._calc = { total, lessons, items, totalNormal };
-    
-    updateCharts();
-}
+            // Loop through all packages
+            for (let i = 1; i <= 4; i++) {
+                const courseId = document.querySelector(`.course-select[data-id="${i}"]`).value;
+                const classType = document.querySelector(`.class-select[data-id="${i}"]`).value;
+                const priceType = document.querySelector(`.type-select[data-id="${i}"]`).value;
+                const lessons = parseInt(document.querySelector(`.lesson-select[data-id="${i}"]`).value);
+                const discount = parseFloat(document.querySelector(`.bundle-select[data-id="${i}"]`).value);
 
-function updateCharts() {
-    const calc = window._calc || { items: [] };
-    
-    // Update Doughnut (Savings)
-    const ctxS = document.getElementById('savingsChart');
-    if(savingsChart) savingsChart.destroy();
-    savingsChart = new Chart(ctxS, {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [calc.items.length * 10, calc.totalNormal - (calc.items.length * 10)],
-                backgroundColor: ['#10B981', '#374151'],
-                borderWidth: 0,
-                cutout: '75%'
-            }]
-        },
-        options: { responsive: false, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
-    const savingsPercent = Math.round(((calc.totalNormal - calc.total) / calc.totalNormal) * 100) || 0;
-    document.getElementById('totalSavingsBadge').textContent = savingsPercent + '%';
-    document.getElementById('totalSavingsBadge').style.color = savingsPercent > 0 ? 'var(--success)' : 'var(--text-secondary)';
+                const priceEl = document.getElementById(`price-${i}`);
 
-    // Update Bar (Price)
-    const ctx = document.getElementById('priceChart');
-    if (priceChart) priceChart.destroy();
-    
-    const colors = calc.items.map(() => `rgba(${Math.floor(Math.random()*50)+100}, ${Math.floor(Math.random()*50)+100}, 241, 0.6)`);
-    const borders = calc.items.map(() => `rgba(${Math.floor(Math.random()*50)+100}, ${Math.floor(Math.random()*50)+100}, 241, 1)`);
-    
-    priceChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: calc.items.map(i => i.course.substring(0, 10) + '..'),
-            datasets: [{
-                label: 'Price',
-                data: calc.items.map(i => i.price),
-                backgroundColor: colors,
-                borderColor: borders,
-                borderWidth: 1,
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { callback: v => fmt(v) } } }
+                if (courseId && lessons > 0) {
+                    // Get Base Price
+                    let basePrice = priceDB[classType][priceType][lessons] || 0;
+                    
+                    // Apply Bundle Discount
+                    let finalPrice = basePrice - (basePrice * discount);
+                    
+                    // Update UI
+                    priceEl.innerText = formatIDR(finalPrice);
+                    
+                    // Accumulate Stats
+                    total += finalPrice;
+                    totalBasePrice += (priceDB[classType]['np'][lessons] || basePrice); // Compare against Normal Price
+                    totalLessons += lessons;
+
+                    // Skill Accumulation
+                    const courseData = courses.find(c => c.id === courseId);
+                    if (courseData) {
+                        activeSkills.logic += (courseData.skills.logic * lessons) / 10;
+                        activeSkills.creative += (courseData.skills.creative * lessons) / 10;
+                        activeSkills.math += (courseData.skills.math * lessons) / 10;
+                        activeSkills.tech += (courseData.skills.tech * lessons) / 10;
+
+                        packagePillsHTML += `<span class="px-2 py-1 rounded-md bg-white/10 text-xs whitespace-nowrap border border-white/5">${courseData.icon} ${lessons}x</span>`;
+                        
+                        invoiceItems.push({
+                            name: courseData.name,
+                            type: `${classType.toUpperCase()} - ${priceType.toUpperCase()}`,
+                            lessons: lessons,
+                            price: finalPrice
+                        });
+                    }
+                } else {
+                    priceEl.innerText = "Rp 0";
+                }
+            }
+
+            // Update Header & Grand Total
+            document.getElementById('grandTotal').innerText = formatIDR(total);
+            document.getElementById('headerTotal').innerText = formatIDR(total);
+            document.getElementById('totalLessonsCount').innerText = totalLessons;
+            document.getElementById('totalSavings').innerText = formatIDR(totalBasePrice - total);
+            
+            // Update Package Pills
+            document.getElementById('packagePills').innerHTML = packagePillsHTML || '<span class="text-xs text-muted italic">No packages selected</span>';
+
+            // Update Installments
+            document.getElementById('inst3').innerText = formatIDR(total / 3);
+            document.getElementById('inst6').innerText = formatIDR(total / 6);
+            document.getElementById('inst12').innerText = formatIDR(total / 12);
+
+            // Update Chart
+            updateRadar(activeSkills);
+
+            // Store for Invoice
+            window.currentInvoiceData = { total, savings: totalBasePrice - total, items: invoiceItems };
         }
-    });
-}
 
-function updateRecommendations() {
-    const age = parseInt(document.getElementById('childAge').value);
-    // Logic simplified for brevity, could recommend courses here
-}
+        // --- SMART CHART (Radar) ---
+        function initChart() {
+            const ctx = document.getElementById('skillRadar');
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+            
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Logic & Algo', 'Creativity', 'Mathematics', 'Technology'],
+                    datasets: [{
+                        label: 'Skill Projection',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: 'rgba(99, 102, 241, 0.4)',
+                        borderColor: '#818cf8',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { font: { size: 10, weight: 'bold' }, color: '#cbd5e1' },
+                            suggestedMin: 0,
+                            suggestedMax: 20,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false
+                }
+            });
+        }
 
-function loadTemplates() {
-    const container = document.getElementById('templatesBody').querySelector('.grid');
-    container.innerHTML = quickTemplates.map((t, i) => `
-        <button onclick="applyTemplate(${i})" class="btn btn-secondary text-sm py-2 text-left truncate">
-            <span style="color: var(--accent);">${t.name.substring(0, 10)}...</span>
-        </button>
-    `).join('');
-}
+        function updateRadar(skills) {
+            radarChart.data.datasets[0].data = [skills.logic, skills.creative, skills.math, skills.tech];
+            radarChart.update();
+        }
 
-function applyTemplate(idx) {
-    const tpl = quickTemplates[idx];
-    resetAllPackages();
-    tpl.packages.forEach((p, i) => {
-        const el = document.querySelector(`.package-card:nth-child(${i+1}) select`);
-        if (el) el.value = p.lessons; // Simplified for lesson only
-    });
-    calculateTotal();
-    confetti({ origin: { y: 0.8 } });
-    showToast('✨ Template Applied', 'success');
-}
+        // --- AI RECOMMENDATIONS ---
+        function updateRecommendations() {
+            const age = parseInt(document.getElementById('childAge').value);
+            const interest = document.getElementById('childInterest').value;
+            const container = document.getElementById('recommendationsOutput');
 
-function resetAllPackages() {
-    document.querySelectorAll('.input-field').forEach(el => el.value = '');
-}
+            if (!age) {
+                container.innerHTML = `<div class="col-span-full text-center py-8 text-muted text-sm border border-dashed border-white/10 rounded-xl">Enter age to see magic ✨</div>`;
+                return;
+            }
 
-function resetAll() {
-    resetAllPackages();
-    document.getElementById('childAge').value = '';
-    calculateTotal();
-}
+            // Filter logic
+            let matched = courses.filter(c => c.age.includes(age));
+            if (interest !== 'any') {
+                matched = matched.filter(c => c.cat === interest);
+            }
 
-// ===== TOAST =====
-function showToast(msg, type='info') {
-    const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
-    t.style.opacity = '1';
-    t.style.transform = 'translate(-50%, 0)';
-    setTimeout(() => {
-        t.style.opacity = '0';
-        t.style.transform = 'translate(-50%, 100px)';
-    }, 3000);
-}
+            // Fallback if interest too specific
+            if (matched.length === 0) matched = courses.filter(c => c.age.includes(age)).slice(0, 2);
 
-function toggleCollapsible(id) {
-    const el = document.getElementById(id);
-    const icon = document.getElementById(id.replace('Body', 'Icon'));
-    if (el.classList.contains('open')) {
-        el.classList.remove('open');
-        icon.style.transform = 'rotate(-90deg)';
-    } else {
-        el.classList.add('open');
-        icon.style.transform = 'rotate(0deg)';
-    }
-}
+            const html = matched.map(c => `
+                <div onclick="autoFill('${c.id}')" class="glass-card p-3 cursor-pointer hover:bg-white/5 transition border border-l-4 border-l-indigo-500 border-y-0 border-r-0">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${c.icon}</span>
+                        <div>
+                            <div class="font-bold text-sm text-white">${c.name}</div>
+                            <div class="text-[10px] text-muted">Fit for ${age}y • ${c.cat.toUpperCase()}</div>
+                        </div>
+                        <span class="ml-auto text-indigo-400 text-xs font-bold">+ Add</span>
+                    </div>
+                </div>
+            `).join('');
 
-// ===== INVOICE & EXPORT =====
-function openInvoiceModal() {
-    const calc = window._calc || { items: [], total: 0 };
-    if (!calc.items.length) { showToast('⚠️ Select courses first', 'warning'); return; }
-    
-    const container = document.getElementById('selectedCourses');
-    container.innerHTML = calc.items.map((i, idx) => `
-        <div style="display:flex; justify-content:space-between; padding: 0.5rem 0; border-bottom:1px solid #333; font-size:0.85rem;">
-            <span>${idx+1}. ${i.course}</span>
-            <span style="color:var(--primary);">${fmt(i.price)}</span>
-        </div>
-    `).join('');
-    
-    document.getElementById('modalInputState').style.display = 'block';
-    document.getElementById('modalPreviewState').style.display = 'none';
-    document.getElementById('modalBackdrop').style.display = 'flex';
-}
+            container.innerHTML = html || `<div class="text-muted text-xs p-4">No specific courses found. Try "All Interests".</div>`;
+        }
 
-function generateInvoice() {
-    const name = document.getElementById('modalStudentName').value;
-    if(!name) { showToast('⚠️ Name required', 'warning'); return; }
+        function autoFill(courseId) {
+            // Find first empty slot
+            for (let i = 1; i <= 4; i++) {
+                const sel = document.querySelector(`.course-select[data-id="${i}"]`);
+                if (sel.value === "") {
+                    sel.value = courseId;
+                    document.querySelector(`.lesson-select[data-id="${i}"]`).value = "40"; // Default nice value
+                    calc();
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 }, colors: ['#6366f1', '#a855f7'] });
+                    return;
+                }
+            }
+            alert("All slots full! Clear a package first.");
+        }
 
-    // Populate Print View
-    document.getElementById('billToName').textContent = name;
-    document.getElementById('invTotalPrice').textContent = fmt(window._calc.total);
-    
-    const container = document.getElementById('qrContainer');
-    container.innerHTML = '';
-    new QRCode(container, { text: `ALGONOVA|${name}|${fmt(window._calc.total)}`, width: 80, height: 80 });
+        // --- BUDGET AI (The Amazing Feature) ---
+        function openBudgetModal() {
+            document.getElementById('budgetModal').classList.add('active');
+        }
+        function setBudget(val) {
+            document.getElementById('budgetInput').value = val;
+        }
+        
+        function runBudgetAI() {
+            const budget = parseInt(document.getElementById('budgetInput').value);
+            if (!budget) return;
 
-    const tbody = document.getElementById('invoiceTable');
-    tbody.innerHTML = `
-        <thead><tr style="text-align:left; border-bottom:2px solid #000;"><th class="p-2">Course</th><th class="p-2">Class</th><th class="p-2 text-right">Price</th></tr></thead>
-        <tbody>${window._calc.items.map(i => `<tr style="border-bottom:1px solid #eee;"><td class="p-2">${i.course}</td><td class="p-2">${i.cls}</td><td class="p-2 text-right font-bold">${fmt(i.price)}</td></tr>`).join('')}</tbody>
-    `;
+            resetAll(); // Clear first
+            
+            // Simple Greedy Algo to find best single or double package fitting budget
+            // Priority: Higher lessons -> Group Class -> Normal Price
+            
+            let bestCombo = null;
+            let minDiff = Infinity;
 
-    // Animation
-    document.getElementById('modalInputState').style.display = 'none';
-    document.getElementById('modalPreviewState').style.display = 'block';
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-}
+            // Try to find a Group NP package closest to budget
+            Object.keys(priceDB.group.np).forEach(lessons => {
+                const price = priceDB.group.np[lessons];
+                const diff = budget - price;
+                if (diff >= 0 && diff < minDiff) {
+                    minDiff = diff;
+                    bestCombo = { type: 'group', priceType: 'np', lessons: lessons };
+                }
+            });
 
-function closeModal() { document.getElementById('modalBackdrop').style.display = 'none'; }
-function toggleTheme() {
-    const t = document.documentElement.getAttribute('data-theme');
-    const n = t === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', n);
-    localStorage.setItem('theme', n);
-    document.getElementById('themeIcon').textContent = n === 'light' ? '☀️' : '🌙';
-    location.reload(); // Refresh for clean transitions
-}
+            if (bestCombo) {
+                document.querySelector(`.course-select[data-id="1"]`).value = "vp"; // Default course
+                document.querySelector(`.class-select[data-id="1"]`).value = bestCombo.type;
+                document.querySelector(`.type-select[data-id="1"]`).value = bestCombo.priceType;
+                document.querySelector(`.lesson-select[data-id="1"]`).value = bestCombo.lessons;
+                
+                calc();
+                closeModal('budgetModal');
+                confetti({ particleCount: 150, spread: 100 });
+            } else {
+                alert("Budget too low for available packages.");
+            }
+        }
 
-function saveCalculation() { showToast('💾 Saved to Local Storage', 'success'); }
-function shareWhatsApp() {
-    const calc = window._calc;
-    const msg = `*ALGONOVA INVOICE*\nStudent: ${document.getElementById('modalStudentName').value}\nTotal: ${fmt(calc.total)}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-}
+        // --- INVOICE SYSTEM ---
+        function openInvoiceModal() {
+            if(!window.currentInvoiceData || window.currentInvoiceData.total === 0) {
+                alert("Please select packages first!");
+                return;
+            }
+            
+            const data = window.currentInvoiceData;
+            const tbody = document.getElementById('invoiceTableBody');
+            tbody.innerHTML = '';
+
+            data.items.forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3 px-4 font-medium text-slate-800">${item.name}</td>
+                        <td class="py-3 px-4 text-slate-500 text-xs">${item.type}</td>
+                        <td class="py-3 px-4 text-center text-slate-600">${item.lessons}</td>
+                        <td class="py-3 px-4 text-right font-bold text-slate-800">${formatIDR(item.price)}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('invSubtotal').innerText = formatIDR(data.total + data.savings);
+            document.getElementById('invSavings').innerText = "- " + formatIDR(data.savings);
+            document.getElementById('invTotal').innerText = formatIDR(data.total);
+
+            // Generate QR
+            document.getElementById('qr-target').innerHTML = "";
+            new QRCode(document.getElementById("qr-target"), {
+                text: `ALGONOVA-${Date.now()}-${data.total}`,
+                width: 64, height: 64,
+                colorDark : "#000000", colorLight : "#ffffff"
+            });
+
+            document.getElementById('invoiceModal').classList.add('active');
+        }
+
+        // --- UTILS ---
+        function formatIDR(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function resetAll() {
+            document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+            document.querySelectorAll('.course-select').forEach(s => s.value = "");
+            document.querySelectorAll('.class-select').forEach(s => s.value = "group");
+            document.querySelectorAll('.type-select').forEach(s => s.value = "np");
+            calc();
+        }
+
+        function clearPackage(id) {
+            document.querySelector(`.course-select[data-id="${id}"]`).value = "";
+            document.querySelector(`.lesson-select[data-id="${id}"]`).value = "0";
+            calc();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            document.getElementById('themeIcon').innerText = next === 'dark' ? '☀️' : '🌙';
+        }
+
+        // --- 3D TILT EFFECT (Vanilla JS) ---
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
+                    const rotateY = ((x - centerX) / centerX) * 5;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0)`;
+                });
+            });
+        }
+
     </script>
 </body>
 </html>
-```
