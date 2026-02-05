@@ -359,26 +359,30 @@
             .stats-grid { grid-template-columns: 1fr; }
             .fab-container { bottom: 1rem; right: 1rem; }
         }
-      @media print {
+    @media print {
 
-  /* SEMBUNYIKAN SEMUA */
-  body > *:not(#invoicePreview) {
+  /* HILANGKAN MODAL & OVERLAY */
+  .modal-overlay,
+  .animated-bg,
+  .fab-container {
     display: none !important;
   }
 
-  /* PASTIKAN INVOICE MUNCUL */
+  /* PAKSA INVOICE MUNCUL */
   #invoicePreview {
     display: block !important;
     position: static !important;
+
     width: 100% !important;
     max-height: none !important;
     overflow: visible !important;
 
+    background: white !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    background: white !important;
   }
 }
+
 
     </style>
 </head>
