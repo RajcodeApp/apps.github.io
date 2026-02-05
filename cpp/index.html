@@ -47,30 +47,6 @@
             33% { transform: translate(50px, -50px) scale(1.1); }
             66% { transform: translate(-50px, 50px) scale(0.9); }
         }
-        .invoice-card {
-            background: white !important;
-            padding: 40px;
-            border-radius: 15px;
-            color: #333;
-            width: 100%;
-            max-width: 800px;
-            margin: auto;
-            position: relative;
-        }
-
-        /* Menyembunyikan elemen pengganggu saat proses print browser (Ctrl+P) */
-        @media print {
-            .modal-action-buttons, .floating-widgets, button, .close-button {
-                display: none !important;
-            }
-            body {
-                background: white;
-            }
-            .invoice-card {
-                box-shadow: none !important;
-                margin: 0;
-            }
-        }
         
         .font-display { font-family: 'Manrope', sans-serif; }
         .main-container { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -376,6 +352,17 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .invoice-card {
+            background: white !important;
+            color: #1a1a1a !important;
+        }
+        /* Menyembunyikan elemen saat mode cetak browser */
+        @media print {
+            body * { visibility: hidden; }
+            #invoiceModal, #invoiceModal * { visibility: visible; }
+            .modal-action-buttons { display: none !important; }
+        }
         
         /* RESPONSIVE */
         @media (max-width: 1200px) { .packages-grid { grid-template-columns: 1fr; } }
@@ -1708,54 +1695,44 @@ function populateInvoicePreview(studentName, payType) {
 }
 
 async function printInvoice() {
-    const { jsPDF } = window.jspdf;
-    
-    // 1. Targetkan elemen spesifik (Kartu Putih), bukan modalnya
-    const element = document.querySelector('.invoice-card'); 
-    
-    // 2. Sembunyikan elemen UI yang mengganggu (tombol print/share/back)
-    const buttons = document.querySelector('.modal-action-buttons');
-    if (buttons) buttons.style.display = 'none';
+        const { jsPDF } = window.jspdf;
+        const invoiceElement = document.querySelector('.invoice-card'); // Fokus ke kartu putih
+        const actionButtons = document.querySelector('.modal-action-buttons');
 
-    // 3. Konfigurasi High Quality Capture
-    const options = {
-        scale: 2, // Meningkatkan ketajaman gambar
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
-    };
+        // Sembunyikan tombol biar tidak ikut kefoto
+        if (actionButtons) actionButtons.style.display = 'none';
 
-    try {
-        const canvas = await html2canvas(element, options);
-        const imgData = canvas.toDataURL('image/png');
-        
-        // Buat Dokumen PDF A4
-        const pdf = new jsPDF({
-            orientation: 'p',
-            unit: 'mm',
-            format: 'a4'
-        });
+        try {
+            const canvas = await html2canvas(invoiceElement, {
+                scale: 3, // High resolution
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false
+            });
 
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-        // Tambahkan ke PDF
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        
-        // Download file
-        pdf.save(`Invoice_Algonova_${Date.now()}.pdf`);
-        
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        alert("Gagal mengunduh invoice. Silakan coba lagi.");
-    } finally {
-        // Tampilkan kembali tombol setelah selesai
-        if (buttons) buttons.style.display = 'flex';
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Invoice_Algonova_${Date.now()}.pdf`);
+
+            // Efek sukses (Confetti)
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+        } catch (error) {
+            console.error("Print Error:", error);
+            alert("Gagal mendownload invoice.");
+        } finally {
+            // Tampilkan lagi tombolnya
+            if (actionButtons) actionButtons.style.display = 'flex';
+        }
     }
-}
-});
+
+    function closeInvoice() {
+        document.getElementById('invoiceModal').style.display = 'none';
+    });
 
 document.getElementById('backToModalBtn').addEventListener('click', () => {
     document.getElementById('modalInvoiceSection').style.display = 'none';
