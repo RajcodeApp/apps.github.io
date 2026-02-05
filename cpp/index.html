@@ -31,6 +31,33 @@
             transition: all 0.3s ease;
         }
         
+        /* PRINT STYLES - CRITICAL */
+        @media print {
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                padding: 40px !important;
+            }
+            .no-print { display: none !important; }
+            .modal-overlay { background: white !important; backdrop-filter: none !important; }
+            .modal-content {
+                max-width: 100% !important;
+                width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #modalInvoiceSection {
+                padding: 0 !important;
+            }
+        }
+        
         /* ANIMATED BACKGROUND */
         .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .gradient-orb {
@@ -1809,4 +1836,5 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 </body>
 </html>
+
 
