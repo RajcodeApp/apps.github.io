@@ -359,35 +359,27 @@
             .stats-grid { grid-template-columns: 1fr; }
             .fab-container { bottom: 1rem; right: 1rem; }
         }
-        @media print {
+      @media print {
 
-      body * {
-        visibility: hidden !important;
-      }
+  /* SEMBUNYIKAN SEMUA */
+  body > *:not(#invoicePreview) {
+    display: none !important;
+  }
 
-      #invoicePreview,
-      #invoicePreview * {
-        visibility: visible !important;
-      }
+  /* PASTIKAN INVOICE MUNCUL */
+  #invoicePreview {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
 
-      #invoicePreview {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100% !important;
-        max-height: none !important;
-        overflow: visible !important;
-        padding: 32px !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-      }
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+  }
+}
 
-      .modal-overlay,
-      .animated-bg,
-      .fab-container {
-        display: none !important;
-      }
-    }
     </style>
 </head>
 <body>
@@ -1838,3 +1830,4 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 </body>
 </html>
+
