@@ -673,7 +673,7 @@
     <!-- Invoice Modal -->
     <div id="modalBackdrop" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <div id="modalInputSection" style="padding: 2.5rem;">
+            <div id="modalInputSection" class="no-print" style="padding: 2.5rem;">
                 <div class="flex items-center justify-between mb-3">
                     <div>
                         <h3 class="font-display" style="font-size: 1.75rem;">Generate Invoice</h3>
@@ -716,91 +716,106 @@
                     <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
-            <div id="modalInvoiceSection" style="display: none; padding: 2.5rem;">
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <h3 class="font-display" style="font-size: 1.75rem;">Invoice Preview</h3>
-                        <p class="text-secondary" style="font-size: 0.875rem; margin-top: 0.375rem;">Review and print</p>
-                    </div>
-                    <button onclick="closeModal()" style="width: 44px; height: 44px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</button>
-                </div>
-                <div id="invoicePreview" style="background: white; padding: 3rem; border-radius: 20px; max-height: calc(90vh - 250px); overflow-y: auto;">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="logo" style="width: 70px; height: 70px;">
+            
+            <div id="modalInvoiceSection" style="display: none;">
+                <div class="print-area" style="background: white; padding: 60px; margin: 0 auto; max-width: 900px;">
+                    <!-- Invoice Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 40px; border-bottom: 3px solid #E2E8F0; padding-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <img src="https://learn.algonova.id/uploads/2025/03/Logo_0_1742462072.svg?t=1742462072" alt="logo" style="width: 80px; height: 80px;">
                             <div>
-                                <div style="color: #64748B; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.375rem;">Algonova by Algorithmics</div>
-                                <div class="font-display" style="font-size: 2rem; line-height: 1; color: #0F172A; font-weight: 900;">INVOICE</div>
+                                <div style="color: #64748B; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Algonova by Algorithmics</div>
+                                <div class="font-display" style="font-size: 36px; line-height: 1; color: #0F172A; font-weight: 900; letter-spacing: 2px;">INVOICE</div>
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <div id="qrcodeContainer" style="margin-bottom: 0.625rem;"></div>
-                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 600;">Scan for details</div>
+                            <div id="qrcodeContainer" style="margin-bottom: 10px;"></div>
+                            <div style="font-size: 12px; color: #64748B; font-weight: 600;">Scan for details</div>
                         </div>
                     </div>
-                    <div style="height: 2px; background: linear-gradient(90deg, #E2E8F0, transparent); margin: 2rem 0;"></div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2rem;">
+
+                    <!-- Bill To & Payment Info -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 50px;">
                         <div>
-                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Bill To</div>
-                            <div id="billToName" style="font-size: 1.25rem; margin-bottom: 0.375rem; color: #0F172A; font-weight: 800;">-</div>
-                            <div style="font-size: 0.875rem; color: #64748B; font-weight: 600;">Student</div>
-                            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.75rem;">
-                                <strong>Date:</strong> <span id="invoiceDateLarge">-</span>
+                            <div style="font-size: 11px; color: #64748B; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Bill To</div>
+                            <div id="billToName" style="font-size: 24px; margin-bottom: 8px; color: #0F172A; font-weight: 800;">-</div>
+                            <div style="font-size: 14px; color: #64748B; font-weight: 600; margin-bottom: 15px;">Student</div>
+                            <div style="font-size: 13px; color: #64748B;">
+                                <strong style="color: #0F172A;">Invoice Date:</strong> <span id="invoiceDateLarge">-</span>
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Payment Info</div>
-                            <div id="invoicePaymentType" style="font-size: 1.25rem; margin-bottom: 0.375rem; color: #0F172A; font-weight: 800;">-</div>
-                            <div style="font-size: 0.875rem; color: #64748B; font-weight: 600;">Method: Xendit</div>
+                            <div style="font-size: 11px; color: #64748B; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Payment Information</div>
+                            <div id="invoicePaymentType" style="font-size: 24px; margin-bottom: 8px; color: #0F172A; font-weight: 800;">-</div>
+                            <div style="font-size: 14px; color: #64748B; font-weight: 600;">Payment Method: <strong style="color: #0F172A;">Xendit</strong></div>
                         </div>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+
+                    <!-- Course Table -->
+                    <table style="width: 100%; border-collapse: collapse; margin: 40px 0;">
                         <thead>
-                            <tr style="background: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
-                                <th style="padding: 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Course</th>
-                                <th style="padding: 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Class</th>
-                                <th style="padding: 1.25rem; text-align: right; font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Lessons</th>
+                            <tr style="background: linear-gradient(135deg, #F8FAFC, #EEF2FF); border-bottom: 2px solid #6366F1;">
+                                <th style="padding: 18px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #0F172A; text-transform: uppercase; letter-spacing: 1px;">Course</th>
+                                <th style="padding: 18px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #0F172A; text-transform: uppercase; letter-spacing: 1px;">Class Type</th>
+                                <th style="padding: 18px 20px; text-align: right; font-size: 11px; font-weight: 700; color: #0F172A; text-transform: uppercase; letter-spacing: 1px;">Lessons</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceItems"></tbody>
                     </table>
-                    <div style="background: linear-gradient(135deg, #F8FAFC, #EEF2FF); border: 2px solid #E2E8F0; padding: 2rem; border-radius: 20px; margin-top: 2rem;">
-                        <div class="flex justify-between" style="margin-bottom: 1rem;">
-                            <span style="font-weight: 700; color: #0F172A; font-size: 1.125rem;">Total Lessons:</span>
-                            <span id="invTotalLessons" style="font-weight: 800; color: #6366F1; font-size: 1.125rem;">0</span>
+
+                    <!-- Total Section -->
+                    <div style="background: linear-gradient(135deg, #F8FAFC, #EEF2FF); border: 2px solid #E2E8F0; padding: 30px; border-radius: 12px; margin: 40px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #CBD5E1;">
+                            <span style="font-weight: 700; color: #0F172A; font-size: 16px;">Total Lessons:</span>
+                            <span id="invTotalLessons" style="font-weight: 800; color: #6366F1; font-size: 18px;">0</span>
                         </div>
-                        <div class="flex justify-between" style="font-size: 1.75rem;">
-                            <span style="font-weight: 800; color: #0F172A;">TOTAL:</span>
-                            <span id="invTotal" style="font-weight: 900; background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Rp 0</span>
+                        <div style="display: flex; justify-content: space-between; font-size: 28px;">
+                            <span style="font-weight: 900; color: #0F172A;">TOTAL AMOUNT:</span>
+                            <span id="invTotal" style="font-weight: 900; color: #6366F1;">Rp 0</span>
                         </div>
                     </div>
-                    <div style="height: 1px; background: #E2E8F0; margin: 2rem 0;"></div>
-                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: start;">
-                        <div>
-                            <div style="font-weight: 700; margin-bottom: 0.5rem; font-size: 0.875rem; color: #0F172A;">Note:</div>
-                            <div style="font-size: 0.875rem; color: #64748B; line-height: 1.7;">Please make payment via Xendit. Keep payment proof for verification.</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.75rem; color: #64748B; font-weight: 700; margin-bottom: 0.75rem; text-transform: uppercase;">Authorized By</div>
-                            <img src="https://raw.githubusercontent.com/RajcodeApp/apps.github.io/refs/heads/main/cpp/Algottd3.png" alt="signature" style="max-width: 180px; height: 80px; margin: 0 auto;">
-                            <div style="font-weight: 800; margin-top: 1rem; font-size: 1.125rem; color: #0F172A;">Algonova Team</div>
+
+                    <!-- Footer Notes & Signature -->
+                    <div style="margin-top: 50px; border-top: 1px solid #E2E8F0; padding-top: 30px;">
+                        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: start;">
+                            <div>
+                                <div style="font-weight: 700; margin-bottom: 10px; font-size: 14px; color: #0F172A;">Payment Notes:</div>
+                                <div style="font-size: 13px; color: #64748B; line-height: 1.8;">
+                                    • Please complete payment through Xendit payment gateway<br>
+                                    • Keep your payment proof for verification purposes<br>
+                                    • For inquiries, contact Algonova support team
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 11px; color: #64748B; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Authorized By</div>
+                                <img src="https://raw.githubusercontent.com/RajcodeApp/apps.github.io/refs/heads/main/cpp/Algottd3.png" alt="signature" style="max-width: 200px; height: 90px; margin: 0 auto;">
+                                <div style="font-weight: 800; margin-top: 20px; font-size: 16px; color: #0F172A;">Algonova Team</div>
+                                <div style="font-size: 12px; color: #64748B; margin-top: 5px;">Official Representative</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-2" style="margin-top: 2rem;">
+
+                <!-- Action Buttons - Hidden on Print -->
+                <div class="no-print" style="padding: 0 2.5rem 2.5rem 2.5rem; display: flex; gap: 12px;">
                     <button id="printInvoiceBtn" class="btn btn-primary">
                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                         </svg>
-                        Print
+                        Print Invoice
                     </button>
                     <button onclick="shareViaWhatsApp()" class="btn btn-success">
                         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                         </svg>
-                        Share WA
+                        Share WhatsApp
                     </button>
-                    <button id="backToModalBtn" class="btn btn-secondary">← Back</button>
+                    <button id="backToModalBtn" class="btn btn-secondary">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Back
+                    </button>
                 </div>
             </div>
         </div>
@@ -909,10 +924,10 @@ const quickTemplates = [
 
 // Budget AI Configuration
 const budgetAIConfig = {
-    minBudget: 1, // million Rp
-    maxBudget: 100, // million Rp
+    minBudget: 1,
+    maxBudget: 100,
     defaultPackageCount: 2,
-    defaultBudget: 5 // million Rp
+    defaultBudget: 5
 };
 
 // ========== GLOBAL STATE ==========
@@ -1091,11 +1106,9 @@ function calculateTotal() {
 
 // ========== BUDGET AI FUNCTIONS ==========
 function openBudgetAI() {
-    // Scroll to budget AI card
     const budgetCard = document.querySelector('.budget-ai-card');
     budgetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    // Highlight animation
     budgetCard.style.transform = 'scale(1.02)';
     budgetCard.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.4)';
     setTimeout(() => {
@@ -1103,7 +1116,6 @@ function openBudgetAI() {
         budgetCard.style.boxShadow = '';
     }, 1000);
     
-    // Set focus to input
     document.getElementById('budgetAmount').focus();
 }
 
@@ -1119,18 +1131,14 @@ function calculateBudgetRecommendations() {
     const budgetInRupiah = budgetValue * 1000000;
     const numPackages = selectedBudgetPackages;
     
-    // Clear previous recommendations
     budgetRecommendations = [];
     
-    // Find best combinations
     const allPackages = [];
     
-    // Generate all possible package combinations
     for (const className of Object.keys(priceData)) {
         for (const packageType of Object.keys(priceData[className])) {
             for (const lessons of Object.keys(priceData[className][packageType])) {
                 for (const course of courseData) {
-                    // Check if course is suitable for any age (we'll use a generic approach)
                     const price = priceData[className][packageType][lessons].normal;
                     allPackages.push({
                         course: course.name,
@@ -1145,33 +1153,26 @@ function calculateBudgetRecommendations() {
         }
     }
     
-    // Sort by price to find best matches
     allPackages.sort((a, b) => a.price - b.price);
     
-    // Find combinations that fit the budget
     let bestCombinations = [];
     
     if (numPackages === 1) {
-        // For 1 package, find the best package within budget
         const validPackages = allPackages.filter(pkg => pkg.price <= budgetInRupiah);
         if (validPackages.length > 0) {
-            // Get the package with maximum lessons within budget
             validPackages.sort((a, b) => b.lessons - a.lessons);
             bestCombinations = [validPackages[0]];
         }
     } else {
-        // For 2-3 packages, find combinations
-        const maxAttempts = 1000; // Prevent infinite loops
+        const maxAttempts = 1000;
         let attempts = 0;
         
         while (bestCombinations.length === 0 && attempts < maxAttempts) {
             attempts++;
             
-            // Try random combinations
             const combination = [];
             let totalPrice = 0;
             
-            // Shuffle packages
             const shuffled = [...allPackages].sort(() => Math.random() - 0.5);
             
             for (let i = 0; i < numPackages && i < shuffled.length; i++) {
@@ -1183,23 +1184,20 @@ function calculateBudgetRecommendations() {
             }
             
             if (combination.length === numPackages) {
-                // Calculate score based on total lessons and variety
                 const totalLessons = combination.reduce((sum, pkg) => sum + pkg.lessons, 0);
                 const uniqueClasses = new Set(combination.map(pkg => pkg.className)).size;
-                const score = totalLessons + (uniqueClasses * 10); // Reward variety
+                const score = totalLessons + (uniqueClasses * 10);
                 
                 bestCombinations.push({ combination, totalPrice, score });
             }
         }
         
-        // Sort by score and get the best one
         if (bestCombinations.length > 0) {
             bestCombinations.sort((a, b) => b.score - a.score);
             budgetRecommendations = bestCombinations[0].combination;
         }
     }
     
-    // Display results
     if (budgetRecommendations.length > 0) {
         displayBudgetResults(budgetInRupiah);
         showToast(`✨ Found ${budgetRecommendations.length} package(s) within budget!`, 'success');
@@ -1230,7 +1228,6 @@ function displayBudgetResults(budgetInRupiah) {
         `;
     });
     
-    // Add summary
     html += `
         <div class="budget-item" style="margin-top: 0.5rem; border-top: 2px solid var(--border); padding-top: 0.75rem; font-weight: 700;">
             <div>Total:</div>
@@ -1253,10 +1250,8 @@ function displayBudgetResults(budgetInRupiah) {
 function applyBudgetRecommendations() {
     if (budgetRecommendations.length === 0) return;
     
-    // Reset all packages first
     resetAllPackages();
     
-    // Apply recommendations to available packages
     budgetRecommendations.forEach((pkg, i) => {
         if (i < 4) {
             const packageNum = i + 1;
@@ -1271,7 +1266,6 @@ function applyBudgetRecommendations() {
     showToast(`✅ Applied ${budgetRecommendations.length} package(s) from Budget AI!`, 'success');
     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1339,502 +1333,4 @@ function updateRecommendations() {
     const container = document.getElementById('courseRecommendations');
 
     if (!age || age < 5 || age > 17) {
-        container.innerHTML = '<p class="text-secondary" style="font-size: 0.75rem; text-align: center; padding: 1.5rem 0.5rem;">Enter child age (5-17) for AI recommendations</p>';
-        return;
-    }
-
-    const recommended = courseData.filter(course => course.age.includes(age));
-    let courses = recommended.length > 0 ? recommended : courseData.filter(course => 
-        Math.abs(course.age[0] - age) <= 2 || Math.abs(course.age[course.age.length - 1] - age) <= 2
-    ).slice(0, 4);
-
-    const html = courses.map(course => `
-        <div class="template-card">
-            <div class="flex items-center gap-2 mb-2">
-                <span style="font-size: 1.5rem;">${course.icon}</span>
-                <div style="font-weight: 600; font-size: 0.875rem;">${course.name}</div>
-                ${recommended.includes(course) ? '<span class="ai-badge">Perfect Match</span>' : ''}
-            </div>
-            <div class="text-secondary" style="font-size: 0.75rem; margin-bottom: 0.5rem;">${course.desc}</div>
-            <div class="flex gap-2" style="font-size: 0.75rem; color: var(--text-muted);">
-                <span>📚 ${course.lessons}x lessons</span>
-                <span>•</span>
-                <span>👶 ${course.age[0]}-${course.age[course.age.length - 1]}y</span>
-            </div>
-        </div>
-    `).join('');
-
-    container.innerHTML = html;
-}
-
-// ========== TEMPLATES ==========
-function loadTemplates() {
-    const container = document.getElementById('templatesContainer');
-    container.innerHTML = quickTemplates.map((template, idx) => `
-        <div class="template-card" onclick="applyTemplate(${idx})">
-            <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">${template.name}</div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary);">${template.packages.length} package(s)</div>
-        </div>
-    `).join('');
-}
-
-function applyTemplate(idx) {
-    const template = quickTemplates[idx];
-    resetAllPackages();
-    
-    template.packages.forEach((pkg, i) => {
-        if (i < 4) {
-            const packageNum = i + 1;
-            document.querySelector(`.course-select[data-package="${packageNum}"]`).value = pkg.course;
-            document.querySelector(`.class-select[data-package="${packageNum}"]`).value = pkg.class;
-            document.querySelector(`.type-select[data-package="${packageNum}"]`).value = pkg.type;
-            document.querySelector(`.lessons-select[data-package="${packageNum}"]`).value = pkg.lessons;
-        }
-    });
-    
-    calculateTotal();
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    showToast(`✅ Applied: ${template.name}`, 'success');
-}
-
-// ========== ACTIONS ==========
-function clearPackage(num) {
-    document.querySelector(`.course-select[data-package="${num}"]`).selectedIndex = 0;
-    document.querySelector(`.class-select[data-package="${num}"]`).selectedIndex = 0;
-    document.querySelector(`.type-select[data-package="${num}"]`).selectedIndex = 0;
-    document.querySelector(`.lessons-select[data-package="${num}"]`).selectedIndex = 0;
-    document.querySelector(`.discount-select[data-package="${num}"]`).value = 'normal';
-    calculateTotal();
-    showToast(`🗑️ Package ${num} cleared`, 'info');
-}
-
-function resetAllPackages() {
-    document.querySelectorAll('.course-select, .class-select, .type-select, .lessons-select').forEach(select => {
-        select.selectedIndex = 0;
-    });
-    document.querySelectorAll('.discount-select').forEach(select => {
-        select.value = 'normal';
-    });
-}
-
-// ========== STORAGE ==========
-function saveCalculation() {
-    const calc = window._lastCalculation;
-    if (!calc || !calc.items || calc.items.length === 0) {
-        showToast('⚠️ No calculation to save!', 'warning');
-        return;
-    }
-
-    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
-    history.unshift({ date: new Date().toISOString(), ...calc });
-    if (history.length > 50) history.pop();
-    
-    localStorage.setItem('calcHistory', JSON.stringify(history));
-    showToast('💾 Calculation saved!', 'success');
-}
-
-function copyCurrentCalculation() {
-    const calc = window._lastCalculation;
-    if (!calc || !calc.items || calc.items.length === 0) {
-        showToast('⚠️ No calculation to copy!', 'warning');
-        return;
-    }
-
-    const text = `📊 ALGONOVA CALCULATION
-
-Total: ${formatCurrency(calc.totalPrice)}
-Lessons: ${calc.totalLessons}
-Savings: ${formatCurrency(calc.totalSavings)}
-
-Packages:
-${calc.items.map((item, i) => `${i+1}. ${item.courseName} - ${item.className} (${item.lessons}x) - ${formatCurrency(item.price)}`).join('\n')}
-
-Generated by Algonova Calculator Ultra Pro v3.0`;
-
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('📋 Copied to clipboard!', 'success');
-    });
-}
-
-// ========== EXPORT FUNCTIONS ==========
-function toggleExportMenu() {
-    const menu = document.getElementById('exportMenu');
-    exportMenuOpen = !exportMenuOpen;
-    if (exportMenuOpen) {
-        menu.classList.add('show');
-    } else {
-        menu.classList.remove('show');
-    }
-}
-
-function exportToPDF() {
-    showToast('📄 Generating PDF...', 'info');
-    setTimeout(() => window.print(), 500);
-    toggleExportMenu();
-}
-
-function exportToExcel() {
-    const calc = window._lastCalculation || { items: [] };
-    let csv = 'Package,Course,Class,Type,Lessons,Price\n';
-    calc.items.forEach((item, i) => {
-        csv += `${i+1},${item.courseName},${item.className},${item.type},${item.lessons},${item.price}\n`;
-    });
-    csv += `\nTotal,,,${calc.totalLessons},${calc.totalPrice}`;
-    
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'algonova_calculation.csv';
-    a.click();
-    showToast('📊 Excel exported!', 'success');
-    toggleExportMenu();
-}
-
-function exportToJSON() {
-    const calc = window._lastCalculation || { items: [] };
-    const json = JSON.stringify(calc, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'algonova_calculation.json';
-    a.click();
-    showToast('💾 JSON exported!', 'success');
-    toggleExportMenu();
-}
-
-// ========== COLLAPSIBLE ==========
-function toggleCollapsible(sectionId) {
-    const section = document.getElementById(sectionId);
-    const icon = document.getElementById(sectionId + 'Icon');
-    if (section.classList.contains('open')) {
-        section.classList.remove('open');
-        icon.style.transform = 'rotate(-90deg)';
-    } else {
-        section.classList.add('open');
-        icon.style.transform = 'rotate(0deg)';
-    }
-}
-
-// ========== TOAST ==========
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    toast.className = 'toast ' + type;
-    toastMessage.textContent = message;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-// ========== MODALS ==========
-function closeModal() {
-    document.getElementById('modalBackdrop').style.display = 'none';
-}
-
-function closeComparisonModal() {
-    document.getElementById('comparisonModal').style.display = 'none';
-}
-
-function closeHistoryModal() {
-    document.getElementById('historyModal').style.display = 'none';
-}
-
-// Comparison Modal
-function openComparisonModal() {
-    populateComparisonTable();
-    document.getElementById('comparisonModal').style.display = 'flex';
-}
-
-function populateComparisonTable() {
-    const tbody = document.getElementById('comparisonTableBody');
-    let html = '';
-    
-    Object.keys(priceData).forEach(classType => {
-        Object.keys(priceData[classType]).forEach(packageType => {
-            html += `
-                <tr>
-                    <td style="font-weight: 600; text-transform: capitalize;">${classType}</td>
-                    <td style="font-weight: 600; text-transform: uppercase;">${packageType}</td>
-                    <td>${formatCurrency(priceData[classType][packageType][10].normal)}</td>
-                    <td>${formatCurrency(priceData[classType][packageType][20].normal)}</td>
-                    <td>${formatCurrency(priceData[classType][packageType][40].normal)}</td>
-                    <td>${formatCurrency(priceData[classType][packageType][80].normal)}</td>
-                    <td>${formatCurrency(priceData[classType][packageType][120].normal)}</td>
-                </tr>
-            `;
-        });
-    });
-    
-    tbody.innerHTML = html;
-}
-
-// History Modal
-function openHistoryModal() {
-    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
-    const container = document.getElementById('historyContainer');
-    
-    if (history.length === 0) {
-        container.innerHTML = '<p class="text-secondary" style="text-align: center; padding: 2rem;">No saved calculations</p>';
-    } else {
-        container.innerHTML = history.map((item, idx) => {
-            const date = new Date(item.date);
-            return `
-                <div class="history-item" onclick="loadHistoryItem(${idx})">
-                    <div class="flex justify-between items-center mb-2">
-                        <div style="font-weight: 600;">${formatCurrency(item.totalPrice)}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})}</div>
-                    </div>
-                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${item.totalLessons} lessons • ${item.items.length} package(s)</div>
-                </div>
-            `;
-        }).join('');
-    }
-    
-    document.getElementById('historyModal').style.display = 'flex';
-}
-
-function loadHistoryItem(idx) {
-    const history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
-    const item = history[idx];
-    
-    resetAllPackages();
-    
-    item.items.forEach((pkg, i) => {
-        if (i < 4) {
-            const packageNum = i + 1;
-            document.querySelector(`.course-select[data-package="${packageNum}"]`).value = pkg.courseName;
-            document.querySelector(`.class-select[data-package="${packageNum}"]`).value = pkg.className;
-            document.querySelector(`.type-select[data-package="${packageNum}"]`).value = pkg.type;
-            document.querySelector(`.lessons-select[data-package="${packageNum}"]`).value = pkg.lessons;
-            document.querySelector(`.discount-select[data-package="${packageNum}"]`).value = pkg.discount || 'normal';
-        }
-    });
-    
-    calculateTotal();
-    closeHistoryModal();
-    showToast('✅ Loaded from history', 'success');
-}
-
-function clearHistory() {
-    if (confirm('Clear all calculation history?')) {
-        localStorage.removeItem('calcHistory');
-        showToast('🗑️ History cleared', 'success');
-        closeHistoryModal();
-    }
-}
-
-// Invoice Modal
-document.getElementById('openModalBtn').addEventListener('click', () => {
-    const calc = window._lastCalculation || { totalPrice:0, items:[] };
-    if (!calc.items || calc.items.length === 0) {
-        showToast('⚠️ Please select at least 1 package!', 'warning');
-        return;
-    }
-    
-    const coursesDisplay = document.getElementById('selectedCoursesDisplay');
-    if (calc.items && calc.items.length > 0) {
-        const coursesList = calc.items.map((item, idx) => 
-            `<div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 8px; font-size: 0.75rem; font-weight: 700;">${idx + 1}</span>
-                <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">${item.courseName}</div>
-                    <div class="text-secondary" style="font-size: 0.75rem;">${capitalize(item.className)} • ${item.type.toUpperCase()} • ${item.lessons}x lessons</div>
-                </div>
-                <div style="font-weight: 700; color: var(--primary);">${formatCurrency(item.price)}</div>
-            </div>`
-        ).join('');
-        coursesDisplay.innerHTML = coursesList;
-    }
-
-    document.getElementById('modalInputSection').style.display = 'block';
-    document.getElementById('modalInvoiceSection').style.display = 'none';
-    document.getElementById('modalBackdrop').style.display = 'flex';
-    document.getElementById('modalStudentName').value = '';
-});
-
-document.getElementById('generateInvoiceBtn').addEventListener('click', () => {
-    const studentName = document.getElementById('modalStudentName').value.trim();
-    if (!studentName) {
-        showToast('⚠️ Please enter student name!', 'warning');
-        return;
-    }
-    const payType = document.querySelector('input[name="payType"]:checked').value;
-    populateInvoicePreview(studentName, payType);
-    
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    
-    document.getElementById('modalInputSection').style.display = 'none';
-    document.getElementById('modalInvoiceSection').style.display = 'block';
-});
-
-function populateInvoicePreview(studentName, payType) {
-    const calc = window._lastCalculation || { totalPrice:0, totalLessons:0, items:[] };
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    document.getElementById('invoiceDateLarge').textContent = dateStr;
-    document.getElementById('billToName').textContent = studentName;
-    document.getElementById('invoicePaymentType').textContent = (payType === 'down') ? 'Down Payment' : 'Full Payment';
-
-    const tbody = document.getElementById('invoiceItems');
-    tbody.innerHTML = '';
-    if (calc.items && calc.items.length > 0) {
-        calc.items.forEach(it => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="font-weight: 500; padding: 1rem; border-bottom: 1px solid #E2E8F0;">${it.courseName}</td>
-                <td style="padding: 1rem; border-bottom: 1px solid #E2E8F0; text-transform: capitalize;">${it.className}</td>
-                <td style="text-align: right; font-weight: 600; padding: 1rem; border-bottom: 1px solid #E2E8F0;">${it.lessons}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    document.getElementById('invTotalLessons').textContent = calc.totalLessons || 0;
-    document.getElementById('invTotal').textContent = formatCurrency(calc.totalPrice || 0);
-
-    // QR Code
-    const qrContainer = document.getElementById('qrcodeContainer');
-    qrContainer.innerHTML = '';
-    const qrData = `ALGONOVA|${studentName}|${formatCurrency(calc.totalPrice)}|${calc.totalLessons}`;
-    new QRCode(qrContainer, {
-        text: qrData,
-        width: 80,
-        height: 80
-    });
-}
-
-document.getElementById('printInvoiceBtn').addEventListener('click', () => {
-    window.print();
-});
-
-document.getElementById('backToModalBtn').addEventListener('click', () => {
-    document.getElementById('modalInvoiceSection').style.display = 'none';
-    document.getElementById('modalInputSection').style.display = 'block';
-});
-
-function shareViaWhatsApp() {
-    const calc = window._lastCalculation;
-    const studentName = document.getElementById('billToName').textContent;
-    const payType = document.getElementById('invoicePaymentType').textContent;
-    
-    const message = `*ALGONOVA INVOICE* 📄
-
-Student: ${studentName}
-Payment: ${payType}
-
-*Packages:*
-${calc.items.map((item, i) => `${i+1}. ${item.courseName}\n   ${item.className} • ${item.lessons}x lessons`).join('\n\n')}
-
-*Total Lessons:* ${calc.totalLessons}
-*TOTAL:* ${formatCurrency(calc.totalPrice)}
-
-_Generated by Algonova Calculator Ultra Pro v3.0_`;
-
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
-}
-
-// Reset button
-document.getElementById('resetBtn').addEventListener('click', () => {
-    resetAllPackages();
-    document.getElementById('childAge').value = '';
-    calculateTotal();
-    updateRecommendations();
-    showToast('🔄 Reset complete', 'info');
-});
-
-// Child age input
-document.getElementById('childAge').addEventListener('input', updateRecommendations);
-
-// Budget AI Event Listeners
-document.getElementById('calculateBudgetBtn').addEventListener('click', calculateBudgetRecommendations);
-document.getElementById('applyBudgetBtn').addEventListener('click', applyBudgetRecommendations);
-document.getElementById('clearBudgetBtn').addEventListener('click', clearBudgetResults);
-
-// Budget package selection
-document.querySelectorAll('.budget-option-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Remove active class from all buttons
-        document.querySelectorAll('.budget-option-btn').forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        this.classList.add('active');
-        // Update selected packages
-        selectedBudgetPackages = parseInt(this.getAttribute('data-packages'));
-    });
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeModal();
-        closeComparisonModal();
-        closeHistoryModal();
-    }
-    if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        saveCalculation();
-    }
-    if (e.ctrlKey && e.key === 'h') {
-        e.preventDefault();
-        openHistoryModal();
-    }
-    if (e.ctrlKey && e.key === 'r') {
-        e.preventDefault();
-        document.getElementById('resetBtn').click();
-    }
-    if (e.ctrlKey && e.key === 'b') {
-        e.preventDefault();
-        openBudgetAI();
-    }
-});
-
-// Close modals on backdrop click
-[document.getElementById('modalBackdrop'), document.getElementById('comparisonModal'), document.getElementById('historyModal')].forEach(modal => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-});
-
-// ========== INITIALIZATION ==========
-document.addEventListener('DOMContentLoaded', function() {
-    // Load theme
-    const ball = document.querySelector('.theme-toggle-ball');
-    if (ball) {
-        ball.textContent = savedTheme === 'light' ? '☀️' : '🌙';
-    }
-    
-    // Generate packages
-    generatePackages();
-    
-    // Load templates
-    loadTemplates();
-    
-    // Initial calculation
-    calculateTotal();
-    
-    // Set default budget option
-    document.querySelector(`.budget-option-btn[data-packages="${budgetAIConfig.defaultPackageCount}"]`).classList.add('active');
-    
-    // Set default budget value
-    document.getElementById('budgetAmount').value = budgetAIConfig.defaultBudget;
-    
-    // Welcome message
-    showToast('🚀 Welcome to Algonova Calculator Ultra Pro!', 'info');
-    
-    console.log('%c🚀 Algonova Calculator Ultra Pro v3.0', 'color: #6366F1; font-size: 20px; font-weight: bold;');
-    console.log('%cBy Mi Raj & Team 8', 'color: #8B5CF6; font-size: 14px;');
-    console.log('%c100+ Enhanced Features Loaded Successfully! ✨', 'color: #10B981; font-size: 12px;');
-});
-
-    </script>
-</body>
-</html>
-
-
+        container.innerHTML = '<p class="text-secondary" style="font-size: 0.75rem; text-align: center; padding: 1.5remContinue10:39 PM
