@@ -8,8 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ROOT VARIABLES - Enhanced color system */
@@ -352,17 +350,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-        .invoice-card {
-            background: white !important;
-            color: #1a1a1a !important;
-        }
-        /* Menyembunyikan elemen saat mode cetak browser */
-        @media print {
-            body * { visibility: hidden; }
-            #invoiceModal, #invoiceModal * { visibility: visible; }
-            .modal-action-buttons { display: none !important; }
-        }
         
         /* RESPONSIVE */
         @media (max-width: 1200px) { .packages-grid { grid-template-columns: 1fr; } }
@@ -1694,45 +1681,9 @@ function populateInvoicePreview(studentName, payType) {
     });
 }
 
-async function printInvoice() {
-        const { jsPDF } = window.jspdf;
-        const invoiceElement = document.querySelector('.invoice-card'); // Fokus ke kartu putih
-        const actionButtons = document.querySelector('.modal-action-buttons');
-
-        // Sembunyikan tombol biar tidak ikut kefoto
-        if (actionButtons) actionButtons.style.display = 'none';
-
-        try {
-            const canvas = await html2canvas(invoiceElement, {
-                scale: 3, // High resolution
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                logging: false
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Invoice_Algonova_${Date.now()}.pdf`);
-
-            // Efek sukses (Confetti)
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-
-        } catch (error) {
-            console.error("Print Error:", error);
-            alert("Gagal mendownload invoice.");
-        } finally {
-            // Tampilkan lagi tombolnya
-            if (actionButtons) actionButtons.style.display = 'flex';
-        }
-    }
-
-    function closeInvoice() {
-        document.getElementById('invoiceModal').style.display = 'none';
-    });
+document.getElementById('printInvoiceBtn').addEventListener('click', () => {
+    window.print();
+});
 
 document.getElementById('backToModalBtn').addEventListener('click', () => {
     document.getElementById('modalInvoiceSection').style.display = 'none';
