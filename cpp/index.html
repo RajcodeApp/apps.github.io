@@ -38,10 +38,10 @@
             color: #1a1a1a !important;
         }
         /* Menyembunyikan elemen saat mode cetak browser */
-        @media print {
-        
-            #invoiceModal, #invoiceModal * { visibility: visible; }
-            .modal-action-buttons { display: none !important; }
+      @media print {
+            body * { visibility: hidden !important; }
+            #invoicePreview, #invoicePreview * { visibility: visible !important; }
+            #invoicePreview { position: absolute; left: 0; top: 0; width: 100%; background: white; }
         }
         
         /* ANIMATED BACKGROUND */
