@@ -8,6 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ROOT VARIABLES - Enhanced color system */
@@ -44,6 +46,30 @@
             0%, 100% { transform: translate(0, 0) scale(1); }
             33% { transform: translate(50px, -50px) scale(1.1); }
             66% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+        .invoice-card {
+            background: white !important;
+            padding: 40px;
+            border-radius: 15px;
+            color: #333;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+
+        /* Menyembunyikan elemen pengganggu saat proses print browser (Ctrl+P) */
+        @media print {
+            .modal-action-buttons, .floating-widgets, button, .close-button {
+                display: none !important;
+            }
+            body {
+                background: white;
+            }
+            .invoice-card {
+                box-shadow: none !important;
+                margin: 0;
+            }
         }
         
         .font-display { font-family: 'Manrope', sans-serif; }
@@ -1681,8 +1707,54 @@ function populateInvoicePreview(studentName, payType) {
     });
 }
 
-document.getElementById('printInvoiceBtn').addEventListener('click', () => {
-    window.print();
+async function printInvoice() {
+    const { jsPDF } = window.jspdf;
+    
+    // 1. Targetkan elemen spesifik (Kartu Putih), bukan modalnya
+    const element = document.querySelector('.invoice-card'); 
+    
+    // 2. Sembunyikan elemen UI yang mengganggu (tombol print/share/back)
+    const buttons = document.querySelector('.modal-action-buttons');
+    if (buttons) buttons.style.display = 'none';
+
+    // 3. Konfigurasi High Quality Capture
+    const options = {
+        scale: 2, // Meningkatkan ketajaman gambar
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+    };
+
+    try {
+        const canvas = await html2canvas(element, options);
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Buat Dokumen PDF A4
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        // Tambahkan ke PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        
+        // Download file
+        pdf.save(`Invoice_Algonova_${Date.now()}.pdf`);
+        
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        alert("Gagal mengunduh invoice. Silakan coba lagi.");
+    } finally {
+        // Tampilkan kembali tombol setelah selesai
+        if (buttons) buttons.style.display = 'flex';
+    }
+}
 });
 
 document.getElementById('backToModalBtn').addEventListener('click', () => {
