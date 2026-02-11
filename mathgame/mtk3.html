@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Stickman Math Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 900px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #fff3cd;
+            padding: 15px;
+            border-bottom: 4px solid #ffc107;
+        }
+
+        .stat-item {
+            text-align: center;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            color: #ff6b6b;
+            display: block;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-area {
+            padding: 30px;
+            min-height: 400px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .menu-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .stickman-menu {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            animation: wave 2s infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .mode-button {
+            width: 80%;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-button:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .mode-button:hover:before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .mode-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .mode-jump { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .mode-run { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .mode-climb { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .mode-back { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        .question-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            border: 4px solid #f093fb;
+        }
+
+        .question-text {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .stickman-game {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .answer-btn {
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 4px solid #ddd;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .answer-btn:hover {
+            transform: scale(1.05);
+            border-color: #f5576c;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .answer-btn.correct {
+            animation: correctAnim 0.5s;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .answer-btn.wrong {
+            animation: wrongAnim 0.5s;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        @keyframes correctAnim {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(5deg); }
+        }
+
+        @keyframes wrongAnim {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .timer-bar {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #43e97b 0%, #f5576c 100%);
+            transition: width 1s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            transition: width 0.3s;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feedback.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feedback-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .feedback h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .btn-continue {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-continue:hover {
+            transform: scale(1.1);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 2em;
+            animation: float 3s ease-out forwards;
+        }
+
+        @keyframes float {
+            to {
+                transform: translateY(-1000px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        canvas {
+            border: 4px solid #667eea;
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .level-indicator {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .question-text {
+                font-size: 1.5em;
+            }
+            
+            .answer-btn {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎮 STICKMAN MATH ADVENTURE 🎮</h1>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-value" id="score">0</span>
+                <div>🏆 SKOR</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="level">1</span>
+                <div>⭐ LEVEL</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="streak">0</span>
+                <div>🔥 STREAK</div>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <!-- Menu akan dimuat di sini -->
+        </div>
+    </div>
+
+    <div class="feedback" id="feedback">
+        <div class="feedback-icon" id="feedbackIcon"></div>
+        <h2 id="feedbackTitle"></h2>
+        <p id="feedbackText"></p>
+        <button class="btn-continue" onclick="continuePlaying()">Lanjut! 🚀</button>
+    </div>
+
+    <script>
+        const gameState = {
+            score: 0,
+            level: 1,
+            streak: 0,
+            mode: null,
+            currentQuestion: null,
+            questionsAnswered: 0,
+            questionsPerLevel: 5
+        };
+
+        function updateStats() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('streak').textContent = gameState.streak;
+        }
+
+        function createParticles(emoji, count = 20) {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emoji;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = '100%';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        function drawStickman(canvas, action = 'stand') {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+
+            // Kepala
+            ctx.beginPath();
+            ctx.arc(75, 30, 15, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Mata
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(70, 28, 2, 0, Math.PI * 2);
+            ctx.arc(80, 28, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Senyum
+            ctx.beginPath();
+            ctx.arc(75, 30, 8, 0, Math.PI);
+            ctx.stroke();
+
+            // Badan
+            ctx.beginPath();
+            ctx.moveTo(75, 45);
+            ctx.lineTo(75, 90);
+            ctx.stroke();
+
+            if (action === 'jump') {
+                // Tangan ke atas
+                ctx.beginPath();
+                ctx.moveTo(75, 55);
+                ctx.lineTo(55, 40);
+                ctx.moveTo(75, 55);
+                ctx.lineTo(95, 40);
+                ctx.stroke();
+
+                // Kaki bengkok
+                ctx.beginPath();
+                ctx.moveTo(75, 90);
+                ctx.lineTo(60, 110);
+                ctx.moveTo(75, 90);
+                ctx.lineTo(90, 110);
+                ctx.stroke();
+            } else if (action === 'run') {
+                // Tangan berlari
+                ctx.beginPath();
+                ctx.moveTo(75, 55);
+                ctx.lineTo(55, 70);
+                ctx.moveTo(75, 55);
+                ctx.lineTo(95, 45);
+                ctx.stroke();
+
+                // Kaki berlari
+                ctx.beginPath();
+                ctx.moveTo(75, 90);
+                ctx.lineTo(60, 120);
+                ctx.moveTo(75, 90);
+                ctx.lineTo(90, 105);
+                ctx.stroke();
+            } else {
+                // Tangan biasa
+                ctx.beginPath();
+                ctx.moveTo(75, 55);
+                ctx.lineTo(55, 75);
+                ctx.moveTo(75, 55);
+                ctx.lineTo(95, 75);
+                ctx.stroke();
+
+                // Kaki biasa
+                ctx.beginPath();
+                ctx.moveTo(75, 90);
+                ctx.lineTo(60, 120);
+                ctx.moveTo(75, 90);
+                ctx.lineTo(90, 120);
+                ctx.stroke();
+            }
+        }
+
+        function showMenu() {
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div class="menu-screen">
+                    <canvas id="menuStickman" width="150" height="150" class="stickman-menu"></canvas>
+                    <h2 style="color: #667eea; font-size: 2em;">Pilih Petualangan Matematika!</h2>
+                    
+                    <button class="mode-button mode-jump" onclick="startMode('jump')">
+                        🦘 LOMPAT JAWAB<br>
+                        <small style="font-size: 0.7em;">Penjumlahan & Pengurangan</small>
+                    </button>
+                    
+                    <button class="mode-button mode-run" onclick="startMode('run')">
+                        🏃 LARI CEPAT<br>
+                        <small style="font-size: 0.7em;">Perkalian Cepat!</small>
+                    </button>
+                    
+                    <button class="mode-button mode-climb" onclick="startMode('climb')">
+                        🧗 PANJAT PINTAR<br>
+                        <small style="font-size: 0.7em;">Urutan Angka & Pola</small>
+                    </button>
+                </div>
+            `;
+
+            const canvas = document.getElementById('menuStickman');
+            drawStickman(canvas, 'stand');
+
+            // Animasi stickman
+            let actions = ['stand', 'jump', 'run'];
+            let actionIndex = 0;
+            setInterval(() => {
+                actionIndex = (actionIndex + 1) % actions.length;
+                drawStickman(canvas, actions[actionIndex]);
+            }, 1000);
+        }
+
+        function startMode(mode) {
+            gameState.mode = mode;
+            gameState.questionsAnswered = 0;
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            const mode = gameState.mode;
+            let question = {};
+
+            if (mode === 'jump') {
+                // Penjumlahan dan Pengurangan
+                const num1 = Math.floor(Math.random() * (10 * gameState.level)) + 1;
+                const num2 = Math.floor(Math.random() * (10 * gameState.level)) + 1;
+                const isAdd = Math.random() > 0.5;
+                
+                if (isAdd) {
+                    question.text = `${num1} + ${num2} = ?`;
+                    question.answer = num1 + num2;
+                } else {
+                    const bigger = Math.max(num1, num2);
+                    const smaller = Math.min(num1, num2);
+                    question.text = `${bigger} - ${smaller} = ?`;
+                    question.answer = bigger - smaller;
+                }
+            } else if (mode === 'run') {
+                // Perkalian
+                const num1 = Math.floor(Math.random() * (5 + gameState.level)) + 1;
+                const num2 = Math.floor(Math.random() * (5 + gameState.level)) + 1;
+                question.text = `${num1} × ${num2} = ?`;
+                question.answer = num1 * num2;
+            } else if (mode === 'climb') {
+                // Pola angka
+                const start = Math.floor(Math.random() * 10) + 1;
+                const step = Math.floor(Math.random() * 5) + 2;
+                const sequence = [start, start + step, start + step * 2];
+                question.text = `${sequence[0]}, ${sequence[1]}, ${sequence[2]}, ?`;
+                question.answer = start + step * 3;
+            }
+
+            // Generate wrong answers
+            question.options = [question.answer];
+            while (question.options.length < 4) {
+                let wrongAnswer;
+                if (mode === 'climb') {
+                    wrongAnswer = question.answer + Math.floor(Math.random() * 10) - 5;
+                } else {
+                    wrongAnswer = question.answer + Math.floor(Math.random() * 20) - 10;
+                }
+                
+                if (wrongAnswer > 0 && !question.options.includes(wrongAnswer)) {
+                    question.options.push(wrongAnswer);
+                }
+            }
+
+            // Shuffle options
+            question.options.sort(() => Math.random() - 0.5);
+            
+            gameState.currentQuestion = question;
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = gameState.currentQuestion;
+            const gameArea = document.getElementById('gameArea');
+            
+            let actionType = gameState.mode === 'jump' ? 'jump' : (gameState.mode === 'run' ? 'run' : 'stand');
+            
+            gameArea.innerHTML = `
+                <div class="level-indicator">Level ${gameState.level} - Soal ${gameState.questionsAnswered + 1}/${gameState.questionsPerLevel}</div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(gameState.questionsAnswered / gameState.questionsPerLevel) * 100}%"></div>
+                </div>
+
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill" style="width: 100%">
+                        ⏱️ <span id="timerText">15</span>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <canvas id="gameStickman" width="150" height="150" class="stickman-game"></canvas>
+                    <div class="question-text">${question.text}</div>
+                </div>
+
+                <div class="answer-grid" id="answerGrid">
+                    ${question.options.map(opt => `
+                        <button class="answer-btn" onclick="checkAnswer(${opt})">${opt}</button>
+                    `).join('')}
+                </div>
+
+                <button class="mode-button mode-back" style="width: 200px; margin: 30px auto 0; display: block; padding: 15px;" onclick="showMenu()">
+                    🏠 Menu Utama
+                </button>
+            `;
+
+            const canvas = document.getElementById('gameStickman');
+            drawStickman(canvas, actionType);
+
+            startTimer();
+        }
+
+        let timerInterval;
+        let timeLeft = 15;
+
+        function startTimer() {
+            timeLeft = 15;
+            const timerFill = document.getElementById('timerFill');
+            const timerText = document.getElementById('timerText');
+
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                timerFill.style.width = (timeLeft / 15 * 100) + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    checkAnswer(null);
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selected) {
+            clearInterval(timerInterval);
+            
+            const correct = gameState.currentQuestion.answer;
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (parseInt(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (selected !== null && parseInt(btn.textContent) === selected && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (selected === correct) {
+                // Jawaban benar
+                const points = Math.max(100 + (timeLeft * 10), 50);
+                gameState.score += points;
+                gameState.streak++;
+                
+                createParticles('⭐', 15);
+                createParticles('🎉', 10);
+                
+                showFeedback('correct', points);
+            } else {
+                // Jawaban salah atau waktu habis
+                gameState.streak = 0;
+                createParticles('💔', 10);
+                
+                if (selected === null) {
+                    showFeedback('timeout');
+                } else {
+                    showFeedback('wrong');
+                }
+            }
+
+            updateStats();
+        }
+
+        function showFeedback(type, points = 0) {
+            const feedback = document.getElementById('feedback');
+            const icon = document.getElementById('feedbackIcon');
+            const title = document.getElementById('feedbackTitle');
+            const text = document.getElementById('feedbackText');
+
+            if (type === 'correct') {
+                icon.textContent = '🎉';
+                title.textContent = 'HEBAT!';
+                title.style.color = '#43e97b';
+                text.textContent = `+${points} poin! Streak: ${gameState.streak} 🔥`;
+            } else if (type === 'wrong') {
+                icon.textContent = '😅';
+                title.textContent = 'Ups!';
+                title.style.color = '#f5576c';
+                text.textContent = `Jawaban: ${gameState.currentQuestion.answer}. Coba lagi!`;
+            } else {
+                icon.textContent = '⏰';
+                title.textContent = 'Waktu Habis!';
+                title.style.color = '#ffc107';
+                text.textContent = `Jawaban: ${gameState.currentQuestion.answer}. Harus lebih cepat!`;
+            }
+
+            feedback.classList.add('show');
+        }
+
+        function continuePlaying() {
+            document.getElementById('feedback').classList.remove('show');
+            
+            gameState.questionsAnswered++;
+
+            if (gameState.questionsAnswered >= gameState.questionsPerLevel) {
+                // Naik level
+                gameState.level++;
+                gameState.questionsAnswered = 0;
+                createParticles('🎊', 30);
+                
+                setTimeout(() => {
+                    alert(`🎊 LEVEL UP! Sekarang Level ${gameState.level}! 🎊`);
+                    generateQuestion();
+                }, 100);
+            } else {
+                generateQuestion();
+            }
+        }
+
+        // Initialize game
+        showMenu();
+        updateStats();
+    </script>
+</body>
+</html>
