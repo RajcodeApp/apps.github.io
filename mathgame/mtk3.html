@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎮 Stickman Math Runner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,377 +12,867 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: float-shape 20s infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: #8b5cf6;
+            top: 60%;
+            right: 20%;
+            animation-delay: 5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: #6366f1;
+            bottom: 10%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float-shape {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, 100px) scale(1.1); }
+            66% { transform: translate(-50px, 50px) scale(0.9); }
         }
 
         .container {
             width: 95%;
-            max-width: 1000px;
-            background: white;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glass Card Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
             border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
+            padding: 30px;
             text-align: center;
-            color: white;
             position: relative;
             overflow: hidden;
         }
 
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse-light 3s infinite;
+        }
+
+        @keyframes pulse-light {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
         .header h1 {
-            font-size: 2.5em;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite;
+            font-size: 2.8em;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .header h1 .emoji {
+            display: inline-block;
+            animation: bounce-emoji 2s infinite;
         }
 
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: #fff3cd;
-            padding: 15px;
-            border-bottom: 4px solid #ffc107;
+        @keyframes bounce-emoji {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-10deg); }
+            75% { transform: translateY(-10px) rotate(10deg); }
         }
 
-        .stat-item {
+        /* Modern Stats Bar */
+        .stats-container {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            position: relative;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
-            font-weight: bold;
-            color: #856404;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .stat-value {
-            font-size: 2em;
-            color: #ff6b6b;
-            display: block;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 2.5em;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .lives {
+        .lives-display {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            align-items: center;
+            font-size: 1.8em;
         }
 
         .heart {
-            font-size: 2em;
-            animation: heartbeat 1s infinite;
+            display: inline-block;
+            transition: all 0.3s;
+            filter: drop-shadow(0 3px 6px rgba(239, 68, 68, 0.5));
+        }
+
+        .heart.active {
+            animation: heartbeat 1.5s infinite;
         }
 
         .heart.lost {
-            filter: grayscale(100%);
-            opacity: 0.3;
+            filter: grayscale(100%) brightness(0.3);
+            transform: scale(0.7);
         }
 
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            10%, 30% { transform: scale(0.9); }
+            20%, 40% { transform: scale(1.1); }
         }
 
+        /* Game Area */
         .game-area {
-            padding: 30px;
+            padding: 40px;
             min-height: 500px;
-            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(180deg, rgba(241, 245, 249, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%);
         }
 
-        .game-canvas-container {
+        /* Modern Menu */
+        .menu-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .menu-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .canvas-wrapper {
+            width: 100%;
+            max-width: 700px;
             background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #90EE90 100%);
             border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
         }
 
-        .clouds {
+        .canvas-wrapper::before {
+            content: '';
             position: absolute;
-            top: 20px;
-            width: 100%;
-            height: 100px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
-        }
-
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 100px;
-            opacity: 0.7;
-            animation: float-cloud 20s linear infinite;
-        }
-
-        @keyframes float-cloud {
-            from { left: -100px; }
-            to { left: 100%; }
         }
 
         canvas {
             display: block;
             margin: 0 auto;
-            background: transparent;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
-            z-index: 10;
+            z-index: 1;
         }
 
-        .question-box {
+        /* Modern Buttons */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .mode-card {
             background: white;
-            padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            text-align: center;
-            border: 4px solid #f093fb;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
 
-        .question-text {
-            font-size: 2.2em;
-            color: #333;
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+        }
+
+        .mode-card:hover::before {
+            opacity: 1;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+            border-color: var(--primary);
+        }
+
+        .mode-card:hover .mode-content {
+            color: white;
+        }
+
+        .mode-content {
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s;
+        }
+
+        .mode-icon {
+            font-size: 4em;
             margin-bottom: 15px;
-            font-weight: bold;
+            display: block;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+        }
+
+        .mode-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .mode-card:hover .mode-title {
+            color: white;
+        }
+
+        .mode-desc {
+            font-size: 0.95em;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .mode-card:hover .mode-desc {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Question Box */
+        .question-container {
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 3px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .timer-container {
+            margin-bottom: 25px;
         }
 
         .timer-bar {
-            height: 30px;
-            background: #e0e0e0;
-            border-radius: 15px;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 15px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .timer-fill {
             height: 100%;
-            background: linear-gradient(90deg, #43e97b 0%, #ffc107 50%, #f5576c 100%);
+            background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
             transition: width 0.1s linear;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.1em;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
         }
 
+        .timer-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .timer-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .question-text {
+            font-size: 2.5em;
+            font-weight: 800;
+            text-align: center;
+            color: var(--dark);
+            margin: 20px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            letter-spacing: 2px;
+        }
+
+        /* Answer Grid */
         .answer-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 600px;
+            gap: 20px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
         .answer-btn {
-            padding: 25px;
-            font-size: 1.8em;
-            font-weight: bold;
-            border: 4px solid #ddd;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 30px;
+            font-size: 2em;
+            font-weight: 700;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            background: white;
+            color: var(--dark);
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             position: relative;
             overflow: hidden;
+        }
+
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
         .answer-btn:hover:not(:disabled) {
-            transform: scale(1.05);
-            border-color: #f5576c;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
         }
 
-        .answer-btn:disabled {
-            cursor: not-allowed;
+        .answer-btn:hover:not(:disabled)::before {
+            width: 300%;
+            height: 300%;
+        }
+
+        .answer-btn:hover:not(:disabled) span {
+            color: white;
+        }
+
+        .answer-btn span {
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s;
         }
 
         .answer-btn.correct {
-            animation: correctAnim 0.6s;
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            animation: correct-pulse 0.6s;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            border-color: var(--success);
+            transform: scale(1.05);
         }
 
         .answer-btn.wrong {
-            animation: wrongAnim 0.6s;
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-
-        @keyframes correctAnim {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15) rotate(5deg); }
-        }
-
-        @keyframes wrongAnim {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-15px); }
-            50% { transform: translateX(15px); }
-            75% { transform: translateX(-10px); }
-        }
-
-        .menu-screen {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .mode-button {
-            width: 80%;
-            padding: 20px;
-            font-size: 1.3em;
-            font-weight: bold;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: wrong-shake 0.6s;
+            background: linear-gradient(135deg, var(--danger), #f87171);
             color: white;
-            position: relative;
+            border-color: var(--danger);
+        }
+
+        @keyframes correct-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1) rotate(3deg); }
+        }
+
+        @keyframes wrong-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-20px); }
+            75% { transform: translateX(20px); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 25px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
             overflow: hidden;
         }
 
-        .mode-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
         }
 
-        .mode-jump { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .mode-run { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .mode-climb { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .mode-back { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-
-        .particles {
+        /* Particles */
+        .particles-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 999;
+            z-index: 9999;
         }
 
         .particle {
             position: absolute;
             font-size: 2em;
-            animation: float 3s ease-out forwards;
+            animation: particle-float 3s ease-out forwards;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
         }
 
-        @keyframes float {
+        @keyframes particle-float {
             to {
-                transform: translateY(-1000px) rotate(360deg);
+                transform: translateY(-1000px) rotate(720deg);
                 opacity: 0;
             }
         }
 
+        /* Game Over Screen */
         .game-over-screen {
             text-align: center;
+            padding: 50px 30px;
+            animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .game-over-title {
+            font-size: 4em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--danger), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        .score-summary {
+            background: white;
+            border-radius: 20px;
             padding: 40px;
+            margin: 30px auto;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .game-over-screen h2 {
-            font-size: 3em;
-            color: #f5576c;
-            margin-bottom: 20px;
-            animation: pulse 1s infinite;
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px solid #f1f5f9;
+            font-size: 1.3em;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .score-item:last-child {
+            border-bottom: none;
         }
 
-        .final-score {
-            font-size: 2em;
-            color: #667eea;
-            margin: 20px 0;
-            font-weight: bold;
+        .score-label {
+            font-weight: 600;
+            color: #64748b;
         }
 
-        .progress-bar {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 15px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
-            transition: width 0.3s;
-        }
-
-        .level-indicator {
-            text-align: center;
+        .score-value {
+            font-weight: 800;
             font-size: 1.5em;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            color: var(--primary);
         }
 
-        @media (max-width: 600px) {
+        /* Action Buttons */
+        .btn {
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--accent), #f472b6);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Level Badge */
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+            animation: level-glow 2s infinite;
+        }
+
+        @keyframes level-glow {
+            0%, 100% { box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 5px 30px rgba(99, 102, 241, 0.7); }
+        }
+
+        /* Clouds */
+        .clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.6;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+        }
+
+        .cloud-1 {
+            width: 80px;
+            height: 30px;
+            top: 20px;
+            animation: float-cloud 25s linear infinite;
+        }
+
+        .cloud-1::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 10px;
+        }
+
+        .cloud-1::after {
+            width: 50px;
+            height: 35px;
+            top: -15px;
+            right: 10px;
+        }
+
+        .cloud-2 {
+            width: 100px;
+            height: 35px;
+            top: 60px;
+            animation: float-cloud 30s linear infinite;
+            animation-delay: 5s;
+        }
+
+        .cloud-2::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 15px;
+        }
+
+        .cloud-2::after {
+            width: 60px;
+            height: 40px;
+            top: -20px;
+            right: 15px;
+        }
+
+        @keyframes float-cloud {
+            from { left: -150px; }
+            to { left: 110%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
             .header h1 {
+                font-size: 2em;
+            }
+
+            .stat-value {
+                font-size: 2em;
+            }
+
+            .question-text {
                 font-size: 1.8em;
             }
-            
-            .question-text {
-                font-size: 1.6em;
-            }
-            
+
             .answer-btn {
-                font-size: 1.4em;
-                padding: 18px;
+                font-size: 1.5em;
+                padding: 20px;
             }
+
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-over-title {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Particles Container -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Main Container -->
     <div class="container">
-        <div class="header">
-            <h1>🏃 STICKMAN MATH RUNNER 🏃</h1>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-value" id="score">0</span>
-                <div>🏆 SKOR</div>
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="header">
+                <h1>
+                    <span class="emoji">🏃</span>
+                    STICKMAN MATH RUNNER
+                    <span class="emoji">🎮</span>
+                </h1>
             </div>
-            <div class="stat-item">
-                <div class="lives" id="lives">
-                    <span class="heart">❤️</span>
-                    <span class="heart">❤️</span>
-                    <span class="heart">❤️</span>
+
+            <!-- Stats Bar -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">🏆 Skor</div>
+                    <div class="stat-value" id="score">0</div>
                 </div>
-                <div>NYAWA</div>
+                <div class="stat-card">
+                    <div class="stat-label">💖 Nyawa</div>
+                    <div class="lives-display" id="lives">
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                        <span class="heart active">❤️</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">⭐ Level</div>
+                    <div class="stat-value" id="level">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🔥 Streak</div>
+                    <div class="stat-value" id="streak">0</div>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value" id="level">1</span>
-                <div>⭐ LEVEL</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value" id="streak">0</span>
-                <div>🔥 STREAK</div>
-            </div>
-        </div>
 
-        <div class="game-area" id="gameArea">
-            <!-- Menu akan dimuat di sini -->
+            <!-- Game Area -->
+            <div class="game-area" id="gameArea">
+                <!-- Content will be loaded here -->
+            </div>
         </div>
     </div>
 
@@ -400,7 +891,7 @@
 
         let canvas, ctx;
         let stickman = {
-            x: 100,
+            x: 120,
             y: 0,
             groundY: 280,
             velocityY: 0,
@@ -410,34 +901,36 @@
             deathFrame: 0
         };
 
-        let obstacles = [];
-        let coins = [];
+        let groundOffset = 0;
         let gameLoopId;
-        let groundSpeed = 3;
+
+        // Initialize
+        showMenu();
+        updateStats();
 
         function updateStats() {
             document.getElementById('score').textContent = gameState.score;
             document.getElementById('level').textContent = gameState.level;
             document.getElementById('streak').textContent = gameState.streak;
             
-            const hearts = document.querySelectorAll('.heart');
-            hearts.forEach((heart, index) => {
-                if (index >= gameState.lives) {
-                    heart.classList.add('lost');
-                } else {
-                    heart.classList.remove('lost');
-                }
-            });
+            const heartsContainer = document.getElementById('lives');
+            heartsContainer.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement('span');
+                heart.className = i < gameState.lives ? 'heart active' : 'heart lost';
+                heart.textContent = '❤️';
+                heartsContainer.appendChild(heart);
+            }
         }
 
-        function createParticles(emoji, count = 20) {
+        function createParticles(emoji, count = 25) {
             const container = document.getElementById('particles');
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.textContent = emoji;
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = '100%';
+                particle.style.top = Math.random() * 50 + 50 + '%';
                 particle.style.animationDelay = Math.random() * 0.5 + 's';
                 container.appendChild(particle);
                 
@@ -445,388 +938,262 @@
             }
         }
 
-        function drawGround() {
-            ctx.strokeStyle = '#228B22';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, stickman.groundY + 40);
-            ctx.lineTo(canvas.width, stickman.groundY + 40);
-            ctx.stroke();
-
-            // Rumput
-            ctx.strokeStyle = '#32CD32';
-            for (let i = 0; i < canvas.width; i += 20) {
-                ctx.beginPath();
-                ctx.moveTo(i, stickman.groundY + 40);
-                ctx.lineTo(i + 5, stickman.groundY + 30);
-                ctx.stroke();
-            }
-        }
-
-        function drawStickmanRunning(x, y, frame) {
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-
-            // Kepala
-            ctx.beginPath();
-            ctx.arc(x, y - 30, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Mata
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(x - 4, y - 32, 2, 0, Math.PI * 2);
-            ctx.arc(x + 4, y - 32, 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Senyum
-            ctx.beginPath();
-            ctx.arc(x, y - 30, 6, 0, Math.PI);
-            ctx.stroke();
-
-            // Badan
-            ctx.beginPath();
-            ctx.moveTo(x, y - 18);
-            ctx.lineTo(x, y + 10);
-            ctx.stroke();
-
-            // Animasi berlari
-            const legAngle = Math.sin(frame * 0.3) * 30;
-            const armAngle = Math.sin(frame * 0.3) * 25;
-
-            // Tangan
-            ctx.beginPath();
-            ctx.moveTo(x, y - 10);
-            ctx.lineTo(x - 15, y + armAngle);
-            ctx.moveTo(x, y - 10);
-            ctx.lineTo(x + 15, y - armAngle);
-            ctx.stroke();
-
-            // Kaki
-            ctx.beginPath();
-            ctx.moveTo(x, y + 10);
-            ctx.lineTo(x - 10, y + 30 + legAngle);
-            ctx.moveTo(x, y + 10);
-            ctx.lineTo(x + 10, y + 30 - legAngle);
-            ctx.stroke();
-        }
-
-        function drawStickmanJumping(x, y) {
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-
-            // Kepala
-            ctx.beginPath();
-            ctx.arc(x, y - 30, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Mata excited
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(x - 4, y - 32, 2, 0, Math.PI * 2);
-            ctx.arc(x + 4, y - 32, 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Senyum lebar
-            ctx.beginPath();
-            ctx.arc(x, y - 28, 8, 0, Math.PI);
-            ctx.stroke();
-
-            // Badan
-            ctx.beginPath();
-            ctx.moveTo(x, y - 18);
-            ctx.lineTo(x, y + 10);
-            ctx.stroke();
-
-            // Tangan ke atas (victory pose)
-            ctx.beginPath();
-            ctx.moveTo(x, y - 10);
-            ctx.lineTo(x - 15, y - 25);
-            ctx.moveTo(x, y - 10);
-            ctx.lineTo(x + 15, y - 25);
-            ctx.stroke();
-
-            // Kaki bengkok
-            ctx.beginPath();
-            ctx.moveTo(x, y + 10);
-            ctx.lineTo(x - 8, y + 25);
-            ctx.moveTo(x, y + 10);
-            ctx.lineTo(x + 8, y + 25);
-            ctx.stroke();
-        }
-
-        function drawStickmanDead(x, y, frame) {
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-
-            const fallProgress = Math.min(frame / 30, 1);
-            const rotation = fallProgress * 90;
-
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(rotation * Math.PI / 180);
-
-            // Kepala (X_X)
-            ctx.beginPath();
-            ctx.arc(0, -30, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Mata X X
-            ctx.beginPath();
-            ctx.moveTo(-6, -34);
-            ctx.lineTo(-2, -30);
-            ctx.moveTo(-2, -34);
-            ctx.lineTo(-6, -30);
-            ctx.moveTo(2, -34);
-            ctx.lineTo(6, -30);
-            ctx.moveTo(6, -34);
-            ctx.lineTo(2, -30);
-            ctx.stroke();
-
-            // Mulut sedih
-            ctx.beginPath();
-            ctx.arc(0, -25, 6, Math.PI, 0);
-            ctx.stroke();
-
-            // Badan
-            ctx.beginPath();
-            ctx.moveTo(0, -18);
-            ctx.lineTo(0, 10);
-            ctx.stroke();
-
-            // Tangan terkapar
-            ctx.beginPath();
-            ctx.moveTo(0, -10);
-            ctx.lineTo(-20, 0);
-            ctx.moveTo(0, -10);
-            ctx.lineTo(20, 0);
-            ctx.stroke();
-
-            // Kaki terkapar
-            ctx.beginPath();
-            ctx.moveTo(0, 10);
-            ctx.lineTo(-15, 25);
-            ctx.moveTo(0, 10);
-            ctx.lineTo(15, 25);
-            ctx.stroke();
-
-            ctx.restore();
-
-            // Darah
-            if (fallProgress > 0.5) {
-                ctx.fillStyle = 'red';
-                for (let i = 0; i < 5; i++) {
-                    ctx.beginPath();
-                    ctx.arc(x + (Math.random() - 0.5) * 40, y + 20 + Math.random() * 10, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-        }
-
-        function initCanvas() {
-            canvas = document.getElementById('gameCanvas');
-            ctx = canvas.getContext('2d');
-            stickman.y = stickman.groundY;
-            obstacles = [];
-            coins = [];
-        }
-
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw background
-            drawGround();
-
-            // Update and draw obstacles
-            obstacles.forEach((obs, index) => {
-                obs.x -= groundSpeed;
-                
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                
-                if (obs.x + obs.width < 0) {
-                    obstacles.splice(index, 1);
-                }
-            });
-
-            // Update and draw coins
-            coins.forEach((coin, index) => {
-                coin.x -= groundSpeed;
-                
-                ctx.fillStyle = '#FFD700';
-                ctx.beginPath();
-                ctx.arc(coin.x, coin.y, 8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#FF8C00';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                if (coin.x < 0) {
-                    coins.splice(index, 1);
-                }
-            });
-
-            // Update stickman
-            if (stickman.isDead) {
-                stickman.deathFrame++;
-                drawStickmanDead(stickman.x, stickman.y, stickman.deathFrame);
-                
-                if (stickman.deathFrame > 60) {
-                    cancelAnimationFrame(gameLoopId);
-                    setTimeout(() => {
-                        if (gameState.lives <= 0) {
-                            showGameOver();
-                        } else {
-                            continuePlaying();
-                        }
-                    }, 500);
-                    return;
-                }
-            } else {
-                if (stickman.isJumping) {
-                    stickman.velocityY += 0.8;
-                    stickman.y += stickman.velocityY;
-
-                    if (stickman.y >= stickman.groundY) {
-                        stickman.y = stickman.groundY;
-                        stickman.isJumping = false;
-                        stickman.velocityY = 0;
-                    }
-
-                    drawStickmanJumping(stickman.x, stickman.y);
-                } else {
-                    stickman.runFrame++;
-                    drawStickmanRunning(stickman.x, stickman.y, stickman.runFrame);
-                }
-            }
-
-            gameLoopId = requestAnimationFrame(gameLoop);
-        }
-
-        function makeStickmanJump() {
-            if (!stickman.isJumping && !stickman.isDead) {
-                stickman.isJumping = true;
-                stickman.velocityY = -15;
-            }
-        }
-
-        function makeStickmanDie() {
-            stickman.isDead = true;
-            stickman.deathFrame = 0;
-            gameState.lives--;
-            updateStats();
-            createParticles('💀', 15);
-            createParticles('💔', 10);
-        }
-
         function showMenu() {
             const gameArea = document.getElementById('gameArea');
             gameArea.innerHTML = `
-                <div class="menu-screen">
-                    <div style="width: 100%; max-width: 600px;">
-                        <div class="game-canvas-container">
-                            <div class="clouds">
-                                <div class="cloud" style="width: 60px; height: 30px; top: 10px; animation-delay: 0s;"></div>
-                                <div class="cloud" style="width: 80px; height: 40px; top: 40px; animation-delay: 5s;"></div>
-                                <div class="cloud" style="width: 70px; height: 35px; top: 70px; animation-delay: 10s;"></div>
+                <div class="menu-screen fade-in">
+                    <h2 class="menu-title">🎯 Pilih Mode Petualangan Matematika! 🎯</h2>
+                    
+                    <div class="canvas-wrapper">
+                        <div class="clouds">
+                            <div class="cloud cloud-1"></div>
+                            <div class="cloud cloud-2"></div>
+                        </div>
+                        <canvas id="menuCanvas" width="640" height="200"></canvas>
+                    </div>
+
+                    <div class="mode-grid">
+                        <div class="mode-card" onclick="startMode('jump')">
+                            <div class="mode-content">
+                                <span class="mode-icon">🦘</span>
+                                <div class="mode-title">Lompatan Ajaib</div>
+                                <div class="mode-desc">Penjumlahan & Pengurangan</div>
                             </div>
-                            <canvas id="menuCanvas" width="600" height="200"></canvas>
+                        </div>
+
+                        <div class="mode-card" onclick="startMode('run')">
+                            <div class="mode-content">
+                                <span class="mode-icon">⚡</span>
+                                <div class="mode-title">Lari Super Cepat</div>
+                                <div class="mode-desc">Perkalian Kilat</div>
+                            </div>
+                        </div>
+
+                        <div class="mode-card" onclick="startMode('climb')">
+                            <div class="mode-content">
+                                <span class="mode-icon">🧠</span>
+                                <div class="mode-title">Tantangan Otak</div>
+                                <div class="mode-desc">Pola & Urutan Angka</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <h2 style="color: #667eea; font-size: 2em;">🏃 Pilih Mode Petualangan! 🏃</h2>
-                    
-                    <button class="mode-button mode-jump" onclick="startMode('jump')">
-                        🦘 LOMPATAN AJAIB<br>
-                        <small style="font-size: 0.7em;">Penjumlahan & Pengurangan</small>
-                    </button>
-                    
-                    <button class="mode-button mode-run" onclick="startMode('run')">
-                        ⚡ LARI SUPER CEPAT<br>
-                        <small style="font-size: 0.7em;">Perkalian Kilat!</small>
-                    </button>
-                    
-                    <button class="mode-button mode-climb" onclick="startMode('climb')">
-                        🧠 TANTANGAN OTAK<br>
-                        <small style="font-size: 0.7em;">Pola & Urutan Angka</small>
-                    </button>
                 </div>
             `;
 
-            // Animate stickman in menu
-            const menuCanvas = document.getElementById('menuCanvas');
-            const menuCtx = menuCanvas.getContext('2d');
-            let menuFrame = 0;
-            let menuStickmanX = 100;
+            animateMenuStickman();
+        }
 
-            function animateMenu() {
-                menuCtx.clearRect(0, 0, menuCanvas.width, menuCanvas.height);
+        function animateMenuStickman() {
+            const canvas = document.getElementById('menuCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let frame = 0;
+            let x = 100;
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
                 // Ground
-                menuCtx.strokeStyle = '#228B22';
-                menuCtx.lineWidth = 3;
-                menuCtx.beginPath();
-                menuCtx.moveTo(0, 160);
-                menuCtx.lineTo(menuCanvas.width, 160);
-                menuCtx.stroke();
-
-                // Running stickman
-                menuFrame++;
-                drawStickmanRunning(menuStickmanX, 120, menuFrame);
+                ctx.fillStyle = '#90EE90';
+                ctx.fillRect(0, 160, canvas.width, 40);
                 
-                menuStickmanX += 2;
-                if (menuStickmanX > menuCanvas.width + 50) {
-                    menuStickmanX = -50;
+                ctx.strokeStyle = '#228B22';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(0, 160);
+                ctx.lineTo(canvas.width, 160);
+                ctx.stroke();
+
+                // Grass
+                for (let i = 0; i < canvas.width; i += 25) {
+                    ctx.strokeStyle = '#32CD32';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(i, 160);
+                    ctx.lineTo(i + 8, 150);
+                    ctx.stroke();
                 }
 
-                requestAnimationFrame(animateMenu);
+                drawStickmanRunning(ctx, x, 120, frame);
+                
+                frame++;
+                x += 3;
+                if (x > canvas.width + 50) {
+                    x = -50;
+                }
+
+                requestAnimationFrame(animate);
             }
 
-            animateMenu();
+            animate();
+        }
 
-            function drawStickmanRunning(x, y, frame) {
-                menuCtx.strokeStyle = '#000';
-                menuCtx.lineWidth = 3;
-                menuCtx.lineCap = 'round';
+        function drawStickmanRunning(context, x, y, frame) {
+            context.strokeStyle = '#000';
+            context.lineWidth = 3;
+            context.lineCap = 'round';
 
-                menuCtx.beginPath();
-                menuCtx.arc(x, y - 30, 12, 0, Math.PI * 2);
-                menuCtx.stroke();
+            // Head
+            context.beginPath();
+            context.arc(x, y - 30, 12, 0, Math.PI * 2);
+            context.stroke();
 
-                menuCtx.fillStyle = '#000';
-                menuCtx.beginPath();
-                menuCtx.arc(x - 4, y - 32, 2, 0, Math.PI * 2);
-                menuCtx.arc(x + 4, y - 32, 2, 0, Math.PI * 2);
-                menuCtx.fill();
+            // Eyes
+            context.fillStyle = '#000';
+            context.beginPath();
+            context.arc(x - 4, y - 32, 2, 0, Math.PI * 2);
+            context.arc(x + 4, y - 32, 2, 0, Math.PI * 2);
+            context.fill();
 
-                menuCtx.beginPath();
-                menuCtx.arc(x, y - 30, 6, 0, Math.PI);
-                menuCtx.stroke();
+            // Smile
+            context.beginPath();
+            context.arc(x, y - 30, 6, 0, Math.PI);
+            context.stroke();
 
-                menuCtx.beginPath();
-                menuCtx.moveTo(x, y - 18);
-                menuCtx.lineTo(x, y + 10);
-                menuCtx.stroke();
+            // Body
+            context.beginPath();
+            context.moveTo(x, y - 18);
+            context.lineTo(x, y + 10);
+            context.stroke();
 
-                const legAngle = Math.sin(frame * 0.3) * 30;
-                const armAngle = Math.sin(frame * 0.3) * 25;
+            const legAngle = Math.sin(frame * 0.3) * 30;
+            const armAngle = Math.sin(frame * 0.3) * 25;
 
-                menuCtx.beginPath();
-                menuCtx.moveTo(x, y - 10);
-                menuCtx.lineTo(x - 15, y + armAngle);
-                menuCtx.moveTo(x, y - 10);
-                menuCtx.lineTo(x + 15, y - armAngle);
-                menuCtx.stroke();
+            // Arms
+            context.beginPath();
+            context.moveTo(x, y - 10);
+            context.lineTo(x - 15, y + armAngle);
+            context.moveTo(x, y - 10);
+            context.lineTo(x + 15, y - armAngle);
+            context.stroke();
 
-                menuCtx.beginPath();
-                menuCtx.moveTo(x, y + 10);
-                menuCtx.lineTo(x - 10, y + 30 + legAngle);
-                menuCtx.moveTo(x, y + 10);
-                menuCtx.lineTo(x + 10, y + 30 - legAngle);
-                menuCtx.stroke();
+            // Legs
+            context.beginPath();
+            context.moveTo(x, y + 10);
+            context.lineTo(x - 10, y + 30 + legAngle);
+            context.moveTo(x, y + 10);
+            context.lineTo(x + 10, y + 30 - legAngle);
+            context.stroke();
+        }
+
+        function drawStickmanJumping(context, x, y) {
+            context.strokeStyle = '#000';
+            context.lineWidth = 3;
+            context.lineCap = 'round';
+
+            // Head
+            context.beginPath();
+            context.arc(x, y - 30, 12, 0, Math.PI * 2);
+            context.stroke();
+
+            // Eyes
+            context.fillStyle = '#000';
+            context.beginPath();
+            context.arc(x - 4, y - 30, 2, 0, Math.PI * 2);
+            context.arc(x + 4, y - 30, 2, 0, Math.PI * 2);
+            context.fill();
+
+            // Big smile
+            context.beginPath();
+            context.arc(x, y - 28, 8, 0, Math.PI);
+            context.stroke();
+
+            // Body
+            context.beginPath();
+            context.moveTo(x, y - 18);
+            context.lineTo(x, y + 10);
+            context.stroke();
+
+            // Arms up
+            context.beginPath();
+            context.moveTo(x, y - 10);
+            context.lineTo(x - 15, y - 25);
+            context.moveTo(x, y - 10);
+            context.lineTo(x + 15, y - 25);
+            context.stroke();
+
+            // Legs bent
+            context.beginPath();
+            context.moveTo(x, y + 10);
+            context.lineTo(x - 8, y + 25);
+            context.moveTo(x, y + 10);
+            context.lineTo(x + 8, y + 25);
+            context.stroke();
+        }
+
+        function drawStickmanDead(context, x, y, frame) {
+            const fallProgress = Math.min(frame / 30, 1);
+            const rotation = fallProgress * 90;
+
+            context.save();
+            context.translate(x, y);
+            context.rotate(rotation * Math.PI / 180);
+
+            context.strokeStyle = '#000';
+            context.lineWidth = 3;
+            context.lineCap = 'round';
+
+            // Head
+            context.beginPath();
+            context.arc(0, -30, 12, 0, Math.PI * 2);
+            context.stroke();
+
+            // X eyes
+            context.beginPath();
+            context.moveTo(-7, -33);
+            context.lineTo(-3, -29);
+            context.moveTo(-3, -33);
+            context.lineTo(-7, -29);
+            context.moveTo(3, -33);
+            context.lineTo(7, -29);
+            context.moveTo(7, -33);
+            context.lineTo(3, -29);
+            context.stroke();
+
+            // Sad mouth
+            context.beginPath();
+            context.arc(0, -24, 6, Math.PI, 0);
+            context.stroke();
+
+            // Body
+            context.beginPath();
+            context.moveTo(0, -18);
+            context.lineTo(0, 10);
+            context.stroke();
+
+            // Arms
+            context.beginPath();
+            context.moveTo(0, -10);
+            context.lineTo(-20, 0);
+            context.moveTo(0, -10);
+            context.lineTo(20, 0);
+            context.stroke();
+
+            // Legs
+            context.beginPath();
+            context.moveTo(0, 10);
+            context.lineTo(-15, 25);
+            context.moveTo(0, 10);
+            context.lineTo(15, 25);
+            context.stroke();
+
+            context.restore();
+
+            // Blood
+            if (fallProgress > 0.5) {
+                context.fillStyle = '#ef4444';
+                for (let i = 0; i < 8; i++) {
+                    context.beginPath();
+                    context.arc(
+                        x + (Math.random() - 0.5) * 50,
+                        y + 20 + Math.random() * 15,
+                        Math.random() * 4 + 2,
+                        0,
+                        Math.PI * 2
+                    );
+                    context.fill();
+                }
             }
         }
 
@@ -897,46 +1264,142 @@
             const gameArea = document.getElementById('gameArea');
             
             gameArea.innerHTML = `
-                <div class="level-indicator">Level ${gameState.level} - Soal ${gameState.questionsAnswered + 1}/${gameState.questionsPerLevel}</div>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${(gameState.questionsAnswered / gameState.questionsPerLevel) * 100}%"></div>
-                </div>
-
-                <div class="game-canvas-container">
-                    <div class="clouds">
-                        <div class="cloud" style="width: 60px; height: 30px; top: 10px; animation-delay: 0s;"></div>
-                        <div class="cloud" style="width: 80px; height: 40px; top: 40px; animation-delay: 5s;"></div>
-                        <div class="cloud" style="width: 70px; height: 35px; top: 70px; animation-delay: 10s;"></div>
+                <div class="fade-in">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="level-badge">
+                            Level ${gameState.level} • Soal ${gameState.questionsAnswered + 1}/${gameState.questionsPerLevel}
+                        </span>
                     </div>
-                    <canvas id="gameCanvas" width="900" height="350"></canvas>
-                </div>
 
-                <div class="question-box">
-                    <div class="timer-bar">
-                        <div class="timer-fill" id="timerFill" style="width: 100%">
-                            ⏱️ <span id="timerText">20</span> detik
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Progress Level</span>
+                            <span>${Math.round((gameState.questionsAnswered / gameState.questionsPerLevel) * 100)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${(gameState.questionsAnswered / gameState.questionsPerLevel) * 100}%"></div>
                         </div>
                     </div>
-                    <div class="question-text">${question.text}</div>
-                </div>
 
-                <div class="answer-grid" id="answerGrid">
-                    ${question.options.map(opt => `
-                        <button class="answer-btn" onclick="checkAnswer(${opt})">${opt}</button>
-                    `).join('')}
-                </div>
+                    <div class="canvas-wrapper">
+                        <div class="clouds">
+                            <div class="cloud cloud-1"></div>
+                            <div class="cloud cloud-2"></div>
+                        </div>
+                        <canvas id="gameCanvas" width="900" height="350"></canvas>
+                    </div>
 
-                <button class="mode-button mode-back" style="width: 200px; margin: 20px auto 0; display: block; padding: 15px;" onclick="showMenu()">
-                    🏠 Menu Utama
-                </button>
+                    <div class="question-container">
+                        <div class="timer-container">
+                            <div class="timer-bar">
+                                <div class="timer-fill" id="timerFill" style="width: 100%"></div>
+                            </div>
+                            <div class="timer-text">
+                                ⏱️ Waktu: <span id="timerText">20</span> detik
+                            </div>
+                        </div>
+                        <div class="question-text">${question.text}</div>
+                    </div>
+
+                    <div class="answer-grid" id="answerGrid">
+                        ${question.options.map(opt => `
+                            <button class="answer-btn" onclick="checkAnswer(${opt})">
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="showMenu()">
+                            🏠 Menu Utama
+                        </button>
+                    </div>
+                </div>
             `;
 
             initCanvas();
+            startTimer();
+        }
+
+        function initCanvas() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            stickman.y = stickman.groundY;
             stickman.isDead = false;
             stickman.deathFrame = 0;
+            stickman.runFrame = 0;
+            groundOffset = 0;
             gameLoop();
-            startTimer();
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sky gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#E0F6FF');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Ground
+            groundOffset = (groundOffset + 3) % 50;
+            ctx.fillStyle = '#90EE90';
+            ctx.fillRect(0, stickman.groundY + 40, canvas.width, 60);
+            
+            ctx.strokeStyle = '#228B22';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, stickman.groundY + 40);
+            ctx.lineTo(canvas.width, stickman.groundY + 40);
+            ctx.stroke();
+
+            // Animated grass
+            for (let i = -groundOffset; i < canvas.width; i += 30) {
+                ctx.strokeStyle = '#32CD32';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(i, stickman.groundY + 40);
+                ctx.lineTo(i + 10, stickman.groundY + 28);
+                ctx.stroke();
+            }
+
+            // Update stickman
+            if (stickman.isDead) {
+                stickman.deathFrame++;
+                drawStickmanDead(ctx, stickman.x, stickman.y, stickman.deathFrame);
+                
+                if (stickman.deathFrame > 60) {
+                    cancelAnimationFrame(gameLoopId);
+                    setTimeout(() => {
+                        if (gameState.lives <= 0) {
+                            showGameOver();
+                        } else {
+                            gameState.isAnimating = false;
+                            continuePlaying();
+                        }
+                    }, 500);
+                    return;
+                }
+            } else {
+                if (stickman.isJumping) {
+                    stickman.velocityY += 0.8;
+                    stickman.y += stickman.velocityY;
+
+                    if (stickman.y >= stickman.groundY) {
+                        stickman.y = stickman.groundY;
+                        stickman.isJumping = false;
+                        stickman.velocityY = 0;
+                    }
+
+                    drawStickmanJumping(ctx, stickman.x, stickman.y);
+                } else {
+                    stickman.runFrame++;
+                    drawStickmanRunning(ctx, stickman.x, stickman.y, stickman.runFrame);
+                }
+            }
+
+            gameLoopId = requestAnimationFrame(gameLoop);
         }
 
         let timerInterval;
@@ -972,37 +1435,43 @@
             
             buttons.forEach(btn => {
                 btn.disabled = true;
-                if (parseInt(btn.textContent) === correct) {
+                const value = parseInt(btn.querySelector('span').textContent);
+                
+                if (value === correct) {
                     btn.classList.add('correct');
                 }
-                if (selected !== null && parseInt(btn.textContent) === selected && selected !== correct) {
+                if (selected !== null && value === selected && selected !== correct) {
                     btn.classList.add('wrong');
                 }
             });
 
             if (selected === correct) {
-                // Jawaban BENAR - LOMPAT!
-                const points = Math.max(100 + (timeLeft * 10), 50);
+                // Correct answer
+                const points = Math.max(100 + (timeLeft * 15), 50);
                 gameState.score += points;
                 gameState.streak++;
                 
-                makeStickmanJump();
-                createParticles('⭐', 20);
-                createParticles('🎉', 15);
-                createParticles('✨', 10);
+                stickman.isJumping = true;
+                stickman.velocityY = -16;
+                
+                createParticles('⭐', 25);
+                createParticles('🎉', 20);
+                createParticles('✨', 15);
                 
                 setTimeout(() => {
                     gameState.isAnimating = false;
                     nextQuestion();
                 }, 2000);
             } else {
-                // Jawaban SALAH - MATI!
-                makeStickmanDie();
+                // Wrong answer
+                stickman.isDead = true;
+                stickman.deathFrame = 0;
+                gameState.lives--;
                 gameState.streak = 0;
                 
-                setTimeout(() => {
-                    gameState.isAnimating = false;
-                }, 2500);
+                createParticles('💀', 20);
+                createParticles('💔', 15);
+                createParticles('😢', 10);
             }
 
             updateStats();
@@ -1014,10 +1483,18 @@
             if (gameState.questionsAnswered >= gameState.questionsPerLevel) {
                 gameState.level++;
                 gameState.questionsAnswered = 0;
-                createParticles('🎊', 30);
-                createParticles('🏆', 20);
+                createParticles('🎊', 40);
+                createParticles('🏆', 30);
                 
-                alert(`🎊 LEVEL UP! Sekarang Level ${gameState.level}! 🎊`);
+                setTimeout(() => {
+                    const message = `
+                        🎊 LEVEL UP! 🎊
+                        
+                        Sekarang Level ${gameState.level}!
+                        Tingkat kesulitan meningkat!
+                    `;
+                    alert(message);
+                }, 100);
             }
             
             generateQuestion();
@@ -1031,29 +1508,39 @@
             const gameArea = document.getElementById('gameArea');
             gameArea.innerHTML = `
                 <div class="game-over-screen">
-                    <h2>💀 GAME OVER! 💀</h2>
-                    <div style="font-size: 4em; margin: 20px 0;">😢</div>
-                    <div class="final-score">
-                        Skor Akhir: ${gameState.score}<br>
-                        Level Tertinggi: ${gameState.level}<br>
-                        Streak Terbaik: ${gameState.streak}
+                    <div class="game-over-title">GAME OVER!</div>
+                    <div style="font-size: 5em; margin: 20px 0;">💀</div>
+                    
+                    <div class="score-summary">
+                        <div class="score-item">
+                            <span class="score-label">🏆 Skor Total</span>
+                            <span class="score-value">${gameState.score}</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">⭐ Level Tertinggi</span>
+                            <span class="score-value">${gameState.level}</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">🔥 Streak Terbaik</span>
+                            <span class="score-value">${gameState.streak}</span>
+                        </div>
                     </div>
-                    <p style="font-size: 1.3em; color: #666; margin: 20px 0;">
+
+                    <p style="font-size: 1.3em; color: #64748b; margin: 30px 0;">
                         Stickman kehabisan nyawa! 💔<br>
                         Ayo coba lagi dan raih skor lebih tinggi!
                     </p>
-                    <button class="mode-button mode-jump" style="width: 300px; margin: 20px auto;" onclick="showMenu()">
-                        🔄 Main Lagi!
-                    </button>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="showMenu()">
+                            🔄 Main Lagi
+                        </button>
+                    </div>
                 </div>
             `;
             
-            createParticles('😭', 20);
+            createParticles('😭', 30);
         }
-
-        // Initialize game
-        showMenu();
-        updateStats();
     </script>
 </body>
 </html>
