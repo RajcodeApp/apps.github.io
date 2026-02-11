@@ -1,132 +1,129 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>⚡ Stickman Math Runner ULTRA</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Stickman Math Runner PRO</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Poppins, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
 
 body{
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  overflow:hidden;
+ background:#0f172a;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ height:100vh;
+ color:white;
 }
 
 .card{
-  width:100%;
-  max-width:1100px;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(25px);
-  border-radius:28px;
-  overflow:hidden;
-  box-shadow:0 30px 80px rgba(0,0,0,.3);
+ width:1100px;
+ background:#111827;
+ border-radius:24px;
+ box-shadow:0 30px 80px #000;
+ overflow:hidden;
 }
 
 header{
-  text-align:center;
-  padding:22px;
-  font-size:28px;
-  font-weight:800;
-  color:#fff;
-  letter-spacing:1px;
+ text-align:center;
+ padding:18px;
+ font-weight:800;
+ font-size:22px;
+ background:#0b1220;
+ letter-spacing:1px;
 }
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  padding:14px;
+ display:grid;
+ grid-template-columns:repeat(6,1fr);
+ background:#0b1220;
 }
 
 .stat{
-  background:rgba(255,255,255,.2);
-  border-radius:14px;
-  text-align:center;
-  padding:8px;
-  color:white;
-  font-weight:600;
-}
-
-#gameArea{
-  background:#eaf4ff;
-  padding:20px;
-  min-height:550px;
+ text-align:center;
+ padding:12px;
+ border-right:1px solid #1f2937;
 }
 
 canvas{
-  background:linear-gradient(#8fd3ff,#d9f2ff);
-  border-radius:20px;
-  display:block;
-  margin:auto;
+ background:linear-gradient(#1e293b,#0f172a);
+ display:block;
+ margin:auto;
+ border-radius:18px;
+}
+
+#gameArea{
+ padding:20px;
+ text-align:center;
 }
 
 .question{
-  margin-top:18px;
-  font-size:40px;
-  font-weight:800;
-  text-align:center;
+ font-size:32px;
+ margin:10px 0;
+ font-weight:700;
 }
 
 .answers{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-  margin-top:18px;
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
 }
 
 .btn{
-  padding:20px;
-  font-size:24px;
-  font-weight:700;
-  border:none;
-  border-radius:18px;
-  cursor:pointer;
-  transition:.2s;
+ padding:16px;
+ font-size:22px;
+ border:none;
+ border-radius:12px;
+ background:#1f2937;
+ color:white;
+ cursor:pointer;
 }
 
-.btn:hover{ transform:scale(1.05); }
+.btn:hover{background:#6366f1}
 
-.correct{ background:#10b981; color:white;}
-.wrong{ background:#ef4444; color:white;}
+.correct{background:#10b981}
+.wrong{background:#ef4444}
 
 .menu{
-  text-align:center;
-  padding:60px;
+ padding:60px;
+}
+
+.skinBtn{
+ margin:5px;
+ padding:10px 16px;
+ background:#374151;
+ border:none;
+ color:white;
+ border-radius:10px;
+ cursor:pointer;
 }
 
 .startBtn{
-  background:#6366f1;
-  color:white;
-  padding:18px 40px;
-  border:none;
-  border-radius:20px;
-  font-size:20px;
-  cursor:pointer;
+ margin-top:20px;
+ padding:14px 40px;
+ font-size:18px;
+ background:#6366f1;
+ border:none;
+ border-radius:14px;
+ color:white;
+ cursor:pointer;
 }
 
-.pauseOverlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:40px;
-  font-weight:800;
-  display:none;
+.bossbar{
+ height:12px;
+ background:#1f2937;
+ margin:10px 0;
+ border-radius:8px;
+ overflow:hidden;
+}
+
+.bossfill{
+ height:100%;
+ background:#ef4444;
+ width:100%;
 }
 </style>
 </head>
@@ -134,233 +131,234 @@ canvas{
 <body>
 
 <div class="card">
-<header>🏃 Stickman Math Runner ULTRA</header>
+<header>⚡ Stickman Math Runner PRO</header>
 
 <div class="stats">
-<div class="stat">🏆 <span id="score">0</span></div>
-<div class="stat">❤️ <span id="lives">3</span></div>
-<div class="stat">⭐ <span id="level">1</span></div>
-<div class="stat">🔥 <span id="combo">0</span></div>
-<div class="stat">🏅 HI <span id="high">0</span></div>
+<div class="stat">Score <span id="score">0</span></div>
+<div class="stat">Life <span id="life">3</span></div>
+<div class="stat">Level <span id="level">1</span></div>
+<div class="stat">Combo <span id="combo">0</span></div>
+<div class="stat">High <span id="high">0</span></div>
+<div class="stat">Skin <span id="skinName">Default</span></div>
 </div>
 
 <div id="gameArea"></div>
 </div>
 
-<div class="pauseOverlay" id="pauseText">PAUSED</div>
-
 <script>
-/* =============================
-   ULTRA VERSION GAME ENGINE
-============================= */
-
-const state={
- score:0,
- lives:3,
- level:1,
- combo:0,
- high:localStorage.getItem("highscore")||0,
- question:null,
- paused:false
-};
-
-const gameArea=document.getElementById("gameArea");
-document.getElementById("high").textContent=state.high;
-
-let canvas,ctx,loopId;
-
-const stick={
- x:140,y:270,vy:0,jump:false,frame:0
-};
-
-function updateStats(){
- score.textContent=state.score;
- lives.textContent=state.lives;
- level.textContent=state.level;
- combo.textContent=state.combo;
+/* ===============================
+   SIMPLE AUDIO ENGINE
+================================*/
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+function beep(freq,d=0.1){
+ const o=audioCtx.createOscillator();
+ const g=audioCtx.createGain();
+ o.frequency.value=freq;
+ o.connect(g); g.connect(audioCtx.destination);
+ o.start();
+ g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+d);
 }
 
-function showMenu(){
+/* ===============================
+   STATE
+================================*/
+const s={
+ score:0,life:3,level:1,combo:0,
+ high:localStorage.getItem("hi")||0,
+ skin:"default",
+ boss:false,bossHP:10
+};
+
+high.textContent=s.high;
+
+/* ===============================
+   MENU
+================================*/
+function menu(){
  gameArea.innerHTML=`
  <div class="menu">
-   <h2 style="margin-bottom:20px;">Siap Belajar Sambil Main?</h2>
-   <button class="startBtn" onclick="startGame()">🚀 START</button>
+   <h2>Pilih Skin</h2>
+   <button class="skinBtn" onclick="setSkin('default')">🙂 Default</button>
+   <button class="skinBtn" onclick="setSkin('ninja')">🥷 Ninja</button>
+   <button class="skinBtn" onclick="setSkin('robot')">🤖 Robot</button>
+   <br>
+   <button class="startBtn" onclick="start()">START GAME</button>
  </div>`;
 }
+menu();
 
-showMenu();
-
-function startGame(){
- state.score=0;
- state.lives=3;
- state.level=1;
- state.combo=0;
- updateStats();
-
- renderQuestion();
+function setSkin(x){
+ s.skin=x;
+ skinName.textContent=x;
 }
 
-function renderQuestion(){
- generateQuestion();
+/* ===============================
+   START
+================================*/
+let canvas,ctx,loopId;
+let stick={x:150,y:260,vy:0,jump:false};
+let obstacles=[];
+
+function start(){
+ s.score=0;s.life=3;s.level=1;s.combo=0;
+ render();
+}
+
+function render(){
+ s.boss = (s.level%5===0);
+ if(s.boss) s.bossHP=10+s.level*2;
 
  gameArea.innerHTML=`
  <canvas id="cv" width="900" height="350"></canvas>
- <div class="question">${state.question.text}</div>
- <div class="answers" id="answers"></div>
+ ${s.boss?`<div class="bossbar"><div class="bossfill" id="bossfill"></div></div>`:""}
+ <div class="question" id="q"></div>
+ <div class="answers" id="ans"></div>
  `;
 
  canvas=cv;
  ctx=canvas.getContext("2d");
 
- drawLoop();
-
- const ans=document.getElementById("answers");
-
- state.question.options.forEach((o,i)=>{
-  const b=document.createElement("button");
-  b.className="btn";
-  b.innerText=o;
-  b.onclick=()=>checkAnswer(o,b);
-  ans.appendChild(b);
- });
-
+ newQuestion();
+ loop();
 }
 
-function generateQuestion(){
- let a=Math.floor(Math.random()*state.level*5)+1;
- let b=Math.floor(Math.random()*state.level*5)+1;
+/* ===============================
+   QUESTION
+================================*/
+function newQuestion(){
+ let a=Math.floor(Math.random()*10*s.level)+1;
+ let b=Math.floor(Math.random()*10)+1;
  let ans=a+b;
 
- let opts=[ans];
- while(opts.length<4){
-   let n=ans+Math.floor(Math.random()*10)-5;
-   if(!opts.includes(n)&&n>=0) opts.push(n);
+ q.textContent=`${a}+${b}=?`;
+
+ let arr=[ans];
+ while(arr.length<4){
+  let n=ans+Math.floor(Math.random()*10)-5;
+  if(!arr.includes(n)&&n>0)arr.push(n);
  }
+ arr.sort(()=>Math.random()-0.5);
 
- opts.sort(()=>Math.random()-0.5);
-
- state.question={
-  text:`${a} + ${b} = ?`,
-  answer:ans,
-  options:opts
- };
+ ans.innerHTML="";
+ arr.forEach((v,i)=>{
+   const b=document.createElement("button");
+   b.className="btn";
+   b.innerText=v;
+   b.onclick=()=>check(v);
+   ans.appendChild(b);
+ });
 }
 
-/* ======================
-   CANVAS STICKMAN LOOP
-======================*/
-
-function drawStick(){
- ctx.strokeStyle="#000";
- ctx.lineWidth=4;
-
- ctx.beginPath();
- ctx.arc(stick.x,stick.y-30,12,0,6.28);
- ctx.stroke();
-
- ctx.beginPath();
- ctx.moveTo(stick.x,stick.y-18);
- ctx.lineTo(stick.x,stick.y+10);
- ctx.stroke();
-
- const leg=Math.sin(stick.frame*0.3)*20;
-
- ctx.beginPath();
- ctx.moveTo(stick.x,stick.y+10);
- ctx.lineTo(stick.x-10,stick.y+30+leg);
- ctx.moveTo(stick.x,stick.y+10);
- ctx.lineTo(stick.x+10,stick.y+30-leg);
- ctx.stroke();
-}
-
-function drawLoop(){
+/* ===============================
+   GAME LOOP
+================================*/
+function loop(){
  ctx.clearRect(0,0,900,350);
 
- ctx.fillStyle="#90EE90";
- ctx.fillRect(0,310,900,40);
+ ctx.fillStyle="#334155";
+ ctx.fillRect(0,300,900,50);
 
- stick.frame++;
+ if(Math.random()<0.02) obstacles.push({x:900});
+
+ obstacles.forEach(o=>{
+  o.x-=6;
+  ctx.fillStyle="#ef4444";
+  ctx.fillRect(o.x,280,20,20);
+
+  if(o.x<170 && o.x>130 && !stick.jump){
+   hit();
+  }
+ });
+
+ obstacles=obstacles.filter(o=>o.x>-20);
 
  if(stick.jump){
-   stick.vy+=0.8;
-   stick.y+=stick.vy;
-   if(stick.y>=270){
-     stick.y=270;
-     stick.jump=false;
-     stick.vy=0;
-   }
+  stick.vy+=0.8;
+  stick.y+=stick.vy;
+  if(stick.y>=260){stick.y=260;stick.jump=false;}
  }
 
  drawStick();
- loopId=requestAnimationFrame(drawLoop);
+
+ loopId=requestAnimationFrame(loop);
 }
 
-/* ======================
-   GAME LOGIC
-======================*/
+function drawStick(){
+ ctx.font="30px serif";
+ let emoji="🙂";
+ if(s.skin==="ninja")emoji="🥷";
+ if(s.skin==="robot")emoji="🤖";
+ ctx.fillText(emoji,140,stick.y);
+}
 
-function checkAnswer(v,btn){
- if(v===state.question.answer){
-   btn.classList.add("correct");
-
-   state.combo++;
-   let mult=1+Math.floor(state.combo/3);
-
-   state.score+=100*mult;
-
-   stick.jump=true;
-   stick.vy=-14;
-
- }else{
-   btn.classList.add("wrong");
-   state.combo=0;
-   state.lives--;
+/* ===============================
+   LOGIC
+================================*/
+function jump(){
+ if(!stick.jump){
+  stick.jump=true;
+  stick.vy=-14;
+  beep(600);
  }
-
- updateStats();
-
- setTimeout(()=>{
-   if(state.lives<=0) gameOver();
-   else{
-     if(state.score>state.level*1500) state.level++;
-     renderQuestion();
-   }
- },700);
 }
 
+function hit(){
+ s.life--;
+ s.combo=0;
+ beep(200);
+ update();
+ if(s.life<=0) gameOver();
+}
+
+function check(v){
+ const ans=parseInt(q.textContent.split('+')[0]) + parseInt(q.textContent.split('+')[1]);
+ if(v===ans){
+  s.combo++;
+  s.score+=100*(1+s.combo*0.2);
+  beep(900);
+
+  if(s.boss){
+   s.bossHP--;
+   bossfill.style.width=(s.bossHP/20*100)+"%";
+   if(s.bossHP<=0){s.level++; render();}
+  }else{
+   s.level+=0.2;
+   jump();
+   newQuestion();
+  }
+
+ }else hit();
+
+ update();
+}
+
+function update(){
+ score.textContent=Math.floor(s.score);
+ life.textContent=s.life;
+ level.textContent=Math.floor(s.level);
+ combo.textContent=s.combo;
+}
+
+/* ===============================
+   GAME OVER
+================================*/
 function gameOver(){
  cancelAnimationFrame(loopId);
-
- if(state.score>state.high){
-  localStorage.setItem("highscore",state.score);
+ if(s.score>s.high){
+  localStorage.setItem("hi",Math.floor(s.score));
  }
-
- gameArea.innerHTML=`
- <div class="menu">
-   <h2>💀 GAME OVER</h2>
-   <h3>Score: ${state.score}</h3>
-   <button class="startBtn" onclick="showMenu()">Main Lagi</button>
- </div>`;
+ menu();
 }
 
-/* ======================
-   KEYBOARD CONTROL
-======================*/
-
+/* ===============================
+   KEYBOARD
+================================*/
 document.addEventListener("keydown",e=>{
- if(e.key==="p"||e.key==="Escape"){
-  state.paused=!state.paused;
-  pauseText.style.display=state.paused?"flex":"none";
-  if(state.paused) cancelAnimationFrame(loopId);
-  else drawLoop();
- }
-
+ if(e.code==="Space") jump();
  if(["1","2","3","4"].includes(e.key)){
-  const b=document.querySelectorAll(".btn")[parseInt(e.key)-1];
-  if(b) b.click();
+  document.querySelectorAll(".btn")[e.key-1]?.click();
  }
 });
 </script>
-
 </body>
 </html>
