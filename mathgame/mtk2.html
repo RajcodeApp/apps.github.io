@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Defender: Alien Attack 2.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <title>Stickman Math Dash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root {
-            --game-width: 800px;
-            --game-height: 600px;
-            --enemy-size: 80px;
-            --cannon-height: 120px;
+            --game-width: 900px;
+            --game-height: 550px;
+            --ground-height: 80px;
+            --stickman-size: 100px;
+            --obstacle-width: 100px;
+            --obstacle-height: 150px;
         }
 
         body {
@@ -20,310 +22,36 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #0a0a2e; /* Dark space background */
+            background: linear-gradient(to bottom, #2c3e50, #1a242f); /* Dark gradient space-like */
             font-family: 'Open Sans', sans-serif;
             color: white;
             overflow: hidden;
         }
 
-        #game-wrapper {
+        #game-container {
             position: relative;
             width: var(--game-width);
             height: var(--game-height);
-            background: url('https://i.imgur.com/G5gJgXQ.png') no-repeat center center / cover; /* Starry background - Replace with your own if needed */
-            border: 8px solid #00d4ff;
+            background: url('https://i.imgur.com/k9b6N8t.png') repeat-x bottom center; /* Darker ground texture */
+            background-size: auto var(--ground-height);
+            border: 8px solid #3498db;
             border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.7);
-            overflow: hidden; /* Crucial for keeping enemies inside */
-        }
-
-        #game-start-screen, #game-over-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        #game-start-screen h1, #game-over-screen h1 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 4rem;
-            color: #ffde00;
-            text-shadow: 4px 4px #e040fb;
-            margin-bottom: 20px;
-        }
-        #game-over-screen h2 {
-            font-size: 2.5rem;
-            color: #ff69b4;
-            margin-top: 15px;
-        }
-
-        .btn {
-            padding: 18px 50px;
-            font-size: 1.8rem;
-            font-family: 'Fredoka One', cursive;
-            background: linear-gradient(145deg, #4CAF50, #8BC34A);
-            border: 4px solid #66bb6a;
-            border-radius: 50px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
-        }
-        .btn.red {
-            background: linear-gradient(145deg, #f44336, #ef9a9a);
-            border-color: #e57373;
-        }
-
-        #game-ui {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 50; /* Above enemies */
-        }
-
-        #top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 2px solid #00d4ff;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-        }
-        .stat-item {
-            display: flex;
-            align-items: center;
-        }
-        .stat-item img {
-            width: 30px;
-            height: 30px;
-            margin-right: 8px;
-        }
-        #title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2.2rem;
-            color: #ffde00;
-            text-shadow: 3px 3px #e040fb;
-        }
-        #lives-display {
-            display: flex;
-            align-items: center;
-        }
-        .heart {
-            width: 35px;
-            height: 35px;
-            background: url('https://i.imgur.com/vH9j21M.png') no-repeat center center / contain; /* Heart icon - Replace with your own if needed */
-            margin-left: 5px;
-        }
-
-        #game-area {
-            position: relative;
-            width: 100%;
-            height: calc(100% - var(--cannon-height) - 70px); /* Adjust based on top bar & cannon height */
+            box-shadow: 0 0 30px rgba(52, 152, 219, 0.7);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
         }
 
-        /* ENEMIES / METEORS */
-        .enemy {
+        /* Starry background */
+        #star-bg {
             position: absolute;
-            width: var(--enemy-size);
-            height: var(--enemy-size);
-            background-image: url('https://i.imgur.com/z4bY3R0.png'); /* Generic alien/meteor image - Replace with your own if needed */
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            top: -100px; /* Start above screen */
-            left: var(--random-x); /* Set by JS */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.6rem;
-            color: white;
-            text-shadow: 2px 2px #000;
-            border-radius: 50%; /* For meteor shape */
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            transition: transform 0.1s linear; /* Smooth movement */
-            z-index: 20; /* Below UI, above background */
-        }
-        .enemy.variant1 { background-image: url('https://i.imgur.com/JjK2X8m.png'); /* Alien 1 */ }
-        .enemy.variant2 { background-image: url('https://i.imgur.com/nJg7v1K.png'); /* Alien 2 */ }
-        .enemy.variant3 { background-image: url('https://i.imgur.com/r3xY8sW.png'); /* Alien 3 */ }
-
-        .enemy-problem {
-            position: absolute;
-            top: -15px; /* Position above enemy image */
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #fff;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.9em;
-            white-space: nowrap;
-        }
-
-
-        /* CANNON AND INPUT AREA */
-        #earth-defense {
-            position: absolute;
-            bottom: 0;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: var(--cannon-height);
-            background: url('https://i.imgur.com/f9V7Z3I.png') no-repeat center bottom / contain; /* Earth base image - Replace if needed */
-            z-index: 60;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Push cannon up */
-            padding-top: 20px; /* Space for cannon to sit */
+            height: calc(100% - var(--ground-height));
+            background: url('https://i.imgur.com/XqT7hXm.png') repeat; /* Subtle star pattern */
+            opacity: 0.8;
+            z-index: 1;
         }
 
-        #cannon {
-            width: 100px;
-            height: 100px;
-            background: url('https://i.imgur.com/t5tB07D.png') no-repeat center bottom / contain; /* Cannon image - Replace if needed */
-            position: absolute;
-            bottom: 60px; /* Adjust to sit on earth base */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 70;
-        }
-
-
-        #input-panel {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: 2px solid #00d4ff;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-            z-index: 80;
-        }
-
-        #answer-input {
-            width: 120px;
-            padding: 12px 15px;
-            font-size: 2rem;
-            font-family: 'Fredoka One', cursive;
-            border-radius: 10px;
-            border: 3px solid #ffde00;
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            outline: none;
-            box-shadow: inset 0 0 8px rgba(0, 212, 255, 0.5);
-        }
-        #answer-input:focus {
-            border-color: #e040fb;
-        }
-
-        #shoot-btn {
-            padding: 12px 25px;
-            font-size: 1.8rem;
-            font-family: 'Fredoka One', cursive;
-            background: linear-gradient(145deg, #00d4ff, #8e2de2);
-            border: 3px solid #6a00f0;
-            border-radius: 10px;
-            cursor: pointer;
-            color: white;
-            text-transform: uppercase;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s ease;
-        }
-        #shoot-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 12px rgba(0, 0, 0, 0.4);
-        }
-        #shoot-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #feedback-message {
-            position: absolute;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            font-family: 'Fredoka One', cursive;
-            padding: 8px 15px;
-            border-radius: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            white-space: nowrap;
-            z-index: 90;
-        }
-        #feedback-message.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-10px);
-        }
-        #feedback-message.correct {
-            background: #4CAF50;
-            color: white;
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
-        }
-        #feedback-message.wrong {
-            background: #f44336;
-            color: white;
-            box-shadow: 0 0 10px rgba(244, 67, 54, 0.7);
-        }
-
-        /* Projectile */
-        .projectile {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: url('https://i.imgur.com/eK1sS2K.png') no-repeat center center / contain; /* Projectile image */
-            bottom: var(--cannon-height); /* Start from cannon */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
-            pointer-events: none; /* Don't block clicks */
-        }
-
-        /* Explosion effect */
-        .explosion {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: url('https://i.imgur.com/eK1sS2K.png') no-repeat center center / contain; /* Explosion image - using projectile as placeholder for now */
-            animation: explode 0.5s forwards;
-            z-index: 45;
-            pointer-events: none;
-        }
-        @keyframes explode {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        /* Starry background animation */
         .star {
             position: absolute;
             background: white;
@@ -335,90 +63,304 @@
             0% { opacity: 0.3; }
             100% { opacity: 0.8; }
         }
+
+        #game-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-bottom: 2px solid #3498db;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .ui-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ui-item img {
+            width: 25px;
+            height: 25px;
+        }
+
+        #game-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            z-index: 50;
+        }
+
+        /* Stickman */
+        #stickman {
+            position: absolute;
+            bottom: var(--ground-height);
+            left: 50px; /* Starting position */
+            width: var(--stickman-size);
+            height: var(--stickman-size);
+            background: url('https://i.imgur.com/N52h0G3.png') no-repeat center center / contain; /* Stickman idle */
+            transition: left 0.5s ease-out; /* Smooth movement when passing obstacle */
+            z-index: 60;
+            image-rendering: pixelated; /* For crisp pixel art */
+        }
+        #stickman.running {
+            animation: runAnimation 0.6s steps(6) infinite;
+            background: url('https://i.imgur.com/3ZgC29B.png') no-repeat center center / cover; /* Stickman running sprite sheet */
+        }
+
+        @keyframes runAnimation {
+            from { background-position: 0px; }
+            to { background-position: -600px; } /* 6 frames * 100px width per frame */
+        }
+
+        /* Obstacle */
+        .obstacle {
+            position: absolute;
+            bottom: var(--ground-height);
+            right: -200px; /* Start off-screen */
+            width: var(--obstacle-width);
+            height: var(--obstacle-height);
+            background: url('https://i.imgur.com/f0mX8bI.png') no-repeat center bottom / contain; /* Obstacle image */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: right linear;
+            z-index: 55;
+            flex-direction: column;
+        }
+        .obstacle-problem {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: #ffde00;
+            text-shadow: 2px 2px #e040fb;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 15px;
+            border-radius: 10px;
+            border: 2px solid #ffde00;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .obstacle-feedback {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            margin-top: 5px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .obstacle-feedback.correct {
+            background: #4CAF50;
+            color: white;
+        }
+        .obstacle-feedback.wrong {
+            background: #f44336;
+            color: white;
+        }
+        .obstacle-feedback.show {
+            opacity: 1;
+        }
+
+        /* Input & Controls */
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 3px solid #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            z-index: 110;
+        }
+        #answer-input {
+            width: 150px;
+            padding: 15px 20px;
+            font-size: 2.2rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 15px;
+            border: 3px solid #ffde00;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            outline: none;
+            box-shadow: inset 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        #answer-input:focus {
+            border-color: #e040fb;
+        }
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.8rem;
+            font-family: 'Fredoka One', cursive;
+            background: linear-gradient(145deg, #27ae60, #2ecc71);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 12px rgba(0, 0, 0, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Game Over / Start Screen */
+        #start-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 120;
+        }
+        #start-screen h1, #game-over-screen h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 3rem;
+            color: #ffde00;
+            text-shadow: 4px 4px #e040fb;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        #game-over-screen h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: #ff69b4;
+            margin-top: 15px;
+        }
+        .btn-start {
+            background: linear-gradient(145deg, #3498db, #2980b9);
+            border-color: #217dbb;
+            padding: 20px 60px;
+        }
+        .btn-restart {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border-color: #b02e21;
+        }
+
+        /* Progress Bar */
+        #progress-bar-container {
+            position: absolute;
+            top: 70px; /* Below UI bar */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            overflow: hidden;
+            z-index: 90;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            border-radius: 8px;
+            transition: width 0.3s ease-out;
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-wrapper">
-        <div id="star-field"></div>
+    <div id="game-container">
+        <div id="star-bg"></div>
 
-        <div id="game-start-screen">
-            <h1>Math Defender: Alien Attack!</h1>
-            <button class="btn" onclick="startGame()">Mulai Misi Penyelamatan!</button>
+        <div id="game-ui">
+            <div class="ui-item">
+                <img src="https://i.imgur.com/eK1sS2K.png" alt="Score Icon">
+                <span>SCORE: <span id="score">0</span></span>
+            </div>
+            <div class="ui-item">
+                <img src="https://i.imgur.com/vH9j21M.png" alt="Health Icon">
+                <span>HEALTH: <span id="health">3</span></span>
+            </div>
+        </div>
+
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <div id="game-screen">
+            <div id="stickman"></div>
+            </div>
+
+        <div id="controls">
+            <input type="number" id="answer-input" placeholder="Answer..." autocomplete="off">
+            <button class="btn" id="submit-btn" onclick="checkAnswer()">Jawab!</button>
+        </div>
+
+        <div id="start-screen">
+            <h1>Stickman Math Dash!</h1>
+            <button class="btn btn-start" onclick="startGame()">Mulai Petualangan!</button>
         </div>
 
         <div id="game-over-screen" style="display:none;">
             <h1>Game Over!</h1>
             <h2>Skor Akhir: <span id="final-score">0</span></h2>
-            <button class="btn red" onclick="restartGame()">Mulai Lagi</button>
+            <button class="btn btn-restart" onclick="restartGame()">Main Lagi</button>
         </div>
 
-        <div id="game-ui">
-            <div id="top-bar">
-                <div class="stat-item">
-                    <img src="https://i.imgur.com/eK1sS2K.png" alt="Score Icon">
-                    <span>SKOR: <span id="score">0</span></span>
-                </div>
-                <div id="title">SELAMATKAN BUMI!</div>
-                <div class="stat-item" id="lives-display">
-                    <span>NYAWA:</span>
-                    <div class="heart"></div>
-                    <div class="heart"></div>
-                    <div class="heart"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="game-area">
-            </div>
-
-        <div id="earth-defense">
-            <div id="cannon"></div>
-        </div>
-
-        <div id="input-panel">
-            <input type="number" id="answer-input" placeholder="Jawaban..." autocomplete="off">
-            <button id="shoot-btn" onclick="checkAnswer()">TEMBAK!</button>
-        </div>
-
-        <div id="feedback-message"></div>
     </div>
 
     <script>
         // Game State Variables
         let score = 0;
-        let lives = 3;
-        let enemies = []; // Array untuk menyimpan semua musuh aktif
-        let gameInterval;
-        let enemySpawnInterval;
-        let enemySpeed = 1; // Kecepatan awal musuh
-        let maxEnemySpeed = 5; // Kecepatan maksimal musuh
-        let enemySpawnRate = 2000; // Waktu tunggu sebelum musuh baru muncul (ms)
-        let minSpawnRate = 800; // Spawn rate tercepat
+        let health = 3;
+        let currentObstacle = null;
+        let gameActive = false;
         let level = 1;
+        let distanceCovered = 0;
+        const totalDistance = 500; // Jarak total untuk satu putaran/level
 
         // DOM Elements
-        const gameWrapper = document.getElementById('game-wrapper');
-        const startScreen = document.getElementById('game-start-screen');
+        const gameContainer = document.getElementById('game-container');
+        const scoreDisplay = document.getElementById('score');
+        const healthDisplay = document.getElementById('health');
+        const stickman = document.getElementById('stickman');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const startScreen = document.getElementById('start-screen');
         const gameOverScreen = document.getElementById('game-over-screen');
         const finalScoreDisplay = document.getElementById('final-score');
-        const scoreDisplay = document.getElementById('score');
-        const livesDisplay = document.getElementById('lives-display');
-        const gameArea = document.getElementById('game-area');
-        const answerInput = document.getElementById('answer-input');
-        const shootBtn = document.getElementById('shoot-btn');
-        const feedbackMessage = document.getElementById('feedback-message');
-        const cannon = document.getElementById('cannon');
+        const gameScreen = document.getElementById('game-screen');
+        const progressBar = document.getElementById('progress-bar');
+        const starBg = document.getElementById('star-bg');
 
-        // Sounds (Optional - add actual audio files if desired)
-        // const shootSound = new Audio('shoot.wav');
-        // const hitSound = new Audio('hit.wav');
-        // const missSound = new Audio('miss.wav');
-        // const gameOverSound = new Audio('gameover.wav');
+        // Game Configuration
+        const obstacleSpeed = 2; // Kecepatan rintangan bergerak ke kiri
+        const obstacleSpawnInterval = 3000; // Waktu tunggu antar rintangan (ms)
+        let obstacleTimer;
 
         // --- Game Initialization ---
         function createStars() {
-            const starField = document.getElementById('star-field');
             for (let i = 0; i < 50; i++) {
                 let star = document.createElement('div');
                 star.className = 'star';
@@ -428,29 +370,31 @@
                 star.style.top = Math.random() * 100 + '%';
                 star.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 star.style.animationDelay = (Math.random() * 2) + 's';
-                starField.appendChild(star);
+                starBg.appendChild(star);
             }
         }
-        createStars(); // Buat bintang-bintang saat halaman dimuat
+        createStars();
 
         function startGame() {
+            score = 0;
+            health = 3;
+            level = 1;
+            distanceCovered = 0;
+            gameActive = true;
+            currentObstacle = null;
+
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
-            score = 0;
-            lives = 3;
-            level = 1;
-            enemySpeed = 1;
-            enemySpawnRate = 2000;
-            enemies = [];
-            gameArea.innerHTML = ''; // Bersihkan musuh yang mungkin tersisa
-            updateUI();
-
+            gameScreen.innerHTML = ''; // Clear existing obstacles
+            stickman.style.left = '50px'; // Reset stickman position
+            stickman.classList.add('running'); // Start running animation
             answerInput.value = '';
             answerInput.focus();
-            
-            // Start game loop
-            gameInterval = setInterval(gameLoop, 20); // Update every 20ms
-            enemySpawnInterval = setInterval(spawnEnemy, enemySpawnRate);
+
+            updateUI();
+            spawnObstacle();
+            obstacleTimer = setInterval(spawnObstacle, obstacleSpawnInterval);
+            requestAnimationFrame(gameLoop); // Start the main game loop
         }
 
         function restartGame() {
@@ -459,105 +403,90 @@
 
         function updateUI() {
             scoreDisplay.innerText = score;
-            livesDisplay.innerHTML = '';
-            for (let i = 0; i < lives; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                livesDisplay.appendChild(heart);
-            }
-            // Update problem, but problems are tied to enemies now
+            healthDisplay.innerText = health;
+            progressBar.style.width = `${(distanceCovered / totalDistance) * 100}%`;
         }
 
-        // --- Enemy Logic ---
-        function spawnEnemy() {
-            const enemy = document.createElement('div');
-            enemy.className = 'enemy';
-            enemy.style.left = `${Math.random() * (gameWrapper.offsetWidth - 80)}px`; // Random X position
-            enemy.dataset.y = -80; // Start off-screen
-            enemy.style.transform = `translateY(${enemy.dataset.y}px)`;
+        // --- Obstacle Logic ---
+        function generateProblem() {
+            let n1, n2, op, correctAnswer, problemText;
+            const operators = ['+', '-', '*']; // Add multiplication
 
-            // Random enemy variant for visual diversity
-            const variant = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
-            enemy.classList.add(`variant${variant}`);
+            // Adjust range of numbers based on level
+            const maxNum = 5 + (level * 2); 
+            n1 = Math.floor(Math.random() * maxNum) + 1;
+            n2 = Math.floor(Math.random() * maxNum) + 1;
 
-            // Generate Math Problem
-            let n1 = Math.floor(Math.random() * (5 * level)) + 1; // Max number increases with level
-            let n2 = Math.floor(Math.random() * (5 * level)) + 1;
-            let operators = ['+', '-'];
-            if (level > 2) operators.push('*'); // Add multiplication after level 2
-            if (level > 4) operators.push('/'); // Add division after level 4
-
-            let op = operators[Math.floor(Math.random() * operators.length)];
-            let problemText;
-            let correctAnswer;
+            op = operators[Math.floor(Math.random() * operators.length)];
 
             if (op === '-') {
-                if (n1 < n2) [n1, n2] = [n2, n1]; // Ensure positive result for subtraction
+                if (n1 < n2) [n1, n2] = [n2, n1]; // Ensure positive result
                 correctAnswer = n1 - n2;
             } else if (op === '*') {
                 correctAnswer = n1 * n2;
-            } else if (op === '/') {
-                // Ensure whole number division
-                n1 = n1 * n2; // Make n1 a multiple of n2
-                correctAnswer = n1 / n2;
-            } else { // Addition
+            } else { // '+'
                 correctAnswer = n1 + n2;
             }
             problemText = `${n1} ${op} ${n2}`;
+            return { problemText, correctAnswer };
+        }
 
-            enemy.dataset.answer = correctAnswer;
-            enemy.innerHTML = `<span class="enemy-problem">${problemText}</span>`;
-            
-            gameArea.appendChild(enemy);
-            enemies.push(enemy);
+        function spawnObstacle() {
+            if (!gameActive) return;
+
+            // Remove previous obstacle if exists
+            if (currentObstacle && currentObstacle.parentNode) {
+                 // Only remove if it's still in the DOM and not cleared by correct answer
+                if (currentObstacle.dataset.passed === "false") {
+                    loseHealth();
+                }
+                currentObstacle.remove();
+            }
+
+            const { problemText, correctAnswer } = generateProblem();
+
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            obstacle.dataset.answer = correctAnswer;
+            obstacle.dataset.x = gameContainer.offsetWidth; // Start off-screen right
+            obstacle.dataset.passed = "false"; // Flag to check if passed correctly
+            obstacle.style.right = '0px'; // Initial CSS right position
+
+            obstacle.innerHTML = `
+                <div class="obstacle-problem">${problemText}</div>
+                <div class="obstacle-feedback"></div>
+            `;
+            gameScreen.appendChild(obstacle);
+            currentObstacle = obstacle;
+            answerInput.focus();
         }
 
         function gameLoop() {
-            // Move enemies
-            enemies.forEach((enemy, index) => {
-                let currentY = parseFloat(enemy.dataset.y);
-                currentY += enemySpeed;
-                enemy.dataset.y = currentY;
-                enemy.style.transform = `translateY(${currentY}px)`;
+            if (!gameActive) return;
 
-                // Check if enemy reached the bottom
-                if (currentY > gameWrapper.offsetHeight - cannon.offsetHeight - 50) { // Adjust threshold
-                    loseLife();
-                    enemy.remove();
-                    enemies.splice(index, 1); // Remove from array
+            // Move current obstacle
+            if (currentObstacle) {
+                let currentX = parseFloat(currentObstacle.dataset.x);
+                currentX -= obstacleSpeed; // Move left
+                currentObstacle.dataset.x = currentX;
+                currentObstacle.style.right = `${gameContainer.offsetWidth - currentX - currentObstacle.offsetWidth}px`;
+
+                // Check if obstacle passed Stickman (left side of obstacle <= stickman's right side)
+                const stickmanRight = stickman.offsetLeft + stickman.offsetWidth;
+                const obstacleLeft = gameContainer.offsetWidth - parseFloat(currentObstacle.style.right) - currentObstacle.offsetWidth;
+
+                if (obstacleLeft <= stickmanRight && currentObstacle.dataset.passed === "false") {
+                    // Stickman hit obstacle without answering
+                    loseHealth();
+                    currentObstacle.dataset.passed = "true"; // Mark as passed to avoid multiple hits
+                    // Optional: Make obstacle disappear faster or change its look
                 }
-            });
-
-            // Adjust difficulty
-            if (score > 0 && score % 100 === 0 && level < 10) { // Increase difficulty every 100 points
-                level++;
-                enemySpeed = Math.min(maxEnemySpeed, enemySpeed + 0.5); // Increase speed
-                enemySpawnRate = Math.max(minSpawnRate, enemySpawnRate - 100); // Increase spawn rate
-                clearInterval(enemySpawnInterval);
-                enemySpawnInterval = setInterval(spawnEnemy, enemySpawnRate);
-                console.log(`Level Up! Level: ${level}, Speed: ${enemySpeed}, Spawn Rate: ${enemySpawnRate}`);
             }
+
+            requestAnimationFrame(gameLoop);
         }
 
-        function loseLife() {
-            lives--;
-            updateUI();
-            showFeedback("Satu Alien Berhasil Melewati Pertahanan!", 'wrong');
-            // playSound(missSound); // Uncomment if using sounds
-            if (lives <= 0) {
-                endGame();
-            }
-        }
-
-        function endGame() {
-            clearInterval(gameInterval);
-            clearInterval(enemySpawnInterval);
-            gameOverScreen.style.display = 'flex';
-            finalScoreDisplay.innerText = score;
-            // playSound(gameOverSound); // Uncomment if using sounds
-        }
-
-        // --- Interaction Logic ---
+        // --- Player Interaction ---
         answerInput.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
                 checkAnswer();
@@ -565,107 +494,78 @@
         });
 
         function checkAnswer() {
+            if (!gameActive || !currentObstacle) return;
+
             const userAnswer = parseInt(answerInput.value);
             answerInput.value = '';
             answerInput.focus();
 
+            const feedbackEl = currentObstacle.querySelector('.obstacle-feedback');
+
             if (isNaN(userAnswer)) {
-                showFeedback("Masukkan Angka, Jagoan!", 'wrong');
+                feedbackEl.innerText = "Angka Dong!";
+                feedbackEl.className = 'obstacle-feedback wrong show';
+                setTimeout(() => feedbackEl.classList.remove('show'), 800);
                 return;
             }
 
-            let foundTarget = false;
-            // Find the lowest enemy that matches the answer
-            for (let i = 0; i < enemies.length; i++) {
-                const enemy = enemies[i];
-                if (parseInt(enemy.dataset.answer) === userAnswer) {
-                    // Create projectile animation
-                    createProjectile(enemy.offsetLeft + enemy.offsetWidth / 2, enemy.offsetTop + enemy.offsetHeight / 2);
-
-                    // Explosion effect
-                    createExplosion(enemy.offsetLeft + enemy.offsetWidth / 2, enemy.offsetTop + enemy.offsetHeight / 2);
-                    
-                    enemy.remove();
-                    enemies.splice(i, 1);
-                    score += 10;
-                    updateUI();
-                    showFeedback("BOOM! Tepat sasaran! 🚀", 'correct');
-                    // playSound(hitSound); // Uncomment if using sounds
-                    foundTarget = true;
-                    break; // Only hit one enemy per shot
-                }
+            if (userAnswer === parseInt(currentObstacle.dataset.answer)) {
+                // Correct Answer!
+                score += 10;
+                distanceCovered++;
+                feedbackEl.innerText = "BENAR!";
+                feedbackEl.className = 'obstacle-feedback correct show';
+                currentObstacle.dataset.passed = "true"; // Mark as correctly passed
+                passObstacle();
+            } else {
+                // Wrong Answer
+                feedbackEl.innerText = "SALAH!";
+                feedbackEl.className = 'obstacle-feedback wrong show';
+                loseHealth();
             }
-
-            if (!foundTarget) {
-                // If no enemy matches the answer, or if there are no enemies
-                showFeedback("Tembakan Melenceng! Coba Lagi! 💥", 'wrong');
-                // playSound(missSound); // Uncomment if using sounds
-            }
+            updateUI();
         }
 
-        function showFeedback(message, type) {
-            feedbackMessage.innerText = message;
-            feedbackMessage.className = `show ${type}`; // Add classes
+        function passObstacle() {
+            // Smoothly move stickman forward past the obstacle
+            const currentStickmanLeft = parseFloat(stickman.style.left);
+            stickman.style.left = `${currentStickmanLeft + 150}px`; // Move stickman a bit more to simulate passing
+
+            // Optional: Remove obstacle after a slight delay or animation
             setTimeout(() => {
-                feedbackMessage.classList.remove('show');
-            }, 1000); // Hide after 1 second
-        }
-
-        function createProjectile(targetX, targetY) {
-            const projectile = document.createElement('div');
-            projectile.className = 'projectile';
-            gameWrapper.appendChild(projectile);
-
-            const startX = gameWrapper.offsetWidth / 2;
-            const startY = gameWrapper.offsetHeight - cannon.offsetHeight; // From top of cannon
-
-            projectile.style.left = `${startX - projectile.offsetWidth / 2}px`;
-            projectile.style.top = `${startY - projectile.offsetHeight / 2}px`;
-
-            // Animate projectile
-            const animationDuration = 300; // ms
-            const startTime = performance.now();
-
-            function animateProjectile(currentTime) {
-                const elapsedTime = currentTime - startTime;
-                const progress = Math.min(elapsedTime / animationDuration, 1);
-
-                const currentX = startX + (targetX - startX) * progress;
-                const currentY = startY + (targetY - startY) * progress;
-
-                projectile.style.left = `${currentX - projectile.offsetWidth / 2}px`;
-                projectile.style.top = `${currentY - projectile.offsetHeight / 2}px`;
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateProjectile);
-                } else {
-                    projectile.remove();
+                if (currentObstacle && currentObstacle.parentNode) {
+                    currentObstacle.remove();
+                    currentObstacle = null; // Reset currentObstacle
                 }
+            }, 500); // Give time for feedback to show
+            
+            // Re-spawn immediately for next challenge (instead of waiting for timer)
+            clearTimeout(obstacleTimer);
+            obstacleTimer = setInterval(spawnObstacle, obstacleSpawnInterval);
+            spawnObstacle(); // Spawn next obstacle
+        }
+
+
+        function loseHealth() {
+            health--;
+            updateUI();
+            // Add visual feedback for health loss (e.g., screen flash, stickman flinch)
+            if (health <= 0) {
+                endGame();
             }
-            requestAnimationFrame(animateProjectile);
-            // playSound(shootSound); // Uncomment if using sounds
         }
 
-        function createExplosion(x, y) {
-            const explosion = document.createElement('div');
-            explosion.className = 'explosion';
-            explosion.style.left = `${x - explosion.offsetWidth / 2}px`;
-            explosion.style.top = `${y - explosion.offsetHeight / 2}px`;
-            gameArea.appendChild(explosion);
-
-            explosion.addEventListener('animationend', () => {
-                explosion.remove();
-            });
+        function endGame() {
+            gameActive = false;
+            clearInterval(obstacleTimer);
+            stickman.classList.remove('running'); // Stop running animation
+            
+            gameOverScreen.style.display = 'flex';
+            finalScoreDisplay.innerText = score;
         }
 
-        // Function to play sound (if audio files are provided)
-        // function playSound(sound) {
-        //     if (sound) {
-        //         sound.currentTime = 0; // Reset sound to start
-        //         sound.play().catch(e => console.error("Error playing sound:", e));
-        //     }
-        // }
-
+        // --- Initial Setup ---
+        updateUI(); // Set initial score and health
     </script>
 </body>
 </html>
