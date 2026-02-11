@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stickman Math Dash - Ultra Fix</title>
+    <title>Stickman Math Dash - Slow & Fun</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --game-width: 800px;
-            --game-height: 450px;
+            --game-width: 850px;
+            --game-height: 480px;
             --ground-height: 60px;
         }
 
@@ -29,49 +29,49 @@
             width: var(--game-width);
             height: var(--game-height);
             background: linear-gradient(to bottom, #16213e, #0f3460);
-            border: 6px solid #e94560;
-            border-radius: 15px;
+            border: 6px solid #4db8ff;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 0 40px rgba(77, 184, 255, 0.3);
         }
 
-        /* Lansekap dan Tanah */
+        /* Tanah Rumput */
         #ground {
             position: absolute;
             bottom: 0;
             width: 100%;
             height: var(--ground-height);
             background: #27ae60;
-            border-top: 4px solid #2ecc71;
+            border-top: 6px solid #2ecc71;
             z-index: 10;
         }
 
-        /* Stickman Menggunakan Emoji (Anti-Error) */
+        /* Stickman Emoji */
         #stickman {
             position: absolute;
             bottom: var(--ground-height);
-            left: 80px;
-            font-size: 60px;
+            left: 100px;
+            font-size: 70px;
             z-index: 20;
-            transition: transform 0.2s;
+            transition: transform 0.2s, left 0.5s;
         }
 
         .running {
-            animation: run-bounce 0.4s infinite alternate;
+            animation: run-bounce 0.6s infinite alternate ease-in-out;
         }
 
         @keyframes run-bounce {
-            from { transform: translateY(0) rotate(-5deg); }
-            to { transform: translateY(-10px) rotate(5deg); }
+            from { transform: translateY(0) scale(1); }
+            to { transform: translateY(-15px) scale(0.95); }
         }
 
-        /* Rintangan Monster */
+        /* Rintangan Monster Pelan */
         .obstacle {
             position: absolute;
             bottom: var(--ground-height);
-            right: -100px;
-            width: 120px;
-            height: 150px;
+            right: -120px;
+            width: 140px;
+            height: 160px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -80,74 +80,82 @@
         }
 
         .monster-box {
-            background: #e94560;
+            background: #f39c12; /* Warna orange agar lebih ceria */
             border: 4px solid #fff;
-            border-radius: 15px;
-            padding: 10px;
+            border-radius: 20px;
+            padding: 12px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 0 #d35400;
         }
 
         .problem-text {
-            font-size: 28px;
+            font-size: 32px;
             color: white;
             margin: 0;
             text-shadow: 2px 2px #000;
         }
 
         .monster-emoji {
-            font-size: 40px;
-            margin-bottom: -10px;
+            font-size: 50px;
+            filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
         }
 
         /* UI Panel */
         #ui {
             position: absolute;
-            top: 20px;
+            top: 25px;
             width: 100%;
             display: flex;
             justify-content: space-around;
             z-index: 100;
             font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-size: 16px;
+            text-shadow: 2px 2px #000;
         }
 
         #input-area {
             position: absolute;
-            bottom: 80px;
+            bottom: 85px;
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             z-index: 100;
         }
 
         input {
-            width: 100px;
-            padding: 10px;
-            font-size: 24px;
-            border-radius: 10px;
-            border: none;
+            width: 120px;
+            padding: 12px;
+            font-size: 28px;
+            border-radius: 15px;
+            border: 4px solid #4db8ff;
             text-align: center;
             font-family: 'Fredoka One';
+            outline: none;
         }
 
         button {
-            padding: 10px 20px;
-            background: #e94560;
+            padding: 10px 25px;
+            background: #2ecc71;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             font-family: 'Fredoka One';
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
+            box-shadow: 0 5px 0 #27ae60;
         }
 
-        /* Screens */
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #27ae60;
+        }
+
+        /* Layout Tambahan */
         .screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 26, 46, 0.9);
+            background: rgba(15, 52, 96, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -176,9 +184,9 @@
         </div>
 
         <div id="start-screen" class="screen">
-            <h1 style="font-size: 48px; color: #e94560;">STICKMAN MATH</h1>
-            <p>Jawab soal di monster sebelum mereka menabrakmu!</p>
-            <button onclick="startGame()" style="font-size: 30px; padding: 20px 40px;">MULAI GAME</button>
+            <h1 style="font-size: 40px; color: #4db8ff; margin-bottom: 10px;">STICKMAN DASH</h1>
+            <p style="font-size: 20px;">Mode Santai: Hitung Pelan-pelan!</p>
+            <button onclick="startGame()" style="font-size: 28px; padding: 15px 50px;">MULAI</button>
         </div>
 
         <div id="game-over" class="screen hide">
@@ -193,7 +201,7 @@
     let health = 3;
     let gameActive = false;
     let currentAns = null;
-    let obstacleTimer;
+    let monsterEmoji = ["👾", "🤖", "👻", "👽"];
 
     const gameArea = document.getElementById('game-area');
     const stickman = document.getElementById('stickman');
@@ -213,17 +221,19 @@
     function spawnObstacle() {
         if (!gameActive) return;
 
-        // Bersihkan monster lama jika ada
         gameArea.innerHTML = '';
-
+        
+        // Angka acak (1-10)
         const n1 = Math.floor(Math.random() * 10) + 1;
         const n2 = Math.floor(Math.random() * 10) + 1;
         currentAns = n1 + n2;
 
+        const randomEmoji = monsterEmoji[Math.floor(Math.random() * monsterEmoji.length)];
+
         const obs = document.createElement('div');
         obs.className = 'obstacle';
         obs.innerHTML = `
-            <div class="monster-emoji">👾</div>
+            <div class="monster-emoji">${randomEmoji}</div>
             <div class="monster-box">
                 <p class="problem-text">${n1} + ${n2}</p>
             </div>
@@ -231,16 +241,17 @@
         
         gameArea.appendChild(obs);
 
-        // Animasi Monster mendekat
-        let pos = -100;
+        let pos = -120;
+        // KECEPATAN: Diatur ke 1.2 (sangat bersahabat untuk anak-anak)
         const moveInterval = setInterval(() => {
             if (!gameActive) { clearInterval(moveInterval); return; }
             
-            pos += 2 + (score / 50); // Makin lama makin cepat
+            // Pertambahan kecepatan yang sangat lambat
+            let currentSpeed = 1.2 + (score / 200); 
+            pos += currentSpeed; 
             obs.style.right = pos + 'px';
 
-            // Jika menabrak stickman (posisi kanan layar - rintangan)
-            if (pos > 600) {
+            if (pos > 650) { // Jarak tempuh monster diperpanjang
                 clearInterval(moveInterval);
                 hurtPlayer();
             }
@@ -253,14 +264,19 @@
             score += 10;
             document.getElementById('score-val').innerText = score;
             inputField.value = '';
-            // Efek Stickman Lompat
-            stickman.style.transform = "translateY(-50px)";
-            setTimeout(() => stickman.style.transform = "translateY(0)", 200);
+            
+            // Efek lompat ceria
+            stickman.style.transform = "translateY(-80px) scale(1.1)";
+            setTimeout(() => {
+                stickman.style.transform = "translateY(0) scale(1)";
+            }, 300);
+
             spawnObstacle();
         } else {
             inputField.value = '';
-            inputField.style.background = "#ff4444";
-            setTimeout(() => inputField.style.background = "#fff", 200);
+            // Efek getar kalau salah
+            inputField.style.borderColor = "#ff4444";
+            setTimeout(() => inputField.style.borderColor = "#4db8ff", 300);
         }
         inputField.focus();
     }
@@ -269,7 +285,7 @@
         health--;
         let hearts = "";
         for(let i=0; i<health; i++) hearts += "❤️";
-        document.getElementById('hp-val').innerText = hearts || "MATI";
+        document.getElementById('hp-val').innerText = hearts || "Kalah";
 
         if (health <= 0) {
             gameOver();
@@ -285,7 +301,6 @@
         inputArea.classList.add('hide');
     }
 
-    // Support tombol Enter
     inputField.addEventListener("keyup", function(event) {
         if (event.key === "Enter") checkAnswer();
     });
