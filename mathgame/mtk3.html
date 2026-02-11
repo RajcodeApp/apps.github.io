@@ -1,557 +1,366 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Stickman Math Odyssey: Neon Run</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --p-dark: #0f172a;
-            --p-accent: #6366f1;
-            --p-secondary: #a855f7;
-            --p-neon: #22d3ee;
-            --p-danger: #f43f5e;
-            --p-success: #10b981;
-            --glass: rgba(15, 23, 42, 0.6);
-            --border-glass: rgba(255, 255, 255, 0.1);
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>⚡ Stickman Math Runner ULTRA</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #020617;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins, sans-serif;
+}
 
-        /* Animated Hyperdrive Background */
-        .bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
-        }
+body{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
 
-        .main-container {
-            width: 95%;
-            max-width: 1000px;
-            height: 90vh;
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--border-glass);
-            border-radius: 40px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 80px rgba(0,0,0,0.5);
-            overflow: hidden;
-            animation: container-entry 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+.card{
+  width:100%;
+  max-width:1100px;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(25px);
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.3);
+}
 
-        @keyframes container-entry {
-            from { opacity: 0; transform: scale(0.9) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
+header{
+  text-align:center;
+  padding:22px;
+  font-size:28px;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:1px;
+}
 
-        /* Top Bar Info */
-        .hud-top {
-            padding: 25px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid var(--border-glass);
-        }
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  padding:14px;
+}
 
-        .stat-group {
-            display: flex;
-            gap: 30px;
-        }
+.stat{
+  background:rgba(255,255,255,.2);
+  border-radius:14px;
+  text-align:center;
+  padding:8px;
+  color:white;
+  font-weight:600;
+}
 
-        .hud-item {
-            display: flex;
-            flex-direction: column;
-        }
+#gameArea{
+  background:#eaf4ff;
+  padding:20px;
+  min-height:550px;
+}
 
-        .hud-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--p-neon);
-            font-weight: 800;
-        }
+canvas{
+  background:linear-gradient(#8fd3ff,#d9f2ff);
+  border-radius:20px;
+  display:block;
+  margin:auto;
+}
 
-        .hud-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            font-variant-numeric: tabular-nums;
-        }
+.question{
+  margin-top:18px;
+  font-size:40px;
+  font-weight:800;
+  text-align:center;
+}
 
-        /* Game Stage */
-        #game-stage {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
+.answers{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:18px;
+}
 
-        canvas {
-            width: 100%;
-            height: 250px;
-            border-radius: 24px;
-            /* subtle neon glow for canvas */
-            box-shadow: inset 0 0 30px rgba(99, 102, 241, 0.2);
-        }
+.btn{
+  padding:20px;
+  font-size:24px;
+  font-weight:700;
+  border:none;
+  border-radius:18px;
+  cursor:pointer;
+  transition:.2s;
+}
 
-        /* Question Box */
-        .question-zone {
-            margin-top: -40px;
-            z-index: 10;
-            text-align: center;
-        }
+.btn:hover{ transform:scale(1.05); }
 
-        .math-card {
-            background: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            display: inline-block;
-            min-width: 300px;
-            backdrop-filter: blur(10px);
-        }
+.correct{ background:#10b981; color:white;}
+.wrong{ background:#ef4444; color:white;}
 
-        .math-text {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
+.menu{
+  text-align:center;
+  padding:60px;
+}
 
-        /* Answer Grid */
-        .answer-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 20px 40px 40px;
-        }
+.startBtn{
+  background:#6366f1;
+  color:white;
+  padding:18px 40px;
+  border:none;
+  border-radius:20px;
+  font-size:20px;
+  cursor:pointer;
+}
 
-        .ans-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-glass);
-            padding: 25px;
-            border-radius: 20px;
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ans-btn:hover {
-            background: var(--p-accent);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .ans-btn.correct { background: var(--p-success) !important; border-color: #fff; animation: bounce 0.5s; }
-        .ans-btn.wrong { background: var(--p-danger) !important; animation: shake 0.4s; }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* Menu Overlays */
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .title-large {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--p-accent), var(--p-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .mode-selector {
-            display: flex;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .mode-btn {
-            padding: 20px 40px;
-            background: white;
-            color: black;
-            border-radius: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            border: none;
-            font-size: 1.1rem;
-        }
-
-        .mode-btn:hover { transform: scale(1.05); background: var(--p-neon); }
-
-        .btn-restart {
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: var(--p-accent);
-            color: white;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-        }
-
-        /* Timer Bar */
-        .timer-wrap {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-
-        #timer-fill {
-            height: 100%;
-            width: 100%;
-            background: var(--p-neon);
-            box-shadow: 0 0 10px var(--p-neon);
-            transition: width 0.1s linear;
-        }
-
-        .combo-badge {
-            position: absolute;
-            right: 40px;
-            top: 100px;
-            background: var(--p-secondary);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 1.2rem;
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
-    </style>
+.pauseOverlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:40px;
+  font-weight:800;
+  display:none;
+}
+</style>
 </head>
+
 <body>
 
-    <canvas class="bg-canvas" id="bgCanvas"></canvas>
+<div class="card">
+<header>🏃 Stickman Math Runner ULTRA</header>
 
-    <div class="main-container">
-        <div class="hud-top">
-            <div class="stat-group">
-                <div class="hud-item">
-                    <span class="hud-label">Score</span>
-                    <span class="hud-value" id="score">0000</span>
-                </div>
-                <div class="hud-item">
-                    <span class="hud-label">Level</span>
-                    <span class="hud-value" id="level">01</span>
-                </div>
-            </div>
-            
-            <div class="hud-item" style="align-items: flex-end;">
-                <span class="hud-label">Life Core</span>
-                <div id="lives-container" style="font-size: 1.5rem; letter-spacing: 5px;">
-                    💎💎💎
-                </div>
-            </div>
-        </div>
+<div class="stats">
+<div class="stat">🏆 <span id="score">0</span></div>
+<div class="stat">❤️ <span id="lives">3</span></div>
+<div class="stat">⭐ <span id="level">1</span></div>
+<div class="stat">🔥 <span id="combo">0</span></div>
+<div class="stat">🏅 HI <span id="high">0</span></div>
+</div>
 
-        <div id="game-stage">
-            <canvas id="mainCanvas"></canvas>
-            
-            <div class="question-zone">
-                <div class="math-card">
-                    <div id="question-text" class="math-text">? + ?</div>
-                    <div style="color: var(--p-neon); font-weight: 700; letter-spacing: 1px;" id="mode-label">MULTIPLIER MODE</div>
-                </div>
-            </div>
+<div id="gameArea"></div>
+</div>
 
-            <div id="combo-container"></div>
-            
-            <div class="timer-wrap">
-                <div id="timer-fill"></div>
-            </div>
-        </div>
-
-        <div class="answer-grid" id="answer-grid">
-            </div>
-
-        <div id="menu-overlay" class="overlay">
-            <h1 class="title-large">NEON RUNNER</h1>
-            <p style="color: #94a3b8; font-size: 1.2rem;">Kuasai Matematika, Taklukkan Lintasan</p>
-            <div class="mode-selector">
-                <button class="mode-btn" onclick="startGame('easy')">EASY RUN</button>
-                <button class="mode-btn" onclick="startGame('hard')">PRO MODE</button>
-            </div>
-        </div>
-
-        <div id="gameover-overlay" class="overlay" style="display: none;">
-            <h1 class="title-large" style="background: var(--p-danger); -webkit-background-clip: text;">SYSTEM CRASH</h1>
-            <p id="final-score-text" style="font-size: 2rem; margin-bottom: 20px;">Score: 0</p>
-            <button class="btn-restart" onclick="location.reload()">REBOOT SYSTEM</button>
-        </div>
-    </div>
+<div class="pauseOverlay" id="pauseText">PAUSED</div>
 
 <script>
-    // --- Configuration & State ---
-    const state = {
-        score: 0,
-        level: 1,
-        lives: 3,
-        combo: 0,
-        timer: 100,
-        maxTime: 10,
-        isPlaying: false,
-        currentAns: 0,
-        difficulty: 'easy'
-    };
+/* =============================
+   ULTRA VERSION GAME ENGINE
+============================= */
 
-    const canvas = document.getElementById('mainCanvas');
-    const ctx = canvas.getContext('2d');
-    const bgCanvas = document.getElementById('bgCanvas');
-    const bgCtx = bgCanvas.getContext('2d');
+const state={
+ score:0,
+ lives:3,
+ level:1,
+ combo:0,
+ high:localStorage.getItem("highscore")||0,
+ question:null,
+ paused:false
+};
 
-    let animationId;
-    let timerInterval;
-    let runnerX = 100;
-    let frame = 0;
+const gameArea=document.getElementById("gameArea");
+document.getElementById("high").textContent=state.high;
 
-    // --- Background Stars ---
-    function initBg() {
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
-    }
-    window.onresize = initBg;
-    initBg();
+let canvas,ctx,loopId;
 
-    // --- Game Logic ---
-    function startGame(diff) {
-        state.difficulty = diff;
-        state.maxTime = diff === 'easy' ? 12 : 7;
-        document.getElementById('menu-overlay').style.display = 'none';
-        state.isPlaying = true;
-        nextQuestion();
-        animate();
-    }
+const stick={
+ x:140,y:270,vy:0,jump:false,frame:0
+};
 
-    function nextQuestion() {
-        const l = state.level;
-        let n1, n2, op;
-        
-        if (state.difficulty === 'easy') {
-            n1 = Math.floor(Math.random() * (10 + l));
-            n2 = Math.floor(Math.random() * (10 + l));
-            op = Math.random() > 0.5 ? '+' : '-';
-        } else {
-            n1 = Math.floor(Math.random() * (5 + l));
-            n2 = Math.floor(Math.random() * (5 + l));
-            op = '×';
-        }
+function updateStats(){
+ score.textContent=state.score;
+ lives.textContent=state.lives;
+ level.textContent=state.level;
+ combo.textContent=state.combo;
+}
 
-        if (op === '-' && n1 < n2) [n1, n2] = [n2, n1];
-        
-        state.currentAns = op === '+' ? n1 + n2 : op === '-' ? n1 - n2 : n1 * n2;
-        document.getElementById('question-text').innerText = `${n1} ${op} ${n2}`;
-        document.getElementById('mode-label').innerText = state.difficulty.toUpperCase() + " RUN";
-        
-        generateAnswers();
-        resetTimer();
-    }
+function showMenu(){
+ gameArea.innerHTML=`
+ <div class="menu">
+   <h2 style="margin-bottom:20px;">Siap Belajar Sambil Main?</h2>
+   <button class="startBtn" onclick="startGame()">🚀 START</button>
+ </div>`;
+}
 
-    function generateAnswers() {
-        let options = [state.currentAns];
-        while(options.length < 4) {
-            let offset = Math.floor(Math.random() * 10) + 1;
-            let wrong = Math.random() > 0.5 ? state.currentAns + offset : state.currentAns - offset;
-            if (wrong >= 0 && !options.includes(wrong)) options.push(wrong);
-        }
-        options.sort(() => Math.random() - 0.5);
+showMenu();
 
-        const grid = document.getElementById('answer-grid');
-        grid.innerHTML = '';
-        options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'ans-btn';
-            btn.innerHTML = `<span>${opt}</span>`;
-            btn.onclick = () => checkAnswer(opt, btn);
-            grid.appendChild(btn);
-        });
-    }
+function startGame(){
+ state.score=0;
+ state.lives=3;
+ state.level=1;
+ state.combo=0;
+ updateStats();
 
-    function checkAnswer(val, btn) {
-        if (!state.isPlaying) return;
+ renderQuestion();
+}
 
-        if (val === state.currentAns) {
-            btn.classList.add('correct');
-            state.score += 100 + (state.combo * 20);
-            state.combo++;
-            state.level = Math.floor(state.score / 500) + 1;
-            showCombo();
-            updateHUD();
-            setTimeout(nextQuestion, 400);
-        } else {
-            btn.classList.add('wrong');
-            takeDamage();
-        }
-    }
+function renderQuestion(){
+ generateQuestion();
 
-    function takeDamage() {
-        state.lives--;
-        state.combo = 0;
-        updateHUD();
-        
-        // Screen Shake
-        const stage = document.getElementById('game-stage');
-        stage.style.animation = 'shake 0.4s';
-        setTimeout(() => stage.style.animation = '', 400);
+ gameArea.innerHTML=`
+ <canvas id="cv" width="900" height="350"></canvas>
+ <div class="question">${state.question.text}</div>
+ <div class="answers" id="answers"></div>
+ `;
 
-        if (state.lives <= 0) {
-            endGame();
-        } else {
-            setTimeout(nextQuestion, 400);
-        }
-    }
+ canvas=cv;
+ ctx=canvas.getContext("2d");
 
-    function resetTimer() {
-        clearInterval(timerInterval);
-        state.timer = 100;
-        const bar = document.getElementById('timer-fill');
-        
-        timerInterval = setInterval(() => {
-            state.timer -= (100 / (state.maxTime * 10));
-            bar.style.width = state.timer + '%';
-            
-            if (state.timer <= 0) {
-                clearInterval(timerInterval);
-                takeDamage();
-            }
-        }, 100);
-    }
+ drawLoop();
 
-    function updateHUD() {
-        document.getElementById('score').innerText = state.score.toString().padStart(4, '0');
-        document.getElementById('level').innerText = state.level.toString().padStart(2, '0');
-        document.getElementById('lives-container').innerText = '💎'.repeat(state.lives);
-    }
+ const ans=document.getElementById("answers");
 
-    function showCombo() {
-        if (state.combo < 2) return;
-        const container = document.getElementById('combo-container');
-        container.innerHTML = `<div class="combo-badge">COMBO X${state.combo}</div>`;
-        setTimeout(() => container.innerHTML = '', 800);
-    }
+ state.question.options.forEach((o,i)=>{
+  const b=document.createElement("button");
+  b.className="btn";
+  b.innerText=o;
+  b.onclick=()=>checkAnswer(o,b);
+  ans.appendChild(b);
+ });
 
-    function endGame() {
-        state.isPlaying = false;
-        clearInterval(timerInterval);
-        document.getElementById('gameover-overlay').style.display = 'flex';
-        document.getElementById('final-score-text').innerText = `Final Score: ${state.score}`;
-    }
+}
 
-    // --- Animation & Graphics ---
-    function drawRunner(x, y, frame) {
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = state.combo > 5 ? varColor('--p-secondary') : varColor('--p-accent');
+function generateQuestion(){
+ let a=Math.floor(Math.random()*state.level*5)+1;
+ let b=Math.floor(Math.random()*state.level*5)+1;
+ let ans=a+b;
 
-        // Body movement
-        const bounce = Math.sin(frame * 0.2) * 5;
-        const swing = Math.sin(frame * 0.2) * 15;
+ let opts=[ans];
+ while(opts.length<4){
+   let n=ans+Math.floor(Math.random()*10)-5;
+   if(!opts.includes(n)&&n>=0) opts.push(n);
+ }
 
-        // Head
-        ctx.beginPath();
-        ctx.arc(x, y - 40 + bounce, 12, 0, Math.PI * 2);
-        ctx.stroke();
+ opts.sort(()=>Math.random()-0.5);
 
-        // Torso
-        ctx.beginPath();
-        ctx.moveTo(x, y - 28 + bounce);
-        ctx.lineTo(x, y + bounce);
-        ctx.stroke();
+ state.question={
+  text:`${a} + ${b} = ?`,
+  answer:ans,
+  options:opts
+ };
+}
 
-        // Arms
-        ctx.beginPath();
-        ctx.moveTo(x, y - 20 + bounce);
-        ctx.lineTo(x + swing, y);
-        ctx.moveTo(x, y - 20 + bounce);
-        ctx.lineTo(x - swing, y);
-        ctx.stroke();
+/* ======================
+   CANVAS STICKMAN LOOP
+======================*/
 
-        // Legs
-        ctx.beginPath();
-        ctx.moveTo(x, y + bounce);
-        ctx.lineTo(x - swing, y + 30);
-        ctx.moveTo(x, y + bounce);
-        ctx.lineTo(x + swing, y + 30);
-        ctx.stroke();
-        
-        ctx.shadowBlur = 0;
-    }
+function drawStick(){
+ ctx.strokeStyle="#000";
+ ctx.lineWidth=4;
 
-    function varColor(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
+ ctx.beginPath();
+ ctx.arc(stick.x,stick.y-30,12,0,6.28);
+ ctx.stroke();
 
-    function animate() {
-        if (!state.isPlaying) return;
-        
-        // Clear Canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Ground Line
-        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, 200);
-        ctx.lineTo(canvas.width, 200);
-        ctx.stroke();
+ ctx.beginPath();
+ ctx.moveTo(stick.x,stick.y-18);
+ ctx.lineTo(stick.x,stick.y+10);
+ ctx.stroke();
 
-        // Particles/Speed lines
-        for(let i=0; i<5; i++) {
-            ctx.fillStyle = 'rgba(34, 211, 238, 0.2)';
-            let speed = (frame + i*50) % canvas.width;
-            ctx.fillRect(canvas.width - speed, 100 + i*20, 30, 2);
-        }
+ const leg=Math.sin(stick.frame*0.3)*20;
 
-        drawRunner(runnerX, 160, frame);
-        
-        frame++;
-        animationId = requestAnimationFrame(animate);
-    }
+ ctx.beginPath();
+ ctx.moveTo(stick.x,stick.y+10);
+ ctx.lineTo(stick.x-10,stick.y+30+leg);
+ ctx.moveTo(stick.x,stick.y+10);
+ ctx.lineTo(stick.x+10,stick.y+30-leg);
+ ctx.stroke();
+}
 
+function drawLoop(){
+ ctx.clearRect(0,0,900,350);
+
+ ctx.fillStyle="#90EE90";
+ ctx.fillRect(0,310,900,40);
+
+ stick.frame++;
+
+ if(stick.jump){
+   stick.vy+=0.8;
+   stick.y+=stick.vy;
+   if(stick.y>=270){
+     stick.y=270;
+     stick.jump=false;
+     stick.vy=0;
+   }
+ }
+
+ drawStick();
+ loopId=requestAnimationFrame(drawLoop);
+}
+
+/* ======================
+   GAME LOGIC
+======================*/
+
+function checkAnswer(v,btn){
+ if(v===state.question.answer){
+   btn.classList.add("correct");
+
+   state.combo++;
+   let mult=1+Math.floor(state.combo/3);
+
+   state.score+=100*mult;
+
+   stick.jump=true;
+   stick.vy=-14;
+
+ }else{
+   btn.classList.add("wrong");
+   state.combo=0;
+   state.lives--;
+ }
+
+ updateStats();
+
+ setTimeout(()=>{
+   if(state.lives<=0) gameOver();
+   else{
+     if(state.score>state.level*1500) state.level++;
+     renderQuestion();
+   }
+ },700);
+}
+
+function gameOver(){
+ cancelAnimationFrame(loopId);
+
+ if(state.score>state.high){
+  localStorage.setItem("highscore",state.score);
+ }
+
+ gameArea.innerHTML=`
+ <div class="menu">
+   <h2>💀 GAME OVER</h2>
+   <h3>Score: ${state.score}</h3>
+   <button class="startBtn" onclick="showMenu()">Main Lagi</button>
+ </div>`;
+}
+
+/* ======================
+   KEYBOARD CONTROL
+======================*/
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="p"||e.key==="Escape"){
+  state.paused=!state.paused;
+  pauseText.style.display=state.paused?"flex":"none";
+  if(state.paused) cancelAnimationFrame(loopId);
+  else drawLoop();
+ }
+
+ if(["1","2","3","4"].includes(e.key)){
+  const b=document.querySelectorAll(".btn")[parseInt(e.key)-1];
+  if(b) b.click();
+ }
+});
 </script>
+
 </body>
 </html>
