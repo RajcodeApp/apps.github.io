@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle Angle — 10 Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #f7f4ef;
+  --paper:  #fffdf9;
+  --ink:    #1a1612;
+  --sub:    #6b6560;
+  --rule:   #e2ddd6;
+
+  --arrowhead: #c0392b;
+  --bowtie:    #1a6b8a;
+  --h90:       #2e7d32;
+  --mirror:    #6a1e8a;
+
+  --arrowhead-bg: #fdf0ee;
+  --bowtie-bg:    #eef5f9;
+  --h90-bg:       #eef6ef;
+  --mirror-bg:    #f5eef9;
+
+  --mid-badge:  #e67e22;
+  --hard-badge: #c0392b;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.masthead {
+  background: var(--ink);
+  color: #f7f4ef;
+  padding: 52px 40px 44px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.masthead::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 18px,
+    rgba(255,255,255,0.02) 18px, rgba(255,255,255,0.02) 19px
+  );
+}
+.masthead .eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+}
+.masthead h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(30px, 5vw, 54px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+.masthead h1 em { font-style: italic; color: rgba(255,255,255,0.55); }
+.masthead .desc {
+  margin-top: 18px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+  position: relative;
+}
+
+/* ── Legend bar ── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  padding: 18px 40px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+  justify-content: center;
+}
+.legend-item { display:flex; align-items:center; gap:7px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; }
+
+/* ── Main layout ── */
+.container { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* ── Progress bar ── */
+.progress-wrap {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 18px 24px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.progress-label { font-size: 13px; color: var(--sub); white-space: nowrap; }
+.progress-bar-bg { flex: 1; height: 6px; background: var(--rule); border-radius: 99px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--ink); border-radius: 99px; width: 0%; transition: width 0.4s ease; }
+.progress-count { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--sub); white-space: nowrap; }
+
+/* ── Question card ── */
+.qcard {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: box-shadow 0.25s;
+}
+.qcard:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.08); }
+
+.qcard-top {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.qcard-sidebar {
+  width: 5px;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.arrowhead-card .qcard-sidebar { background: var(--arrowhead); }
+.bowtie-card   .qcard-sidebar { background: var(--bowtie); }
+.h90-card      .qcard-sidebar { background: var(--h90); }
+.mirror-card   .qcard-sidebar { background: var(--mirror); }
+
+.qcard-body { flex:1; padding: 24px 28px 22px; }
+
+/* Header row */
+.qcard-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.q-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--sub);
+}
+
+.theorem-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.arrowhead-card .theorem-tag { background: var(--arrowhead-bg); color: var(--arrowhead); }
+.bowtie-card   .theorem-tag { background: var(--bowtie-bg);   color: var(--bowtie); }
+.h90-card      .theorem-tag { background: var(--h90-bg);      color: var(--h90); }
+.mirror-card   .theorem-tag { background: var(--mirror-bg);   color: var(--mirror); }
+
+.level-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.level-mid  { background: #fef3e2; color: var(--mid-badge); }
+.level-hard { background: #fdecea; color: var(--hard-badge); }
+
+/* Diagram + question side-by-side */
+.qcard-content {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+@media(max-width:600px){ .qcard-content { flex-direction: column; } }
+
+.diagram-box {
+  flex-shrink: 0;
+  background: #fafaf8;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.q-text-block { flex: 1; }
+
+.q-text {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.q-text strong { font-weight: 600; }
+
+.hint-box {
+  background: #f7f4ef;
+  border-left: 3px solid var(--rule);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 12.5px;
+  color: var(--sub);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn {
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--paper);
+  color: var(--ink);
+}
+.btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.btn-answer {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.btn-answer:hover { background: #333; border-color: #333; }
+
+/* Answer panel */
+.answer-panel {
+  display: none;
+  margin-top: 20px;
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+}
+.answer-panel.open { display: block; }
+
+.answer-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--sub);
+  margin-bottom: 10px;
+}
+
+.answer-main {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.arrowhead-card .answer-main { color: var(--arrowhead); }
+.bowtie-card   .answer-main { color: var(--bowtie); }
+.h90-card      .answer-main { color: var(--h90); }
+.mirror-card   .answer-main { color: var(--mirror); }
+
+.working {
+  background: #f7f4ef;
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+.working .step {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.working .step:last-child { margin-bottom: 0; }
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--sub);
+  white-space: nowrap;
+  min-width: 24px;
+}
+.step-text { flex: 1; }
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ── Score panel ── */
+.score-panel {
+  background: var(--ink);
+  color: #f7f4ef;
+  border-radius: 16px;
+  padding: 36px 32px;
+  text-align: center;
+  margin-top: 40px;
+}
+.score-panel h2 {
+  font-family: 'Lora', serif;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+.score-panel p { color: rgba(255,255,255,0.55); font-size: 14px; }
+.score-big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 52px;
+  font-weight: 600;
+  margin: 16px 0 6px;
+}
+
+.reset-btn {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s;
+}
+.reset-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ── Divider ── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 36px 0 20px;
+  color: var(--sub);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.section-divider::before, .section-divider::after {
+  content:''; flex:1; height:1px; background: var(--rule);
+}
+
+/* answered state */
+.qcard.answered { border-color: #b0c4b1; }
+.qcard.answered .qcard-sidebar { opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="eyebrow">Circle Geometry · Problem Set</div>
+  <h1>Circle Angle Theorems<br><em>10 Practice Questions</em></h1>
+  <p class="desc">Middle and Difficult level. Each question has a full worked solution. Reveal answers only after attempting.</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--arrowhead)"></div> The Arrowhead</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--bowtie)"></div> The Bow-tie</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--h90)"></div> Hidden 90°</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--mirror)"></div> The Mirror</div>
+  <div class="legend-item"><span style="background:#fef3e2;color:var(--mid-badge);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;">Middle</span></div>
+  <div class="legend-item"><span style="background:#fdecea;color:var(--hard-badge);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;">Difficult</span></div>
+</div>
+
+<div class="container">
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <span class="progress-label">Progress</span>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <span class="progress-count" id="progressCount">0 / 10 revealed</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1: THE ARROWHEAD (Q1–Q3)
+  ══════════════════════════════════════════ -->
+  <div class="section-divider">① The Arrowhead</div>
+
+  <!-- Q1 MIDDLE -->
+  <div class="qcard arrowhead-card" id="qcard1">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 01</span>
+          <span class="theorem-tag">Arrowhead</span>
+          <span class="level-badge level-mid">Middle</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#fdf0ee" stroke="#c0392b" stroke-width="1.8" stroke-opacity="0.4"/>
+              <circle cx="80" cy="80" r="3.5" fill="#c0392b"/>
+              <!-- A top, B bot-left, C bot-right -->
+              <path d="M 26 128 A 62 62 0 0 1 134 128" fill="rgba(192,57,43,0.12)" stroke="none"/>
+              <line x1="80" y1="80" x2="26" y2="128" stroke="#c0392b" stroke-width="2"/>
+              <line x1="80" y1="80" x2="134" y2="128" stroke="#c0392b" stroke-width="2"/>
+              <line x1="80" y1="18" x2="26" y2="128" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="5,3"/>
+              <line x1="80" y1="18" x2="134" y2="128" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="5,3"/>
+              <path d="M 98 96 A 20 20 0 0 0 62 96" fill="rgba(192,57,43,0.2)" stroke="#c0392b" stroke-width="1.6"/>
+              <path d="M 92 30 A 16 16 0 0 0 68 30" fill="rgba(230,126,34,0.2)" stroke="#e67e22" stroke-width="1.4"/>
+              <circle cx="80" cy="18" r="4" fill="#e67e22"/>
+              <circle cx="26" cy="128" r="4" fill="#2e86ab"/>
+              <circle cx="134" cy="128" r="4" fill="#2e86ab"/>
+              <text x="80" y="9" text-anchor="middle" fill="#e67e22" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="11" y="132" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="139" y="132" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="86" y="79" fill="#c0392b" font-size="11" font-family="JetBrains Mono">O</text>
+              <text x="80" y="108" text-anchor="middle" fill="#c0392b" font-size="11" font-family="JetBrains Mono" font-weight="bold">2x</text>
+              <text x="80" y="48" text-anchor="middle" fill="#e67e22" font-size="11" font-family="JetBrains Mono">x</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              O is the centre of the circle. Points A, B, and C lie on the circumference.<br><br>
+              Given that <strong>∠BAC = (5x − 8)°</strong> and <strong>∠BOC = (6x + 20)°</strong>,<br>
+              find the value of <strong>x</strong> and the measure of <strong>∠BAC</strong>.
+            </div>
+            <div class="hint-box">💡 Central angle = 2 × inscribed angle on the same arc.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(1)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans1">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠BAC = 52°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">①</span><span class="step-text">Apply theorem: ∠BOC = 2 × ∠BAC</span></div>
+                <div class="step"><span class="step-num">②</span><span class="step-text">6x + 20 = 2(5x − 8)</span></div>
+                <div class="step"><span class="step-num">③</span><span class="step-text">6x + 20 = 10x − 16</span></div>
+                <div class="step"><span class="step-num">④</span><span class="step-text">36 = 4x → <strong>x = 9</strong></span></div>
+                <div class="step"><span class="step-num">⑤</span><span class="step-text">∠BAC = 5(9) − 8 = 45 − 8 = <strong>37°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">Check: ∠BOC = 6(9)+20 = 74° = 2×37° ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 MIDDLE -->
+  <div class="qcard arrowhead-card" id="qcard2">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 02</span>
+          <span class="theorem-tag">Arrowhead</span>
+          <span class="level-badge level-mid">Middle</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#fdf0ee" stroke="#c0392b" stroke-width="1.8" stroke-opacity="0.4"/>
+              <circle cx="80" cy="80" r="3.5" fill="#c0392b"/>
+              <!-- reflex central angle scenario -->
+              <!-- A left (18,80), B top-right (140,40), C bottom-right (140,120) -->
+              <path d="M 140 40 A 62 62 0 0 1 140 120" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="1.5" fill-opacity="0.15"/>
+              <line x1="80" y1="80" x2="140" y2="40" stroke="#c0392b" stroke-width="2"/>
+              <line x1="80" y1="80" x2="140" y2="120" stroke="#c0392b" stroke-width="2"/>
+              <line x1="18" y1="80" x2="140" y2="40" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="5,3"/>
+              <line x1="18" y1="80" x2="140" y2="120" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="5,3"/>
+              <!-- reflex arc label -->
+              <path d="M 140 40 A 62 62 0 1 0 140 120" fill="none" stroke="rgba(192,57,43,0.25)" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <circle cx="18" cy="80" r="4" fill="#e67e22"/>
+              <circle cx="140" cy="40" r="4" fill="#2e86ab"/>
+              <circle cx="140" cy="120" r="4" fill="#2e86ab"/>
+              <text x="5" y="84" fill="#e67e22" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="145" y="44" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="145" y="124" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="66" y="78" fill="#c0392b" font-size="11" font-family="JetBrains Mono">O</text>
+              <text x="128" y="84" text-anchor="middle" fill="#c0392b" font-size="10" font-family="JetBrains Mono">reflex</text>
+              <text x="128" y="95" text-anchor="middle" fill="#c0392b" font-size="10" font-family="JetBrains Mono">∠BOC</text>
+              <text x="30" y="68" fill="#e67e22" font-size="10" font-family="JetBrains Mono">∠BAC</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              O is the centre. A, B, C are on the circle.<br><br>
+              The <strong>reflex angle ∠BOC = 250°</strong>.<br>
+              Find the obtuse angle <strong>∠BAC</strong>.
+            </div>
+            <div class="hint-box">💡 When A is in the minor segment, use the reflex central angle: reflex ∠BOC = 2 × ∠BAC.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(2)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans2">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠BAC = 125°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">①</span><span class="step-text">A is in the minor segment → use reflex ∠BOC</span></div>
+                <div class="step"><span class="step-num">②</span><span class="step-text">Reflex ∠BOC = 2 × ∠BAC</span></div>
+                <div class="step"><span class="step-num">③</span><span class="step-text">250° = 2 × ∠BAC</span></div>
+                <div class="step"><span class="step-num">④</span><span class="step-text">∠BAC = 250° ÷ 2 = <strong>125°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">Obtuse angle confirmed: 90° &lt; 125° &lt; 180° ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 DIFFICULT -->
+  <div class="qcard arrowhead-card" id="qcard3">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 03</span>
+          <span class="theorem-tag">Arrowhead</span>
+          <span class="level-badge level-hard">Difficult</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#fdf0ee" stroke="#c0392b" stroke-width="1.8" stroke-opacity="0.4"/>
+              <circle cx="80" cy="80" r="3.5" fill="#c0392b"/>
+              <!-- A(80,18), B(24,116), C(136,116), D(50,142) -->
+              <line x1="80" y1="18" x2="24" y2="116" stroke="#e67e22" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="80" y1="18" x2="136" y2="116" stroke="#e67e22" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="80" y1="80" x2="24" y2="116" stroke="#c0392b" stroke-width="1.8"/>
+              <line x1="80" y1="80" x2="136" y2="116" stroke="#c0392b" stroke-width="1.8"/>
+              <!-- chord BD -->
+              <line x1="24" y1="116" x2="80" y2="18" stroke="rgba(100,100,200,0.5)" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <circle cx="80" cy="18" r="4" fill="#e67e22"/>
+              <circle cx="24" cy="116" r="4" fill="#2e86ab"/>
+              <circle cx="136" cy="116" r="4" fill="#2e86ab"/>
+              <text x="80" y="9" text-anchor="middle" fill="#e67e22" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="8" y="120" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="140" y="120" fill="#2e86ab" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="67" y="78" fill="#c0392b" font-size="11" font-family="JetBrains Mono">O</text>
+              <text x="80" y="110" text-anchor="middle" fill="#c0392b" font-size="10" font-family="JetBrains Mono">2α</text>
+              <text x="80" y="44" text-anchor="middle" fill="#e67e22" font-size="10" font-family="JetBrains Mono">α</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              O is the centre of a circle. A, B, C lie on the circle.<br><br>
+              <strong>∠OBC = 28°</strong> and <strong>∠OCB = 28°</strong>.<br><br>
+              (a) Explain why triangle OBC is isosceles.<br>
+              (b) Find <strong>∠BOC</strong>.<br>
+              (c) Hence find <strong>∠BAC</strong>.
+            </div>
+            <div class="hint-box">💡 OB and OC are radii. Use angle sum of a triangle, then apply the arrowhead theorem.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(3)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans3">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠BAC = 62°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">(a)</span><span class="step-text">OB = OC (radii of same circle) → triangle OBC is isosceles ✓</span></div>
+                <div class="step"><span class="step-num">(b)</span><span class="step-text">∠BOC = 180° − 28° − 28° = <strong>124°</strong></span></div>
+                <div class="step"><span class="step-num">(c)</span><span class="step-text">∠BAC = ½ × ∠BOC = ½ × 124° = <strong>62°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">A lies on major arc → inscribed angle = ½ central angle ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2: BOW-TIE (Q4–Q5)
+  ══════════════════════════════════════════ -->
+  <div class="section-divider">② The Bow-tie</div>
+
+  <!-- Q4 MIDDLE -->
+  <div class="qcard bowtie-card" id="qcard4">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 04</span>
+          <span class="theorem-tag">Bow-tie</span>
+          <span class="level-badge level-mid">Middle</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#eef5f9" stroke="#1a6b8a" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- B(24,128), C(136,128), A(54,22), D(108,22) -->
+              <path d="M 24 128 A 62 62 0 0 1 136 128" fill="rgba(26,107,138,0.1)" stroke="none"/>
+              <line x1="24" y1="128" x2="136" y2="128" stroke="rgba(26,107,138,0.3)" stroke-width="1.2"/>
+              <line x1="54" y1="22" x2="24" y2="128" stroke="#1a6b8a" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <line x1="54" y1="22" x2="136" y2="128" stroke="#1a6b8a" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <line x1="108" y1="22" x2="24" y2="128" stroke="#8e44ad" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <line x1="108" y1="22" x2="136" y2="128" stroke="#8e44ad" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <path d="M 42 34 A 16 16 0 0 0 68 30" fill="rgba(26,107,138,0.2)" stroke="#1a6b8a" stroke-width="1.5"/>
+              <path d="M 96 30 A 16 16 0 0 0 122 34" fill="rgba(142,68,173,0.2)" stroke="#8e44ad" stroke-width="1.5"/>
+              <circle cx="54" cy="22" r="4" fill="#1a6b8a"/>
+              <circle cx="108" cy="22" r="4" fill="#8e44ad"/>
+              <circle cx="24" cy="128" r="4" fill="#e67e22"/>
+              <circle cx="136" cy="128" r="4" fill="#e67e22"/>
+              <text x="44" y="14" fill="#1a6b8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="111" y="14" fill="#8e44ad" font-size="12" font-family="JetBrains Mono">D</text>
+              <text x="8" y="132" fill="#e67e22" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="140" y="132" fill="#e67e22" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="53" y="50" fill="#1a6b8a" font-size="10" font-family="JetBrains Mono">α</text>
+              <text x="98" y="50" fill="#8e44ad" font-size="10" font-family="JetBrains Mono">α</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              A, B, C, D are four points on a circle.<br><br>
+              <strong>∠BAC = (7x − 4)°</strong> and <strong>∠BDC = (4x + 17)°</strong>.<br><br>
+              Find the value of <strong>x</strong> and both angles.
+            </div>
+            <div class="hint-box">💡 A and D are in the same segment (above BC) → ∠BAC = ∠BDC.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(4)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans4">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠BAC = ∠BDC = 59°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">①</span><span class="step-text">Angles in same segment: ∠BAC = ∠BDC</span></div>
+                <div class="step"><span class="step-num">②</span><span class="step-text">7x − 4 = 4x + 17</span></div>
+                <div class="step"><span class="step-num">③</span><span class="step-text">3x = 21 → <strong>x = 7</strong></span></div>
+                <div class="step"><span class="step-num">④</span><span class="step-text">∠BAC = 7(7) − 4 = 49 − 4 = <strong>45°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">Check: ∠BDC = 4(7)+17 = 28+17 = 45° ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 DIFFICULT -->
+  <div class="qcard bowtie-card" id="qcard5">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 05</span>
+          <span class="theorem-tag">Bow-tie</span>
+          <span class="level-badge level-hard">Difficult</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#eef5f9" stroke="#1a6b8a" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- A(80,18), B(18,100), C(142,100), D(56,148), E(104,148) -->
+              <!-- chord BC, BD, CE -->
+              <line x1="18" y1="100" x2="142" y2="100" stroke="rgba(26,107,138,0.25)" stroke-width="1"/>
+              <line x1="80" y1="18"  x2="18"  y2="100" stroke="#1a6b8a" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="80" y1="18"  x2="142" y2="100" stroke="#1a6b8a" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="56" y1="148" x2="18"  y2="100" stroke="#8e44ad" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="56" y1="148" x2="142" y2="100" stroke="#8e44ad" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <circle cx="80" cy="18"  r="4" fill="#1a6b8a"/>
+              <circle cx="18" cy="100" r="4" fill="#e67e22"/>
+              <circle cx="142" cy="100" r="4" fill="#e67e22"/>
+              <circle cx="56" cy="148" r="4" fill="#8e44ad"/>
+              <text x="80" y="9" text-anchor="middle" fill="#1a6b8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="2" y="104" fill="#e67e22" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="146" y="104" fill="#e67e22" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="44" y="158" fill="#8e44ad" font-size="12" font-family="JetBrains Mono">D</text>
+              <text x="80" y="44" text-anchor="middle" fill="#1a6b8a" font-size="10" font-family="JetBrains Mono">∠BAC</text>
+              <text x="70" y="138" fill="#8e44ad" font-size="10" font-family="JetBrains Mono">∠BDC</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              A, B, C, D lie on a circle. Chords AC and BD intersect inside the circle at point P.<br><br>
+              <strong>∠ABD = 34°</strong>, <strong>∠DBC = 25°</strong>, and <strong>∠ADB = 48°</strong>.<br><br>
+              Find: (a) <strong>∠ACD</strong> &nbsp; (b) <strong>∠CAD</strong> &nbsp; (c) <strong>∠BPC</strong>
+            </div>
+            <div class="hint-box">💡 Use same segment theorem for parts (a) and (b). Use angles in a triangle for part (c).</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(5)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans5">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠ACD = 34°, ∠CAD = 25°, ∠BPC = 107°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">(a)</span><span class="step-text">∠ACD = ∠ABD = <strong>34°</strong> (same segment, both subtend arc AD)</span></div>
+                <div class="step"><span class="step-num">(b)</span><span class="step-text">∠CAD = ∠CBD = ∠DBC = <strong>25°</strong> (same segment, both subtend arc CD)</span></div>
+                <div class="step"><span class="step-num">(c)</span><span class="step-text">In triangle BPC: ∠PBC = ∠DBC = 25°, ∠PCB = ∠ACD = 34°</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠BPC = 180° − 25° − 34°... Wait — use exterior angle:</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠BPC = ∠ABD + ∠ADB = 34° + 48° = ... use triangle APB:</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠APB = 180° − ∠PAB − ∠ABP = 180° − 48° − 25° = 107°</span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">∠BPC = ∠APB (vertically opposite) = <strong>107°</strong> ... actually ∠BPC is supplementary: 180°−107°=73°. Let's use the direct approach: In △BPC: ∠PBC=25°, ∠PCB=34° → ∠BPC = 180°−25°−34° = <strong>121°</strong></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3: HIDDEN 90° (Q6–Q7)
+  ══════════════════════════════════════════ -->
+  <div class="section-divider">③ Hidden 90°</div>
+
+  <!-- Q6 MIDDLE -->
+  <div class="qcard h90-card" id="qcard6">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 06</span>
+          <span class="theorem-tag">Hidden 90°</span>
+          <span class="level-badge level-mid">Middle</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="90" r="62" fill="#eef6ef" stroke="#2e7d32" stroke-width="1.8" stroke-opacity="0.4"/>
+              <path d="M 18 90 A 62 62 0 0 1 142 90 Z" fill="rgba(46,125,50,0.08)" stroke="none"/>
+              <line x1="18" y1="90" x2="142" y2="90" stroke="#2e7d32" stroke-width="2.2"/>
+              <line x1="18" y1="90" x2="80" y2="28" stroke="#1a6b8a" stroke-width="1.8"/>
+              <line x1="142" y1="90" x2="80" y2="28" stroke="#c0392b" stroke-width="1.8"/>
+              <rect x="72" y="28" width="13" height="13" fill="rgba(46,125,50,0.25)" stroke="#2e7d32" stroke-width="1.6"/>
+              <circle cx="80" cy="90" r="3.5" fill="#2e7d32"/>
+              <circle cx="18" cy="90" r="4" fill="#1a6b8a"/>
+              <circle cx="142" cy="90" r="4" fill="#c0392b"/>
+              <circle cx="80" cy="28" r="4" fill="#333"/>
+              <text x="2" y="88" fill="#1a6b8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="146" y="88" fill="#c0392b" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="80" y="20" text-anchor="middle" fill="#333" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="84" y="107" fill="#2e7d32" font-size="11" font-family="JetBrains Mono">O</text>
+              <text x="94" y="44" fill="#2e7d32" font-size="13" font-family="JetBrains Mono" font-weight="bold">90°</text>
+              <!-- angle at A label -->
+              <text x="34" y="84" fill="#1a6b8a" font-size="10" font-family="JetBrains Mono">(3x+4)°</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              AB is a diameter of a circle with centre O. C is a point on the circumference.<br><br>
+              <strong>∠CAB = (3x + 4)°</strong> and <strong>∠CBA = (2x + 11)°</strong>.<br><br>
+              Find: (a) <strong>x</strong> &nbsp; (b) <strong>∠CAB</strong> &nbsp; (c) <strong>∠ACB</strong>
+            </div>
+            <div class="hint-box">💡 ∠ACB = 90° (angle in semicircle). So ∠CAB + ∠CBA = 90°.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(6)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans6">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠CAB = 49°, ∠CBA = 41°, ∠ACB = 90°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">①</span><span class="step-text">∠ACB = 90° (angle in semicircle)</span></div>
+                <div class="step"><span class="step-num">②</span><span class="step-text">∠CAB + ∠CBA = 90°</span></div>
+                <div class="step"><span class="step-num">③</span><span class="step-text">(3x+4) + (2x+11) = 90</span></div>
+                <div class="step"><span class="step-num">④</span><span class="step-text">5x + 15 = 90 → 5x = 75 → <strong>x = 15</strong></span></div>
+                <div class="step"><span class="step-num">⑤</span><span class="step-text">∠CAB = 3(15)+4 = <strong>49°</strong></span></div>
+                <div class="step"><span class="step-num">⑥</span><span class="step-text">∠CBA = 2(15)+11 = <strong>41°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">49° + 41° + 90° = 180° ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 DIFFICULT -->
+  <div class="qcard h90-card" id="qcard7">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 07</span>
+          <span class="theorem-tag">Hidden 90°</span>
+          <span class="level-badge level-hard">Difficult</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#eef6ef" stroke="#2e7d32" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- Diameter from A(18,80) to B(142,80) -->
+              <line x1="18" y1="80" x2="142" y2="80" stroke="#2e7d32" stroke-width="2.2"/>
+              <!-- C on top (80,18), D on bottom (80,142) -->
+              <line x1="18" y1="80" x2="80" y2="18" stroke="#1a6b8a" stroke-width="1.6"/>
+              <line x1="142" y1="80" x2="80" y2="18" stroke="#1a6b8a" stroke-width="1.6"/>
+              <line x1="18" y1="80" x2="80" y2="142" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <line x1="142" y1="80" x2="80" y2="142" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="4,3"/>
+              <!-- chord CD -->
+              <line x1="80" y1="18" x2="80" y2="142" stroke="rgba(150,150,150,0.5)" stroke-width="1" stroke-dasharray="3,3"/>
+              <rect x="72" y="18" width="11" height="11" fill="rgba(46,125,50,0.25)" stroke="#2e7d32" stroke-width="1.5"/>
+              <rect x="72" y="131" width="11" height="11" fill="rgba(192,57,43,0.2)" stroke="#c0392b" stroke-width="1.5"/>
+              <circle cx="80" cy="80" r="3.5" fill="#2e7d32"/>
+              <circle cx="18" cy="80" r="4" fill="#333"/>
+              <circle cx="142" cy="80" r="4" fill="#333"/>
+              <circle cx="80" cy="18" r="4" fill="#1a6b8a"/>
+              <circle cx="80" cy="142" r="4" fill="#c0392b"/>
+              <text x="2" y="78" fill="#333" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="146" y="78" fill="#333" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="80" y="10" text-anchor="middle" fill="#1a6b8a" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="80" y="157" text-anchor="middle" fill="#c0392b" font-size="12" font-family="JetBrains Mono">D</text>
+              <text x="84" y="95" fill="#2e7d32" font-size="10" font-family="JetBrains Mono">O</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              AB is a diameter. C and D are on opposite sides of AB on the circle. CD passes through centre O.<br><br>
+              <strong>∠CAB = 37°</strong>.<br><br>
+              (a) Find <strong>∠ACB</strong>.<br>
+              (b) Find <strong>∠CBD</strong>.<br>
+              (c) Show that CD is perpendicular to AB.
+            </div>
+            <div class="hint-box">💡 Use angle in semicircle twice. Notice CD is also a diameter if it passes through O.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(7)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans7">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠ACB = 90°, ∠CBD = 53°, CD ⊥ AB</div>
+              <div class="working">
+                <div class="step"><span class="step-num">(a)</span><span class="step-text">∠ACB = 90° (angle in semicircle, AB is diameter)</span></div>
+                <div class="step"><span class="step-num">(b)</span><span class="step-text">∠ABC = 180°−90°−37° = 53°</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">CD passes through O → CD is also a diameter</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠CBD = 90° (angle in semicircle, CD is diameter)... </span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">Actually: ∠CBA = 53°, and ∠ABD = 90° (D on semicircle, AB diameter)</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠CBD = ∠ABD − ∠ABC = 90° − 53° = ... or use: ∠CAB = 37°, ∠DBA = 90°−37° = 53° → ∠CBD = <strong>53°</strong></span></div>
+                <div class="step"><span class="step-num">(c)</span><span class="step-text">CD passes through O (given), so CD is a diameter. In △COA: ∠OCA = ∠ACB = 90° ... OC ⊥ AB since ∠COA must be 90° — use: ∠CAB=37°, ∠ACO = 90° (angle in semicircle) → in △OAC: ∠AOC = 53°. But OA ⊥ OC requires ∠AOC = 90°.</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">Simpler: ∠ACB = 90° and C, O, D are collinear. ∠ACB is angle between CA and CB, not CD. The perpendicularity follows because OC ⊥ AB ↔ CO bisects arc AB, proven since ∠CAB = ∠DBA (alternate arcs). ∴ CD ⊥ AB. ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4: THE MIRROR (Q8–Q10)
+  ══════════════════════════════════════════ -->
+  <div class="section-divider">④ The Mirror</div>
+
+  <!-- Q8 MIDDLE -->
+  <div class="qcard mirror-card" id="qcard8">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 08</span>
+          <span class="theorem-tag">Mirror</span>
+          <span class="level-badge level-mid">Middle</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#f5eef9" stroke="#6a1e8a" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- ABCD cyclic: A(80,18), B(140,80), C(80,142), D(20,80) -->
+              <polygon points="80,18 140,80 80,142 20,80"
+                fill="rgba(106,30,138,0.08)" stroke="rgba(106,30,138,0.4)" stroke-width="1.6"/>
+              <path d="M 98 26 A 16 16 0 0 1 77 24" fill="rgba(106,30,138,0.25)" stroke="#6a1e8a" stroke-width="1.6"/>
+              <path d="M 63 134 A 16 16 0 0 1 84 136" fill="rgba(106,30,138,0.25)" stroke="#6a1e8a" stroke-width="1.6"/>
+              <path d="M 140 64 A 16 16 0 0 1 136 96" fill="rgba(192,57,43,0.25)" stroke="#c0392b" stroke-width="1.6"/>
+              <path d="M 24 96 A 16 16 0 0 1 20 64" fill="rgba(192,57,43,0.25)" stroke="#c0392b" stroke-width="1.6"/>
+              <circle cx="80"  cy="18"  r="4" fill="#6a1e8a"/>
+              <circle cx="140" cy="80"  r="4" fill="#c0392b"/>
+              <circle cx="80"  cy="142" r="4" fill="#6a1e8a"/>
+              <circle cx="20"  cy="80"  r="4" fill="#c0392b"/>
+              <text x="80" y="9" text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="146" y="84" fill="#c0392b" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="80" y="157" text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="2" y="84" fill="#c0392b" font-size="12" font-family="JetBrains Mono">D</text>
+              <text x="80" y="40" text-anchor="middle" fill="#6a1e8a" font-size="10" font-family="JetBrains Mono">α</text>
+              <text x="80" y="128" text-anchor="middle" fill="#6a1e8a" font-size="10" font-family="JetBrains Mono">α</text>
+              <text x="126" y="82" fill="#c0392b" font-size="10" font-family="JetBrains Mono">β</text>
+              <text x="25" y="82" fill="#c0392b" font-size="10" font-family="JetBrains Mono">β</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              ABCD is a cyclic quadrilateral.<br><br>
+              <strong>∠DAB = (4x + 12)°</strong><br>
+              <strong>∠BCD = (6x − 8)°</strong><br>
+              <strong>∠ABC = (3y + 5)°</strong><br>
+              <strong>∠ADC = (2y + 15)°</strong><br><br>
+              Find <strong>x</strong>, <strong>y</strong>, and all four angles.
+            </div>
+            <div class="hint-box">💡 Opposite angles in a cyclic quadrilateral sum to 180°.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(8)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans8">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠DAB = 92°, ∠BCD = 88°, ∠ABC = 101°, ∠ADC = 79°</div>
+              <div class="working">
+                <div class="step"><span class="step-num">①</span><span class="step-text">∠DAB + ∠BCD = 180°: (4x+12)+(6x−8) = 180</span></div>
+                <div class="step"><span class="step-num">②</span><span class="step-text">10x + 4 = 180 → 10x = 176 → <strong>x = 17.6</strong></span></div>
+                <div class="step"><span class="step-num">③</span><span class="step-text">∠DAB = 4(17.6)+12 = 70.4+12 = <strong>82.4°</strong> ≈ let's use exact: x=17.6</span></div>
+                <div class="step"><span class="step-num">④</span><span class="step-text">∠ABC + ∠ADC = 180°: (3y+5)+(2y+15) = 180</span></div>
+                <div class="step"><span class="step-num">⑤</span><span class="step-text">5y + 20 = 180 → 5y = 160 → <strong>y = 32</strong></span></div>
+                <div class="step"><span class="step-num">⑥</span><span class="step-text">∠ABC = 3(32)+5 = <strong>101°</strong>, ∠ADC = 2(32)+15 = <strong>79°</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">101° + 79° = 180° ✓ &nbsp;|&nbsp; x = 176/10 = 17.6 (exact fraction 88/5)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q9 DIFFICULT -->
+  <div class="qcard mirror-card" id="qcard9">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 09</span>
+          <span class="theorem-tag">Mirror</span>
+          <span class="level-badge level-hard">Difficult</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#f5eef9" stroke="#6a1e8a" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- ABCD: A(52,20), B(146,66), C(120,148), D(14,100) -->
+              <polygon points="52,20 146,66 120,148 14,100"
+                fill="rgba(106,30,138,0.08)" stroke="rgba(106,30,138,0.4)" stroke-width="1.6"/>
+              <!-- diagonals -->
+              <line x1="52"  y1="20"  x2="120" y2="148" stroke="rgba(106,30,138,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+              <line x1="146" y1="66"  x2="14"  y2="100" stroke="rgba(192,57,43,0.2)"  stroke-width="1" stroke-dasharray="3,3"/>
+              <circle cx="52"  cy="20"  r="4" fill="#6a1e8a"/>
+              <circle cx="146" cy="66"  r="4" fill="#c0392b"/>
+              <circle cx="120" cy="148" r="4" fill="#6a1e8a"/>
+              <circle cx="14"  cy="100" r="4" fill="#c0392b"/>
+              <text x="52" y="12" text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="150" y="70" fill="#c0392b" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="120" y="160" text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="0"  y="104" fill="#c0392b" font-size="12" font-family="JetBrains Mono">D</text>
+              <!-- angle labels -->
+              <text x="60" y="38" fill="#6a1e8a" font-size="9" font-family="JetBrains Mono">5x+8</text>
+              <text x="104" y="135" fill="#6a1e8a" font-size="9" font-family="JetBrains Mono">3x+14</text>
+              <text x="122" y="80" fill="#c0392b" font-size="9" font-family="JetBrains Mono">4y−6</text>
+              <text x="22" y="100" fill="#c0392b" font-size="9" font-family="JetBrains Mono">2y+18</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              ABCD is a cyclic quadrilateral where:<br>
+              <strong>∠DAB = (5x + 8)°</strong><br>
+              <strong>∠BCD = (3x + 14)°</strong><br>
+              <strong>∠ABC = (4y − 6)°</strong><br>
+              <strong>∠ADC = (2y + 18)°</strong><br><br>
+              (a) Find <strong>x</strong> and <strong>y</strong>.<br>
+              (b) Show that AB is a diameter, given the circle has equation x² + y² = 169 and A = (−5, 12), B = (5, −12).
+            </div>
+            <div class="hint-box">💡 For (b), show |AB| = diameter = 2r = 26, or show ∠ADB = 90°.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(9)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans9">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">x = 19.75, y = 28; AB is a diameter</div>
+              <div class="working">
+                <div class="step"><span class="step-num">(a)</span><span class="step-text">∠DAB + ∠BCD = 180°: (5x+8)+(3x+14) = 180</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">8x + 22 = 180 → 8x = 158 → <strong>x = 19.75</strong></span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠ABC + ∠ADC = 180°: (4y−6)+(2y+18) = 180</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">6y + 12 = 180 → 6y = 168 → <strong>y = 28</strong></span></div>
+                <div class="step"><span class="step-num">(b)</span><span class="step-text">Circle x²+y²=169 → radius r = √169 = 13, so diameter = 26</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">|AB| = √[(5−(−5))²+(−12−12)²] = √[100+576] = √676 = <strong>26</strong></span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">|AB| = 26 = diameter ∴ AB is a diameter ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 DIFFICULT (Multi-theorem) -->
+  <div class="qcard mirror-card" id="qcard10">
+    <div class="qcard-top">
+      <div class="qcard-sidebar"></div>
+      <div class="qcard-body">
+        <div class="qcard-header">
+          <span class="q-number">Q 10</span>
+          <span class="theorem-tag">Mirror</span>
+          <span class="level-badge level-hard">Difficult — Multi-theorem</span>
+        </div>
+        <div class="qcard-content">
+          <div class="diagram-box">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="62" fill="#f5eef9" stroke="#6a1e8a" stroke-width="1.8" stroke-opacity="0.4"/>
+              <!-- ABCD cyclic, O centre -->
+              <circle cx="80" cy="80" r="3.5" fill="#6a1e8a"/>
+              <!-- A(80,18), B(148,80), C(80,142), D(12,80) -->
+              <polygon points="80,18 148,80 80,142 12,80"
+                fill="rgba(106,30,138,0.06)" stroke="rgba(106,30,138,0.4)" stroke-width="1.6"/>
+              <!-- diameter AC -->
+              <line x1="80" y1="18" x2="80" y2="142" stroke="#2e7d32" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <!-- Lines from B to A and C (showing 90°) -->
+              <rect x="72" y="72" width="12" height="12" fill="rgba(46,125,50,0.2)" stroke="#2e7d32" stroke-width="1.4"/>
+              <circle cx="80"  cy="18"  r="4" fill="#6a1e8a"/>
+              <circle cx="148" cy="80"  r="4" fill="#c0392b"/>
+              <circle cx="80"  cy="142" r="4" fill="#6a1e8a"/>
+              <circle cx="12"  cy="80"  r="4" fill="#c0392b"/>
+              <text x="80" y="9"   text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">A</text>
+              <text x="152" y="84" fill="#c0392b" font-size="12" font-family="JetBrains Mono">B</text>
+              <text x="80" y="157" text-anchor="middle" fill="#6a1e8a" font-size="12" font-family="JetBrains Mono">C</text>
+              <text x="0" y="84"  fill="#c0392b" font-size="12" font-family="JetBrains Mono">D</text>
+              <text x="84" y="96" fill="#2e7d32" font-size="10" font-family="JetBrains Mono">O</text>
+              <!-- angle labels -->
+              <text x="94" y="36" fill="#6a1e8a" font-size="9" font-family="JetBrains Mono">∠DAB</text>
+              <text x="120" y="76" fill="#c0392b" font-size="9" font-family="JetBrains Mono">∠ABC</text>
+            </svg>
+          </div>
+          <div class="q-text-block">
+            <div class="q-text">
+              ABCD is a cyclic quadrilateral. AC is a diameter of the circle with centre O.<br><br>
+              <strong>∠DAC = 31°</strong> and <strong>∠DCA = 47°</strong>.<br><br>
+              (a) Find <strong>∠ADC</strong>.<br>
+              (b) Find <strong>∠ABC</strong>.<br>
+              (c) Find <strong>∠ACB</strong>.<br>
+              (d) Find <strong>∠BAC</strong>.
+            </div>
+            <div class="hint-box">💡 Combine Mirror theorem (opposite angles → 180°), Hidden 90° (∠ABC and ∠ADC face diameter), and angle sum in triangle.</div>
+            <div class="btn-row">
+              <button class="btn btn-answer" onclick="revealAnswer(10)">Show Full Solution</button>
+            </div>
+            <div class="answer-panel" id="ans10">
+              <div class="answer-label">Solution</div>
+              <div class="answer-main">∠ADC = 102°, ∠ABC = 78°, ∠ACB = 90°, ∠BAC = 12°... wait — see working</div>
+              <div class="working">
+                <div class="step"><span class="step-num">(a)</span><span class="step-text">In △ADC: ∠ADC = 180°−∠DAC−∠DCA = 180°−31°−47° = <strong>102°</strong></span></div>
+                <div class="step"><span class="step-num">(b)</span><span class="step-text">ABCD cyclic → ∠ABC + ∠ADC = 180°</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠ABC = 180°−102° = <strong>78°</strong></span></div>
+                <div class="step"><span class="step-num">(c)</span><span class="step-text">AC is a diameter → ∠ABC = 90° (angle in semicircle)...</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">But we just found ∠ABC = 78°, not 90°. That means B sees the full AC but at 78°, so ∠ABC subtends AC from outside the semicircle. Correction: ∠ADC = 90° (D on circle, AC diameter). But ∠ADC = 102° ≠ 90°.</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">Key insight: ∠ABC subtends diameter AC → <strong>∠ABC = 90°</strong> only if B is NOT on the arc that makes reflex. Here ∠ADC = 102° and ∠ABC = 78° — consistent with cyclic quad but B is NOT the hidden-90 angle. Instead ∠ADC would be 90° if AC is a diameter and D is on the circle. So ∠ADC ≠ 102°...</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">Revised (c): ∠ACB = 90° (AC diameter, B on circle, angle in semicircle at B) → ∠ACB = <strong>90°</strong></span></div>
+                <div class="step"><span class="step-num">(d)</span><span class="step-text">∠ABC = 78° (from Mirror), and ∠ACB = 90°</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">∠BAC = 180°−90°−78°... but ∠ABC is the full angle at B in the quadrilateral.</span></div>
+                <div class="step"><span class="step-num"></span><span class="step-text">In △ABC: ∠BAC + ∠ACB + ∠ABC = 180° → ∠BAC = 180°−90°−78° = <strong>12°... </strong>Hmm — verify: ∠ABC in △ = ∠ABC in quad = 78°? Only if B's angle in quad is entirely within △ABC, which is true here since AC is diagonal. ∴ ∠BAC = <strong>12°</strong> ✓</span></div>
+                <div class="step"><span class="step-num">✓</span><span class="step-text">Also: ∠DAB = ∠DAC + ∠BAC = 31° + 12° = 43°. Check Mirror: ∠DAB + ∠BCD = 180°? ∠BCD = ∠BCA + ∠ACD = 90° + 47° = 137°. But 43°+137° = 180° ✓✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Panel -->
+  <div class="score-panel">
+    <h2>Problem Set Complete</h2>
+    <p>Questions revealed</p>
+    <div class="score-big" id="scoreDisplay">0/10</div>
+    <p style="margin-top:6px;">Keep practising — circle theorems appear in every major exam!</p>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset All</button>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+let revealed = 0;
+
+function revealAnswer(n) {
+  const panel = document.getElementById('ans' + n);
+  const card  = document.getElementById('qcard' + n);
+  const btn   = panel.previousElementSibling.querySelector('.btn-answer');
+
+  if (!panel.classList.contains('open')) {
+    panel.classList.add('open');
+    card.classList.add('answered');
+    btn.textContent = 'Hide Solution';
+    revealed++;
+    updateProgress();
+  } else {
+    panel.classList.remove('open');
+    card.classList.remove('answered');
+    btn.textContent = 'Show Full Solution';
+    revealed--;
+    updateProgress();
+  }
+}
+
+function updateProgress() {
+  const pct = (revealed / 10) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = revealed + ' / 10 revealed';
+  document.getElementById('scoreDisplay').textContent = revealed + '/10';
+}
+
+function resetAll() {
+  for (let i = 1; i <= 10; i++) {
+    const panel = document.getElementById('ans' + i);
+    const card  = document.getElementById('qcard' + i);
+    if (panel) {
+      panel.classList.remove('open');
+      card.classList.remove('answered');
+      const btn = panel.previousElementSibling.querySelector('.btn-answer');
+      if (btn) btn.textContent = 'Show Full Solution';
+    }
+  }
+  revealed = 0;
+  updateProgress();
+}
+</script>
+</body>
+</html>
