@@ -757,7 +757,7 @@
                         </div>
                         <div class="flex justify-between" style="font-size: 1.75rem;">
                             <span style="font-weight: 800; color: #0F172A;">TOTAL:</span>
-                            <span id="invTotal" style="font-weight: 900; background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Rp 0</span>
+                            <span id="invTotal" style="font-weight: 900; background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color:#6366F1 ;">Rp 0</span>
                         </div>
                     </div>
                     <div style="height: 1px; background: #E2E8F0; margin: 2rem 0;"></div>
@@ -855,18 +855,22 @@ const priceData = {
     group: {
         np: { 10: { normal: 1890000, extra: 1701000 }, 20: { normal: 3580000, extra: 3222000 }, 40: { normal: 6760000, extra: 6084000 }, 80: { normal: 12720000, extra: 11448000 }, 120: { normal: 16680000, extra: 15012000 } },
         nd: { 10: { normal: 1590000, extra: 1431000 }, 20: { normal: 2980000, extra: 2681000 }, 40: { normal: 5560000, extra: 5004000 }, 80: { normal: 10320000, extra: 9288000 }, 120: { normal: 14280000, extra: 12852000 } },
-        tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } }
+        tcp: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4760000, extra: 4284000 }, 80: { normal: 8720000, extra: 7848000 }, 120: { normal: 11880000, extra: 10692000 } },
+         kop: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 4360000, extra: 4284000 }, 80: { normal: 7120000, extra: 7848000 }, 120: { normal: 9600000, extra: 10692000 } }
         
     },
     private: {
         np: { 10: { normal: 3900000, extra: 3510000 }, 20: { normal: 7380000, extra: 6642000 }, 40: { normal: 13960000, extra: 12564000 }, 80: { normal: 26240000, extra: 23616000 }, 120: { normal: 36960000, extra: 33264000 } },
         nd: { 10: { normal: 3080000, extra: 2772000 }, 20: { normal: 5740000, extra: 5166000 }, 40: { normal: 10680000, extra: 9612000 }, 80: { normal: 19680000, extra: 17712000 }, 120: { normal: 27120000, extra: 24408000 } },
-        tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } }
+        tcp: { 10: { normal: 2670000, extra: 2403000 }, 20: { normal: 4920000, extra: 4428000 }, 40: { normal: 9040000, extra: 8136000 }, 80: { normal: 16400000, extra: 14760000 }, 120: { normal: 22200000, extra: 19980000 } },
+        kop: { 10: { normal: 1390000, extra: 1251000 }, 20: { normal: 2580000, extra: 2322000 }, 40: { normal: 8200000, extra: 4284000 }, 80: { normal: 14800000, extra: 7848000 }, 120: { normal: 19680000, extra: 10692000 } }
     },
     premium: {
         np: { 10: { normal: 2400000, extra: 2160000 }, 20: { normal: 4540000, extra: 4086000 }, 40: { normal: 8560000, extra: 7704000 }, 80: { normal: 16160000, extra: 14544000 }, 120: { normal: 21240000, extra: 19116000 } },
         nd: { 10: { normal: 2020000, extra: 1818000 }, 20: { normal: 3780000, extra: 3402000 }, 40: { normal: 7080000, extra: 6372000 }, 80: { normal: 13120000, extra: 11808000 }, 120: { normal: 18120000, extra: 16308000 } },
         tcp: { 10: { normal: 1770000, extra: 1593000 }, 20: { normal: 3280000, extra: 2952000 }, 40: { normal: 6040000, extra: 5436000 }, 80: { normal: 11120000, extra: 10008000 }, 120: { normal: 15120000, extra: 13608000 } }
+       
+    },
        
     }
 };
