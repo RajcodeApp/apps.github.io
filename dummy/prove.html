@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Bukti Transfer - Edukasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Logo Wondr Style - FIXED */
+        .wondr-container {
+            text-align: center;
+            padding: 24px 0;
+        }
+        
+        .wondr-text {
+            font-size: 60px;
+            font-weight: 800;
+            color: #FF8C00;
+            letter-spacing: -1px;
+            line-height: 1;
+            display: inline-block;
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .cyan-line {
+            width: 50px;
+            height: 4px;
+            background-color: #00CED1;
+            margin: 2px auto 8px auto;
+            border-radius: 2px;
+        }
+        
+        .by-bni-text {
+            font-size: 14px;
+            color: #000;
+            font-weight: 400;
+        }
+        
+        .by-bni-text .bni-bold {
+            font-weight: 700;
+            color: #0066CC;
+        }
+        
+        /* Receipt Content */
+        #receiptPreview {
+            background: white;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+        
+        .receipt-content {
+            padding: 0 24px 24px 24px;
+        }
+        
+        .transfer-success {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .amount-big {
+            font-size: 40px;
+            font-weight: 700;
+            color: #000;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .datetime-text {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        
+        .refid-text {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-block {
+            border-top: 1px solid #E0E0E0;
+            padding-top: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 12px;
+        }
+        
+        .info-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 4px;
+        }
+        
+        .info-detail {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .detail-label-left {
+            font-size: 15px;
+            color: #666;
+            flex: 0 0 auto;
+            max-width: 45%;
+        }
+        
+        .detail-value-right {
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+            text-align: right;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .total-section {
+            border-top: 2px solid #CCC;
+            padding-top: 16px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .total-amount {
+            font-size: 30px;
+            font-weight: 700;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-blue-50 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
+                <h1 class="text-3xl font-bold mb-2">Simulator Bukti Transfer</h1>
+                <p class="text-orange-100">Sistem Pembelajaran & Edukasi - Wondr by BNI</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 p-8">
+                <!-- Form Input -->
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Form Input Data</h2>
+                    
+                    <!-- Penerima -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Nama Penerima</label>
+                        <input type="text" id="penerima" value="" placeholder="Masukkan nama penerima"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Bank Penerima</label>
+                        <input type="text" id="bankPenerima" value="BTN" placeholder="Contoh: BNI, BCA, Mandiri"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Rekening Penerima</label>
+                        <input type="text" id="rekening" value="" placeholder="Masukkan nomor rekening"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <!-- Sumber Dana -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Sumber Dana</label>
+                        <input type="text" id="sumberDana" value="" placeholder="Masukkan nama sumber dana"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Akhiran Rekening (3 digit terakhir)</label>
+                        <input type="text" id="rekeningAkhir" value="" maxlength="3" placeholder="Contoh: 658"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <!-- Nominal -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Nominal Transfer (Rp)</label>
+                        <input type="number" id="nominal" value="0" placeholder="Masukkan nominal"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Biaya Transaksi (Rp)</label>
+                        <input type="number" id="biayaTransaksi" value="2500" placeholder="Masukkan biaya"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <!-- Metode Transfer -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Metode Transfer</label>
+                        <input type="text" id="metodeTransfer" value="BI-FAST" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">BIZ ID</label>
+                        <input type="text" id="bizId" value="20260110BNINIDJA010002 40914442" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Tujuan Transaksi</label>
+                        <input type="text" id="tujuan" value="Lainnya" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Catatan</label>
+                        <textarea id="catatan" rows="3" placeholder="Masukkan catatan (opsional)"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition"></textarea>
+                    </div>
+
+                    <!-- Tanggal & Waktu -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">Tanggal</label>
+                            <input type="text" id="tanggal" value="" placeholder="DD Mon YYYY"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">Waktu</label>
+                            <input type="text" id="waktu" value="" placeholder="HH:MM:SS WIB"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Ref ID</label>
+                        <input type="text" id="refId" value="" placeholder="Otomatis dari tanggal"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition">
+                    </div>
+
+                    <button onclick="generateDateTime()" 
+                        class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                        </svg>
+                        Generate Tanggal, Waktu & Ref ID Sekarang
+                    </button>
+                </div>
+
+                <!-- Preview Bukti Transfer -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Preview Bukti Transfer</h2>
+                    
+                    <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" id="receiptPreview">
+                        <!-- Logo Wondr -->
+                        <div class="wondr-container">
+                            <div class="wondr-text">wondr</div>
+                            <div class="cyan-line"></div>
+                            <div class="by-bni-text">by <span class="bni-bold">BNI</span></div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="receipt-content">
+                            <div class="transfer-success">Transfer berhasil</div>
+                            
+                            <div class="amount-big" id="previewNominal">Rp0</div>
+                            
+                            <div class="datetime-text">
+                                <span id="previewTanggal">-</span> • <span id="previewWaktu">-</span> •
+                            </div>
+                            
+                            <div class="refid-text">Ref ID: <span id="previewRefId">-</span></div>
+
+                            <!-- Penerima -->
+                            <div class="section-block">
+                                <div class="section-title">Penerima</div>
+                                <div class="info-name" id="previewPenerima">-</div>
+                                <div class="info-detail"><span id="previewBankPenerima">BTN</span> • <span id="previewRekening">-</span></div>
+                            </div>
+
+                            <!-- Sumber Dana -->
+                            <div class="section-block">
+                                <div class="section-title">Sumber dana</div>
+                                <div class="info-name" id="previewSumberDana">-</div>
+                                <div class="info-detail">******<span id="previewRekeningAkhir">-</span></div>
+                            </div>
+
+                            <!-- Detail Transfer -->
+                            <div class="section-block">
+                                <div class="section-title">Detail transfer</div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">Nominal</div>
+                                    <div class="detail-value-right" id="previewNominalDetail">Rp0</div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">Biaya transaksi</div>
+                                    <div class="detail-value-right" id="previewBiaya">Rp2.500</div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">Metode transfer</div>
+                                    <div class="detail-value-right" id="previewMetode">BI-FAST</div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">BIZ ID</div>
+                                    <div class="detail-value-right" id="previewBizId" style="font-size: 13px;">-</div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">Tujuan transaksi</div>
+                                    <div class="detail-value-right" id="previewTujuan">Lainnya</div>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <div class="detail-label-left">Catatan</div>
+                                    <div class="detail-value-right" id="previewCatatan" style="font-size: 14px; line-height: 1.4;">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="total-section">
+                                <div class="total-label">Total</div>
+                                <div class="total-amount" id="previewTotal">Rp2.500</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+                        <p class="font-semibold mb-1">📚 Catatan Pembelajaran:</p>
+                        <p>Ini adalah simulator untuk tujuan edukasi. Preview akan otomatis terupdate sesuai input Anda.</p>
+                    </div>
+
+                    <button onclick="screenshotReceipt()" 
+                        class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition flex items-center justify-center gap-2 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        📸 Screenshot Bukti Transfer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-6 text-center text-gray-600 text-sm bg-white rounded-lg p-4 shadow">
+            <p class="font-semibold text-orange-600">⚠️ Disclaimer Pembelajaran</p>
+            <p class="mt-1">Aplikasi ini dibuat untuk tujuan pembelajaran dan edukasi sistem pembayaran digital.</p>
+            <p>Tidak untuk disalahgunakan untuk penipuan atau kegiatan ilegal.</p>
+        </div>
+    </div>
+
+    <script>
+        // Format Rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID').format(angka);
+        }
+
+        // Generate Ref ID dengan format YYYYMMDDHHMMSS + random
+        function generateRefId() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            const second = String(now.getSeconds()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000);
+            return `${year}${month}${day}${hour}${minute}${second}${random}`;
+        }
+
+        // Generate BIZ ID dengan format YYYYMMDD + suffix
+        function generateBizId() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random1 = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            const random2 = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+            return `${year}${month}${day}BNINIDJA${random1} ${random2}`;
+        }
+
+        // Generate Tanggal & Waktu
+        function generateDateTime() {
+            const now = new Date();
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const tanggal = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            const waktu = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+            
+            document.getElementById('tanggal').value = tanggal;
+            document.getElementById('waktu').value = waktu;
+            document.getElementById('refId').value = generateRefId();
+            document.getElementById('bizId').value = generateBizId();
+            
+            updatePreview();
+        }
+
+        // Update Preview
+        function updatePreview() {
+            // Ambil semua nilai input
+            const penerima = document.getElementById('penerima').value || '-';
+            const bankPenerima = document.getElementById('bankPenerima').value || 'BTN';
+            const rekening = document.getElementById('rekening').value || '-';
+            const sumberDana = document.getElementById('sumberDana').value || '-';
+            const rekeningAkhir = document.getElementById('rekeningAkhir').value || '-';
+            const nominal = document.getElementById('nominal').value;
+            const biayaTransaksi = document.getElementById('biayaTransaksi').value;
+            const metodeTransfer = document.getElementById('metodeTransfer').value;
+            const bizId = document.getElementById('bizId').value || '-';
+            const tujuan = document.getElementById('tujuan').value;
+            const catatan = document.getElementById('catatan').value || '-';
+            const tanggal = document.getElementById('tanggal').value || '-';
+            const waktu = document.getElementById('waktu').value || '-';
+            const refId = document.getElementById('refId').value || '-';
+
+            // Update preview
+            document.getElementById('previewPenerima').textContent = penerima;
+            document.getElementById('previewBankPenerima').textContent = bankPenerima;
+            document.getElementById('previewRekening').textContent = rekening;
+            document.getElementById('previewSumberDana').textContent = sumberDana;
+            document.getElementById('previewRekeningAkhir').textContent = rekeningAkhir;
+            document.getElementById('previewNominal').textContent = 'Rp' + formatRupiah(nominal || 0);
+            document.getElementById('previewNominalDetail').textContent = 'Rp' + formatRupiah(nominal || 0);
+            document.getElementById('previewBiaya').textContent = 'Rp' + formatRupiah(biayaTransaksi || 0);
+            document.getElementById('previewMetode').textContent = metodeTransfer;
+            document.getElementById('previewBizId').textContent = bizId;
+            document.getElementById('previewTujuan').textContent = tujuan;
+            document.getElementById('previewCatatan').textContent = catatan;
+            document.getElementById('previewTanggal').textContent = tanggal;
+            document.getElementById('previewWaktu').textContent = waktu;
+            document.getElementById('previewRefId').textContent = refId;
+
+            // Hitung total
+            const total = (parseInt(nominal) || 0) + (parseInt(biayaTransaksi) || 0);
+            document.getElementById('previewTotal').textContent = 'Rp' + formatRupiah(total);
+        }
+
+        // Event listeners untuk semua input
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('input', updatePreview);
+        });
+
+        // Screenshot Function
+        function screenshotReceipt() {
+            const element = document.getElementById('receiptPreview');
+            const button = event.target.closest('button');
+            
+            // Disable button sementara
+            button.disabled = true;
+            button.innerHTML = `
+                <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                Memproses...
+            `;
+
+            html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            }).then(canvas => {
+                // Convert to blob
+                canvas.toBlob(function(blob) {
+                    // Create download link
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().getTime();
+                    link.download = `bukti-transfer-${timestamp}.png`;
+                    link.href = url;
+                    link.click();
+                    
+                    // Cleanup
+                    URL.revokeObjectURL(url);
+                    
+                    // Re-enable button
+                    button.disabled = false;
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        📸 Screenshot Bukti Transfer
+                    `;
+                    
+                    // Show success message
+                    showNotification('✅ Screenshot berhasil disimpan!');
+                }, 'image/png');
+            }).catch(error => {
+                console.error('Error:', error);
+                button.disabled = false;
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    📸 Screenshot Bukti Transfer
+                `;
+                showNotification('❌ Gagal membuat screenshot');
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-fade-in';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-generate saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function() {
+            generateDateTime();
+        });
+    </script>
+</body>
+</html>
