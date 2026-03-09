@@ -433,6 +433,142 @@
             transform: translateY(-4px);
         }
 
+        /* ===== DATE FILTER CARD ===== */
+        .date-filter-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .date-filter-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .date-filter-label {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .date-filter-label i {
+            color: var(--primary-color);
+            font-size: 1.125rem;
+        }
+
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .date-input-wrapper {
+            position: relative;
+        }
+
+        .date-input-wrapper input[type="date"] {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 160px;
+        }
+
+        .date-input-wrapper input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .quick-date-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-date-btn {
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .quick-date-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .quick-date-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: var(--shadow-colored);
+        }
+
+        .date-summary {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .date-summary-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-summary-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-summary-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .date-summary-value.income {
+            color: var(--success-color);
+        }
+
+        .date-summary-value.expense {
+            color: var(--danger-color);
+        }
+
+        .date-summary-value.profit {
+            color: var(--primary-color);
+        }
+
         /* ===== PREMIUM STATS CARDS ===== */
         .stats-grid {
             display: grid;
@@ -1245,6 +1381,19 @@
                 width: 60px;
                 height: 60px;
             }
+
+            .date-filter-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-input-group {
+                flex-direction: column;
+            }
+
+            .date-summary {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Loading Animation */
@@ -1350,6 +1499,45 @@
                             <i class="fas fa-plus"></i>
                             Tambah Transaksi
                         </button>
+                    </div>
+                </div>
+
+                <!-- Date Filter Card -->
+                <div class="date-filter-card">
+                    <div class="date-filter-content">
+                        <div class="date-filter-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Filter Periode</span>
+                        </div>
+                        <div class="date-input-group">
+                            <div class="date-input-wrapper">
+                                <input type="date" id="startDate" onchange="applyDateFilter()">
+                            </div>
+                            <span style="color: var(--text-secondary); font-weight: 600;">sampai</span>
+                            <div class="date-input-wrapper">
+                                <input type="date" id="endDate" onchange="applyDateFilter()">
+                            </div>
+                        </div>
+                        <div class="quick-date-filters">
+                            <button class="quick-date-btn active" onclick="setQuickFilter('today')">Hari Ini</button>
+                            <button class="quick-date-btn" onclick="setQuickFilter('week')">Minggu Ini</button>
+                            <button class="quick-date-btn" onclick="setQuickFilter('month')">Bulan Ini</button>
+                            <button class="quick-date-btn" onclick="setQuickFilter('all')">Semua</button>
+                        </div>
+                    </div>
+                    <div class="date-summary" id="dateSummary">
+                        <div class="date-summary-item">
+                            <div class="date-summary-label">Pemasukan</div>
+                            <div class="date-summary-value income" id="filterIncome">Rp 0</div>
+                        </div>
+                        <div class="date-summary-item">
+                            <div class="date-summary-label">Pengeluaran</div>
+                            <div class="date-summary-value expense" id="filterExpense">Rp 0</div>
+                        </div>
+                        <div class="date-summary-item">
+                            <div class="date-summary-label">Keuntungan</div>
+                            <div class="date-summary-value profit" id="filterProfit">Rp 0</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1779,6 +1967,13 @@
             THEME: 'fintrack_theme'
         };
 
+        // ===== DATE FILTER STATE =====
+        let dateFilterState = {
+            startDate: null,
+            endDate: null,
+            activeFilter: 'today'
+        };
+
         // ===== INITIALIZE APP =====
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
@@ -1790,6 +1985,7 @@
             updateCategoryOptions();
             loadData();
             setupEventListeners();
+            setQuickFilter('today'); // Set default filter to today
             updateDashboard();
             renderTransactions();
             renderBudgets();
@@ -1809,6 +2005,102 @@
 
             // Theme toggle
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        }
+
+        // ===== DATE FILTER FUNCTIONS =====
+        function setQuickFilter(filter) {
+            // Update active button
+            document.querySelectorAll('.quick-date-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const today = new Date();
+            let startDate, endDate;
+
+            switch(filter) {
+                case 'today':
+                    startDate = endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'week':
+                    const firstDayOfWeek = new Date(today);
+                    firstDayOfWeek.setDate(today.getDate() - today.getDay());
+                    startDate = firstDayOfWeek.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'all':
+                    startDate = null;
+                    endDate = null;
+                    break;
+            }
+
+            document.getElementById('startDate').value = startDate || '';
+            document.getElementById('endDate').value = endDate || '';
+            
+            dateFilterState = { startDate, endDate, activeFilter: filter };
+            applyDateFilter();
+        }
+
+        function applyDateFilter() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            dateFilterState.startDate = startDate || null;
+            dateFilterState.endDate = endDate || null;
+
+            updateFilteredStats();
+        }
+
+        function updateFilteredStats() {
+            const transactions = getTransactions();
+            const filtered = filterTransactionsByDate(transactions);
+
+            const income = filtered
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const expense = filtered
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const profit = income - expense;
+
+            document.getElementById('filterIncome').textContent = formatRupiah(income);
+            document.getElementById('filterExpense').textContent = formatRupiah(expense);
+            document.getElementById('filterProfit').textContent = formatRupiah(profit);
+
+            // Update profit color
+            const profitElement = document.getElementById('filterProfit');
+            if (profit >= 0) {
+                profitElement.className = 'date-summary-value profit';
+            } else {
+                profitElement.className = 'date-summary-value expense';
+            }
+        }
+
+        function filterTransactionsByDate(transactions) {
+            if (!dateFilterState.startDate && !dateFilterState.endDate) {
+                return transactions;
+            }
+
+            return transactions.filter(t => {
+                const transDate = new Date(t.date);
+                const start = dateFilterState.startDate ? new Date(dateFilterState.startDate) : null;
+                const end = dateFilterState.endDate ? new Date(dateFilterState.endDate) : null;
+
+                if (start && end) {
+                    return transDate >= start && transDate <= end;
+                } else if (start) {
+                    return transDate >= start;
+                } else if (end) {
+                    return transDate <= end;
+                }
+                return true;
+            });
         }
 
         // ===== NAVIGATION =====
@@ -2001,6 +2293,7 @@
             saveTransactionsToStorage(transactions);
             closeModal('transactionModal');
             updateDashboard();
+            updateFilteredStats();
             renderTransactions();
             updateCharts();
             checkBudgetWarnings();
@@ -2014,6 +2307,7 @@
             saveTransactionsToStorage(transactions);
             
             updateDashboard();
+            updateFilteredStats();
             renderTransactions();
             updateCharts();
             checkBudgetWarnings();
