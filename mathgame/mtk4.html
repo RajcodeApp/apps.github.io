@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍎 Kurang-Kurangan Seru!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #87CEEB;
+    --grass: #5DBB63;
+    --sun: #FFD700;
+    --cloud: #fff;
+    --orange: #FF6B35;
+    --pink: #FF85A1;
+    --purple: #A855F7;
+    --teal: #14B8A6;
+    --yellow: #FCD34D;
+    --red: #EF4444;
+    --green: #22C55E;
+    --bg: #FFF9F0;
+    --card: #FFFFFF;
+    --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(180deg, #87CEEB 0%, #B0E2FF 40%, #C8F0C8 70%, #5DBB63 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Clouds */
+  .cloud {
+    position: fixed;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud-1 { width: 120px; height: 40px; top: 8%; left: -150px; animation: floatCloud 18s linear infinite; }
+  .cloud-1::before { width: 60px; height: 60px; top: -30px; left: 15px; }
+  .cloud-1::after { width: 40px; height: 40px; top: -20px; left: 55px; }
+  .cloud-2 { width: 90px; height: 30px; top: 18%; left: -120px; animation: floatCloud 24s linear infinite 6s; }
+  .cloud-2::before { width: 45px; height: 45px; top: -22px; left: 10px; }
+  .cloud-2::after { width: 30px; height: 30px; top: -15px; left: 40px; }
+  .cloud-3 { width: 150px; height: 50px; top: 5%; left: -180px; animation: floatCloud 20s linear infinite 10s; }
+  .cloud-3::before { width: 70px; height: 70px; top: -35px; left: 20px; }
+  .cloud-3::after { width: 50px; height: 50px; top: -28px; left: 70px; }
+
+  @keyframes floatCloud {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100vw + 200px)); }
+  }
+
+  /* Sun */
+  .sun {
+    position: fixed;
+    top: 20px; right: 40px;
+    width: 70px; height: 70px;
+    background: var(--sun);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(255,215,0,0.6), 0 0 60px rgba(255,215,0,0.3);
+    animation: sunPulse 3s ease-in-out infinite;
+    z-index: 0;
+  }
+  .sun::before {
+    content: '☀️';
+    font-size: 50px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  @keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 30px rgba(255,215,0,0.6), 0 0 60px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 50px rgba(255,215,0,0.9), 0 0 100px rgba(255,215,0,0.5); }
+  }
+
+  /* Main container */
+  .container {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    color: #fff;
+    text-shadow: 3px 3px 0 #FF6B35, 6px 6px 0 rgba(0,0,0,0.15);
+    letter-spacing: 1px;
+    animation: bounceIn 0.8s cubic-bezier(0.68,-0.55,0.265,1.55);
+  }
+  .header .subtitle {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.95);
+    font-weight: 700;
+    margin-top: 4px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+    border-radius: 20px;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+  }
+  .score-item {
+    text-align: center;
+  }
+  .score-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .score-value {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+  .score-stars { color: #FCD34D; }
+  .score-streak { color: #FF6B35; }
+  .score-level { color: #A855F7; }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+    height: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #22C55E, #FCD34D);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+
+  /* Game card */
+  .game-card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 28px;
+    padding: 24px 20px;
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+    margin-bottom: 16px;
+    animation: slideUp 0.5s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes bounceIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Question display */
+  .question-area {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .question-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .question-text .num { color: var(--purple); }
+  .question-text .op { color: var(--orange); font-size: 0.8em; }
+  .question-text .num2 { color: var(--pink); }
+  .question-text .eq { color: #94a3b8; font-size: 0.8em; }
+
+  /* Answer drop zone */
+  .drop-zone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; height: 70px;
+    border: 4px dashed #CBD5E1;
+    border-radius: 18px;
+    background: #F8FAFC;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: #CBD5E1;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--teal);
+    background: #ECFDF5;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 4px rgba(20,184,166,0.25);
+  }
+  .drop-zone.correct {
+    border-color: var(--green);
+    background: #DCFCE7;
+    color: var(--green);
+    animation: correctPulse 0.6s ease;
+  }
+  .drop-zone.wrong {
+    border-color: var(--red);
+    background: #FEE2E2;
+    color: var(--red);
+    animation: shake 0.5s ease;
+  }
+  .drop-zone .filled-answer {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: #1e293b;
+  }
+
+  @keyframes correctPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+  }
+
+  /* Visual objects area */
+  .objects-area {
+    margin: 12px 0 20px;
+  }
+  .objects-label {
+    font-weight: 800;
+    color: #64748B;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .objects-display {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    min-height: 60px;
+    padding: 10px;
+    background: #FFF7ED;
+    border-radius: 16px;
+    border: 2px solid #FED7AA;
+  }
+  .obj-item {
+    font-size: 2rem;
+    line-height: 1;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+  .obj-item.removed {
+    opacity: 0;
+    transform: scale(0) rotate(20deg);
+  }
+  .obj-item.removing {
+    animation: popOut 0.4s ease forwards;
+  }
+  @keyframes popOut {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3) rotate(-15deg); opacity: 0.5; }
+    100% { transform: scale(0) rotate(20deg); opacity: 0; }
+  }
+
+  /* Answer tiles */
+  .tiles-section {
+    margin-top: 4px;
+  }
+  .tiles-label {
+    font-weight: 800;
+    color: #64748B;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .tiles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .answer-tile {
+    width: 70px; height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15), var(--shadow);
+    position: relative;
+    touch-action: none;
+  }
+  .answer-tile:active { cursor: grabbing; }
+  .answer-tile.dragging {
+    transform: scale(1.1) rotate(-3deg);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    z-index: 1000;
+    opacity: 0.9;
+  }
+  .answer-tile.used {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.9);
+  }
+
+  /* Tile colors */
+  .tile-c0 { background: linear-gradient(135deg, #FF6B35, #FF8C61); color: white; }
+  .tile-c1 { background: linear-gradient(135deg, #A855F7, #C084FC); color: white; }
+  .tile-c2 { background: linear-gradient(135deg, #14B8A6, #2DD4BF); color: white; }
+  .tile-c3 { background: linear-gradient(135deg, #F59E0B, #FCD34D); color: white; }
+  .tile-c4 { background: linear-gradient(135deg, #EC4899, #F9A8D4); color: white; }
+  .tile-c5 { background: linear-gradient(135deg, #22C55E, #86EFAC); color: white; }
+
+  /* Tap to answer (mobile-friendly alternative) */
+  .tap-hint {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  /* Feedback overlay */
+  .feedback {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: white;
+    border-radius: 28px;
+    padding: 30px 50px;
+    text-align: center;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.25);
+    z-index: 100;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55);
+  }
+  .feedback.show {
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+  .feedback-emoji { font-size: 4rem; display: block; margin-bottom: 8px; }
+  .feedback-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+  .feedback.correct-fb .feedback-text { color: var(--green); }
+  .feedback.wrong-fb .feedback-text { color: var(--red); }
+  .feedback-sub { font-size: 1rem; color: #64748B; font-weight: 700; }
+
+  /* Particles */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 200;
+    font-size: 1.5rem;
+    animation: particleFly 1s ease forwards;
+  }
+  @keyframes particleFly {
+    0% { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; }
+  }
+
+  /* Level complete */
+  .level-complete {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .level-complete.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .level-card {
+    background: white;
+    border-radius: 32px;
+    padding: 40px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    animation: bounceIn 0.5s 0.3s cubic-bezier(0.68,-0.55,0.265,1.55) both;
+  }
+  .level-card h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5rem;
+    color: var(--purple);
+    margin: 12px 0 8px;
+  }
+  .level-card p { font-size: 1rem; color: #64748B; font-weight: 700; margin-bottom: 24px; }
+  .btn-next {
+    background: linear-gradient(135deg, #A855F7, #6366F1);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 40px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(99,102,241,0.4);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-next:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(99,102,241,0.4);
+  }
+  .stars-display { font-size: 2.5rem; margin: 8px 0; }
+
+  /* Ghost drag element */
+  #drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%) scale(1.15) rotate(-5deg);
+    opacity: 0.92;
+    display: none;
+  }
+
+  /* Bounce animation for tiles on load */
+  .answer-tile { animation: tileAppear 0.4s cubic-bezier(0.68,-0.55,0.265,1.55) both; }
+  .answer-tile:nth-child(1) { animation-delay: 0.1s; }
+  .answer-tile:nth-child(2) { animation-delay: 0.2s; }
+  .answer-tile:nth-child(3) { animation-delay: 0.3s; }
+  .answer-tile:nth-child(4) { animation-delay: 0.4s; }
+  .answer-tile:nth-child(5) { animation-delay: 0.5s; }
+  @keyframes tileAppear {
+    from { transform: scale(0) rotate(-10deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* Grass decoration */
+  .grass-strip {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: #4CAF50;
+    z-index: 0;
+  }
+  .grass-strip::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: 0; right: 0;
+    height: 25px;
+    background: radial-gradient(ellipse 20px 12px at 10px 12px, #5DBB63 100%, transparent 100%),
+                radial-gradient(ellipse 20px 12px at 30px 12px, #5DBB63 100%, transparent 100%),
+                radial-gradient(ellipse 20px 12px at 50px 12px, #5DBB63 100%, transparent 100%);
+    background-size: 40px 25px;
+  }
+
+  /* Little animals */
+  .deco-animal {
+    position: fixed;
+    bottom: 55px;
+    font-size: 2.5rem;
+    z-index: 1;
+    animation: animalBounce 2s ease-in-out infinite;
+  }
+  .deco-animal:nth-child(1) { left: 20px; animation-delay: 0s; }
+  .deco-animal:nth-child(2) { right: 20px; animation-delay: 0.5s; }
+  @keyframes animalBounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Decorations -->
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+<div class="sun"></div>
+<div class="grass-strip"></div>
+<div class="deco-animal">🐰</div>
+<div class="deco-animal">🦊</div>
+
+<!-- Ghost element for drag -->
+<div id="drag-ghost"></div>
+
+<!-- Feedback popup -->
+<div class="feedback" id="feedback">
+  <span class="feedback-emoji" id="fb-emoji">🎉</span>
+  <div class="feedback-text" id="fb-text">Benar!</div>
+  <div class="feedback-sub" id="fb-sub">Keren sekali!</div>
+</div>
+
+<!-- Level complete -->
+<div class="level-complete" id="levelComplete">
+  <div class="level-card">
+    <div style="font-size:4rem">🏆</div>
+    <h2 id="lc-title">Level Selesai!</h2>
+    <div class="stars-display" id="lc-stars">⭐⭐⭐</div>
+    <p id="lc-desc">Kamu luar biasa!</p>
+    <button class="btn-next" onclick="nextLevel()">Level Berikutnya →</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🎈 Hitung Yuk!</h1>
+    <div class="subtitle">Game Kurang-Kurangan Seru untuk Anak Hebat!</div>
+  </div>
+
+  <!-- Score bar -->
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-label">Bintang</div>
+      <div class="score-value score-stars" id="scoreDisplay">0 ⭐</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">Streak</div>
+      <div class="score-value score-streak" id="streakDisplay">0 🔥</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">Level</div>
+      <div class="score-value score-level" id="levelDisplay">1 🌟</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <!-- Game card -->
+  <div class="game-card" id="gameCard">
+    <!-- Question -->
+    <div class="question-area">
+      <div class="question-text">
+        <span class="num" id="q-num1">8</span>
+        <span class="op">−</span>
+        <span class="num2" id="q-num2">3</span>
+        <span class="eq">=</span>
+        <div class="drop-zone" id="dropZone" 
+          ondragover="handleDragOver(event)" 
+          ondrop="handleDrop(event)"
+          ondragleave="handleDragLeave(event)">
+          <span id="dropPlaceholder">?</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual objects -->
+    <div class="objects-area">
+      <div class="objects-label">Lihat Gambarnya 👇</div>
+      <div class="objects-display" id="objectsDisplay"></div>
+    </div>
+
+    <!-- Answer tiles -->
+    <div class="tiles-section">
+      <div class="tiles-label">Seret Jawaban ke Kotak ☝️</div>
+      <div class="tiles-grid" id="tilesGrid"></div>
+      <div class="tap-hint">💡 Seret angka atau klik untuk menjawab!</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Game State =====
+let score = 0;
+let streak = 0;
+let level = 1;
+let currentQ = 0;
+let totalQ = 5;
+let currentQuestion = null;
+let dragValue = null;
+let isDragging = false;
+
+// Emojis per level theme
+const themes = [
+  { emoji: '🍎', name: 'Apel' },
+  { emoji: '⭐', name: 'Bintang' },
+  { emoji: '🐝', name: 'Lebah' },
+  { emoji: '🌸', name: 'Bunga' },
+  { emoji: '🎈', name: 'Balon' },
+  { emoji: '🍕', name: 'Pizza' },
+  { emoji: '🦋', name: 'Kupu-kupu' },
+  { emoji: '🚀', name: 'Roket' },
+];
+
+const correctPhrases = [
+  ['🎉', 'Benar!', 'Hebat sekali! Kamu pintar!'],
+  ['🌟', 'Mantap!', 'Luar biasa! Terus semangat!'],
+  ['🎊', 'Yeay!', 'Kamu jago banget!'],
+  ['🏆', 'Keren!', 'Jawaban sempurna!'],
+  ['🥳', 'Wooow!', 'Kamu memang juara!'],
+];
+const wrongPhrases = [
+  ['😅', 'Hampir!', 'Coba lagi ya, kamu pasti bisa!'],
+  ['💪', 'Semangat!', 'Hitung lagi pelan-pelan!'],
+  ['🤔', 'Belum!', 'Yuk coba sekali lagi!'],
+];
+
+// Generate question based on level
+function generateQuestion() {
+  let max = Math.min(5 + level * 2, 20);
+  let minNum = Math.max(2, level);
+  
+  let a = Math.floor(Math.random() * (max - minNum)) + minNum + 1;
+  let b = Math.floor(Math.random() * a);
+  if (b === 0) b = 1;
+  let answer = a - b;
+
+  // Generate wrong answers
+  let options = new Set([answer]);
+  while (options.size < 5) {
+    let wrong = answer + (Math.floor(Math.random() * 6) - 3);
+    if (wrong >= 0 && wrong !== answer && wrong <= max) {
+      options.add(wrong);
+    }
+  }
+  
+  let optArr = [...options].sort(() => Math.random() - 0.5);
+  return { a, b, answer, options: optArr };
+}
+
+// Render question
+function renderQuestion() {
+  currentQuestion = generateQuestion();
+  const { a, b, answer, options } = currentQuestion;
+  const theme = themes[(level - 1) % themes.length];
+
+  document.getElementById('q-num1').textContent = a;
+  document.getElementById('q-num2').textContent = b;
+
+  // Reset drop zone
+  const dz = document.getElementById('dropZone');
+  dz.className = 'drop-zone';
+  dz.innerHTML = '<span id="dropPlaceholder">?</span>';
+
+  // Render objects
+  const od = document.getElementById('objectsDisplay');
+  od.innerHTML = '';
+  for (let i = 0; i < a; i++) {
+    const el = document.createElement('span');
+    el.className = 'obj-item';
+    el.textContent = theme.emoji;
+    el.id = 'obj-' + i;
+    od.appendChild(el);
+  }
+
+  // Render tiles
+  const tg = document.getElementById('tilesGrid');
+  tg.innerHTML = '';
+  options.forEach((opt, idx) => {
+    const tile = document.createElement('div');
+    tile.className = `answer-tile tile-c${idx % 6}`;
+    tile.textContent = opt;
+    tile.dataset.value = opt;
+    tile.draggable = true;
+    
+    // Drag events (desktop)
+    tile.addEventListener('dragstart', (e) => handleDragStart(e, opt, tile));
+    tile.addEventListener('dragend', handleDragEnd);
+    
+    // Touch events (mobile)
+    tile.addEventListener('touchstart', (e) => handleTouchStart(e, opt, tile), { passive: false });
+    tile.addEventListener('touchmove', handleTouchMove, { passive: false });
+    tile.addEventListener('touchend', handleTouchEnd, { passive: false });
+    
+    // Click/tap fallback
+    tile.addEventListener('click', () => handleTileClick(opt, tile));
+    
+    tg.appendChild(tile);
+  });
+
+  // Update progress
+  updateProgress();
+}
+
+// Handle drag start
+function handleDragStart(e, value, tile) {
+  dragValue = value;
+  isDragging = true;
+  tile.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'copy';
+  
+  // Custom ghost
+  const ghost = document.getElementById('drag-ghost');
+  ghost.className = tile.className.replace('dragging', '');
+  ghost.textContent = tile.textContent;
+  ghost.style.width = '70px';
+  ghost.style.height = '70px';
+  ghost.style.borderRadius = '18px';
+  ghost.style.display = 'flex';
+  ghost.style.alignItems = 'center';
+  ghost.style.justifyContent = 'center';
+  ghost.style.fontFamily = "'Fredoka One', cursive";
+  ghost.style.fontSize = '2rem';
+  ghost.style.color = 'white';
+  ghost.style.background = tile.style.background || getComputedStyle(tile).background;
+}
+
+function handleDragEnd(e) {
+  isDragging = false;
+  document.querySelectorAll('.answer-tile').forEach(t => t.classList.remove('dragging'));
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  document.getElementById('dropZone').classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  document.getElementById('dropZone').classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  if (dragValue !== null) {
+    checkAnswer(parseInt(dragValue));
+  }
+}
+
+// Touch drag
+let touchDragTile = null;
+let touchDragValue = null;
+let touchGhost = null;
+
+function handleTouchStart(e, value, tile) {
+  e.preventDefault();
+  touchDragValue = value;
+  touchDragTile = tile;
+  tile.classList.add('dragging');
+  
+  const ghost = document.getElementById('drag-ghost');
+  ghost.style.display = 'flex';
+  ghost.style.width = '70px';
+  ghost.style.height = '70px';
+  ghost.style.borderRadius = '18px';
+  ghost.style.alignItems = 'center';
+  ghost.style.justifyContent = 'center';
+  ghost.style.fontFamily = "'Fredoka One', cursive";
+  ghost.style.fontSize = '2rem';
+  ghost.style.color = 'white';
+  ghost.style.background = getComputedStyle(tile).background;
+  ghost.textContent = tile.textContent;
+  
+  const touch = e.touches[0];
+  ghost.style.left = touch.clientX + 'px';
+  ghost.style.top = touch.clientY + 'px';
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  if (!touchDragTile) return;
+  const touch = e.touches[0];
+  const ghost = document.getElementById('drag-ghost');
+  ghost.style.left = touch.clientX + 'px';
+  ghost.style.top = touch.clientY + 'px';
+  
+  // Highlight drop zone if hovering
+  const dz = document.getElementById('dropZone');
+  const rect = dz.getBoundingClientRect();
+  if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+      touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+    dz.classList.add('drag-over');
+  } else {
+    dz.classList.remove('drag-over');
+  }
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  if (!touchDragTile) return;
+  
+  const ghost = document.getElementById('drag-ghost');
+  ghost.style.display = 'none';
+  touchDragTile.classList.remove('dragging');
+  
+  const touch = e.changedTouches[0];
+  const dz = document.getElementById('dropZone');
+  const rect = dz.getBoundingClientRect();
+  dz.classList.remove('drag-over');
+  
+  if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+      touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+    checkAnswer(parseInt(touchDragValue));
+  }
+  
+  touchDragTile = null;
+  touchDragValue = null;
+}
+
+// Click fallback
+function handleTileClick(value, tile) {
+  if (tile.classList.contains('used')) return;
+  checkAnswer(parseInt(value));
+}
+
+// Check answer
+function checkAnswer(value) {
+  const { answer, a, b } = currentQuestion;
+  const dz = document.getElementById('dropZone');
+  
+  // Show answer in drop zone
+  dz.innerHTML = `<span class="filled-answer">${value}</span>`;
+  
+  // Mark tile as used
+  document.querySelectorAll('.answer-tile').forEach(t => {
+    if (parseInt(t.dataset.value) === value) {
+      t.classList.add('used');
+    }
+  });
+
+  if (value === answer) {
+    // Correct!
+    dz.classList.add('correct');
+    streak++;
+    score += 10 + (streak > 2 ? 5 : 0);
+    
+    // Animate objects being removed
+    animateRemoveObjects(a, b);
+    
+    const phrase = correctPhrases[Math.floor(Math.random() * correctPhrases.length)];
+    showFeedback(true, phrase[0], phrase[1], phrase[2]);
+    spawnParticles();
+    updateScore();
+
+    setTimeout(() => {
+      hideFeedback();
+      currentQ++;
+      if (currentQ >= totalQ) {
+        setTimeout(showLevelComplete, 300);
+      } else {
+        renderQuestion();
+      }
+    }, 1800);
+  } else {
+    // Wrong
+    dz.classList.add('wrong');
+    streak = 0;
+    
+    const phrase = wrongPhrases[Math.floor(Math.random() * wrongPhrases.length)];
+    showFeedback(false, phrase[0], phrase[1], phrase[2]);
+    updateScore();
+
+    setTimeout(() => {
+      hideFeedback();
+      // Reset drop zone to allow retrying
+      dz.className = 'drop-zone';
+      dz.innerHTML = '<span id="dropPlaceholder">?</span>';
+      // Re-enable the used tile
+      document.querySelectorAll('.answer-tile.used').forEach(t => t.classList.remove('used'));
+    }, 1500);
+  }
+}
+
+function animateRemoveObjects(a, b) {
+  // Remove b objects with animation
+  const items = document.querySelectorAll('.obj-item');
+  let removed = 0;
+  for (let i = a - 1; i >= 0 && removed < b; i--) {
+    const item = items[i];
+    setTimeout((el) => {
+      el.classList.add('removing');
+      setTimeout(() => el.classList.add('removed'), 400);
+    }, removed * 120, item);
+    removed++;
+  }
+}
+
+function showFeedback(correct, emoji, text, sub) {
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('fb-emoji').textContent = emoji;
+  document.getElementById('fb-text').textContent = text;
+  document.getElementById('fb-sub').textContent = sub;
+}
+function hideFeedback() {
+  document.getElementById('feedback').className = 'feedback';
+}
+
+function spawnParticles() {
+  const emojis = ['⭐', '🌟', '✨', '🎉', '🎊', '💫', '🏆'];
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      const x = 30 + Math.random() * 40;
+      const y = 30 + Math.random() * 40;
+      p.style.left = x + 'vw';
+      p.style.top = y + 'vh';
+      p.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+      p.style.setProperty('--ty', (Math.random() * -200 - 50) + 'px');
+      p.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1000);
+    }, i * 80);
+  }
+}
+
+function updateScore() {
+  document.getElementById('scoreDisplay').textContent = score + ' ⭐';
+  document.getElementById('streakDisplay').textContent = streak + ' 🔥';
+  document.getElementById('levelDisplay').textContent = level + ' 🌟';
+}
+
+function updateProgress() {
+  const pct = (currentQ / totalQ) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function showLevelComplete() {
+  const lc = document.getElementById('levelComplete');
+  lc.classList.add('show');
+  
+  const stars = streak >= 4 ? '⭐⭐⭐' : streak >= 2 ? '⭐⭐' : '⭐';
+  document.getElementById('lc-stars').textContent = stars;
+  document.getElementById('lc-title').textContent = `Level ${level} Selesai!`;
+  
+  const msgs = [
+    'Wah kamu hebat! Naik ke level berikutnya!',
+    'Kamu makin pintar! Ayo lanjut!',
+    'Luar biasa! Soal berikutnya lebih seru!',
+    'Kamu juara matematika! Terus semangat!',
+  ];
+  document.getElementById('lc-desc').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  
+  spawnParticles();
+  setTimeout(spawnParticles, 500);
+}
+
+function nextLevel() {
+  level++;
+  currentQ = 0;
+  streak = 0;
+  document.getElementById('levelComplete').classList.remove('show');
+  
+  // Add a few more questions at higher levels
+  totalQ = Math.min(5 + Math.floor(level / 2), 10);
+  
+  updateScore();
+  updateProgress();
+  renderQuestion();
+}
+
+// Init
+renderQuestion();
+</script>
+</body>
+</html>
