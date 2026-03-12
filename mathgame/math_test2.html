@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Test 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #5BC8F5;
+    --sun: #FFD93D;
+    --grass: #6BCB77;
+    --coral: #FF6B6B;
+    --purple: #C77DFF;
+    --navy: #1A1A5E;
+    --white: #FFFDF6;
+    --card: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(160deg, #e0f7ff 0%, #fff9e6 50%, #e6ffe8 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Floating decorations */
+  .deco {
+    position: fixed;
+    font-size: 2rem;
+    opacity: 0.15;
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .deco:nth-child(1) { top: 5%; left: 3%; animation-delay: 0s; }
+  .deco:nth-child(2) { top: 15%; right: 4%; animation-delay: 1s; }
+  .deco:nth-child(3) { top: 40%; left: 1%; animation-delay: 2s; }
+  .deco:nth-child(4) { top: 60%; right: 2%; animation-delay: 0.5s; }
+  .deco:nth-child(5) { top: 80%; left: 5%; animation-delay: 1.5s; }
+  .deco:nth-child(6) { top: 90%; right: 6%; animation-delay: 2.5s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(8deg); }
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    border-radius: 28px;
+    padding: 32px 30px 28px;
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(26,26,94,0.25);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: var(--sun);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -30px;
+    width: 120px; height: 120px;
+    background: var(--sky);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    color: var(--sun);
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  }
+  .header p {
+    color: #B0C4DE;
+    font-size: 1rem;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 16px;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: #e4e9ff;
+    border-radius: 20px;
+    height: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky), var(--purple));
+    border-radius: 20px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #7a7aaa;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 28px 26px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border: 2.5px solid transparent;
+    transition: border-color 0.3s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .question-card:hover { transform: translateY(-2px); }
+  .question-card.answered { border-color: var(--grass); }
+  .question-card.answered::after {
+    content: '✓';
+    position: absolute;
+    top: 14px; right: 18px;
+    color: var(--grass);
+    font-size: 1.3rem;
+    font-weight: 900;
+  }
+
+  .q-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: var(--navy);
+    color: var(--sun);
+    border-radius: 50%;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .q-emoji {
+    font-size: 1.6rem;
+    margin-left: 10px;
+    flex-shrink: 0;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 500px) { .options { grid-template-columns: 1fr; } }
+
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 15px;
+    border-radius: 14px;
+    background: #f4f6ff;
+    border: 2px solid #e0e4f5;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #3a3a6a;
+  }
+  .option-label:hover {
+    background: #e8edff;
+    border-color: var(--sky);
+    transform: scale(1.02);
+  }
+  .option-label input[type="radio"] { display: none; }
+  .option-label.selected {
+    background: #e0f3fe;
+    border-color: var(--sky);
+    color: var(--navy);
+  }
+  .option-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2.5px solid #c0c8e8;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option-label.selected .option-dot {
+    background: var(--sky);
+    border-color: var(--sky);
+  }
+  .option-label.selected .option-dot::after {
+    content: '';
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+  .opt-letter {
+    background: var(--navy);
+    color: var(--sun);
+    border-radius: 6px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.82rem;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* RESULT STATES */
+  .option-label.correct {
+    background: #d4f7dc;
+    border-color: var(--grass);
+    color: #1a5e2a;
+  }
+  .option-label.wrong {
+    background: #ffe0e0;
+    border-color: var(--coral);
+    color: #8b1a1a;
+  }
+  .option-label.correct .option-dot { background: var(--grass); border-color: var(--grass); }
+  .option-label.correct .option-dot::after { content: ''; width:8px;height:8px;background:white;border-radius:50%; }
+  .option-label.wrong .option-dot { background: var(--coral); border-color: var(--coral); }
+
+  /* SUBMIT BUTTON */
+  .submit-wrap {
+    text-align: center;
+    margin: 30px 0 10px;
+  }
+  .btn-submit {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--navy), #3a3aaa);
+    color: var(--sun);
+    border: none;
+    border-radius: 50px;
+    padding: 16px 52px;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(26,26,94,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(26,26,94,0.4); }
+  .btn-submit:active { transform: scale(0.97); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* RESULT PANEL */
+  .result-panel {
+    display: none;
+    background: var(--navy);
+    border-radius: 28px;
+    padding: 36px 28px;
+    text-align: center;
+    margin-top: 28px;
+    box-shadow: 0 8px 40px rgba(26,26,94,0.3);
+    animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .result-emoji { font-size: 4rem; margin-bottom: 10px; }
+  .result-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--sun);
+    margin-bottom: 6px;
+  }
+  .score-circle {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 6px solid var(--sun);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 18px auto;
+    background: rgba(255,255,255,0.07);
+  }
+  .score-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.6rem;
+    color: var(--sun);
+    line-height: 1;
+  }
+  .score-label { color: #aab; font-size: 0.8rem; font-weight: 700; }
+  .score-desc {
+    color: #c8d8ff;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .result-msg {
+    font-size: 1.05rem;
+    color: #8899cc;
+    max-width: 360px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+  }
+  .btn-retry {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    background: var(--sun);
+    color: var(--navy);
+    border: none;
+    border-radius: 40px;
+    padding: 13px 38px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .btn-retry:hover { transform: scale(1.05); }
+</style>
+</head>
+<body>
+
+<!-- Decorations -->
+<div class="deco">⭐</div>
+<div class="deco">🌟</div>
+<div class="deco">🍎</div>
+<div class="deco">✏️</div>
+<div class="deco">🌈</div>
+<div class="deco">🎒</div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>📐 Math Test 2</h1>
+    <p>Soal Cerita Matematika — Kelas 2 SD</p>
+    <div class="badge-row">
+      <div class="badge">📝 15 Soal</div>
+      <div class="badge">🔢 Pilihan Ganda</div>
+      <div class="badge">⏱️ Kerjakan dengan teliti!</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-label" id="progressLabel">0 / 15 soal dijawab</div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- Questions -->
+  <div id="quizForm"></div>
+
+  <!-- Submit -->
+  <div class="submit-wrap">
+    <button class="btn-submit" id="btnSubmit" onclick="submitQuiz()">🚀 Lihat Nilai Saya!</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result-panel" id="resultPanel">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="score-circle">
+      <div class="score-num" id="scoreNum"></div>
+      <div class="score-label">NILAI</div>
+    </div>
+    <div class="score-desc" id="scoreDesc"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="retryQuiz()">🔄 Coba Lagi</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    text: "Ibu membeli 45 telur di pasar. Di jalan pulang, 8 telur pecah. Berapa telur yang masih utuh saat sampai di rumah?",
+    emoji: "🥚",
+    options: ["35 telur", "37 telur", "38 telur", "40 telur"],
+    answer: 1
+  },
+  {
+    text: "Di rak buku Budi ada 3 baris buku. Setiap baris berisi 7 buku. Berapa jumlah buku Budi seluruhnya?",
+    emoji: "📚",
+    options: ["18 buku", "21 buku", "24 buku", "27 buku"],
+    answer: 1
+  },
+  {
+    text: "Pak Ahmad punya 60 permen. Ia membagikan permen itu sama rata kepada 4 orang anaknya. Berapa permen yang diterima setiap anak?",
+    emoji: "🍬",
+    options: ["12 permen", "14 permen", "15 permen", "16 permen"],
+    answer: 2
+  },
+  {
+    text: "Sebuah keranjang berisi 28 mangga. Siti mengambil 6 mangga, lalu Rani memasukkan lagi 9 mangga. Berapa mangga dalam keranjang sekarang?",
+    emoji: "🥭",
+    options: ["31 mangga", "33 mangga", "35 mangga", "37 mangga"],
+    answer: 0
+  },
+  {
+    text: "Dino punya uang Rp 75.000. Ia membeli buku tulis seharga Rp 12.000 dan pensil seharga Rp 8.000. Berapa sisa uang Dino?",
+    emoji: "💰",
+    options: ["Rp 50.000", "Rp 55.000", "Rp 58.000", "Rp 60.000"],
+    answer: 1
+  },
+  {
+    text: "Sebuah pohon memiliki 5 cabang. Setiap cabang memiliki 4 ranting. Di setiap ranting ada 3 buah. Berapa total buah di pohon itu?",
+    emoji: "🌳",
+    options: ["40 buah", "55 buah", "60 buah", "65 buah"],
+    answer: 2
+  },
+  {
+    text: "Kelas 2A ada 32 siswa. Kelas 2B ada 29 siswa. Hari ini 5 siswa dari kelas 2A tidak masuk. Berapa siswa yang hadir dari kedua kelas itu?",
+    emoji: "🏫",
+    options: ["51 siswa", "54 siswa", "56 siswa", "58 siswa"],
+    answer: 2
+  },
+  {
+    text: "Nina menabung Rp 5.000 setiap hari selama 2 minggu. Berapa total uang yang ditabung Nina?",
+    emoji: "🐷",
+    options: ["Rp 60.000", "Rp 65.000", "Rp 70.000", "Rp 75.000"],
+    answer: 2
+  },
+  {
+    text: "Sebuah kotak berisi 48 kelereng. Kelereng itu dibagi sama rata ke dalam 6 kantong kecil. Kemudian 4 kelereng hilang dari salah satu kantong. Berapa kelereng di kantong yang kekurangan itu?",
+    emoji: "🔵",
+    options: ["2 kelereng", "4 kelereng", "6 kelereng", "8 kelereng"],
+    answer: 1
+  },
+  {
+    text: "Toko roti menjual 24 roti di pagi hari dan 18 roti di siang hari. Pada hari yang sama ada 7 roti yang dikembalikan karena basi. Berapa roti yang terjual bersih hari itu?",
+    emoji: "🍞",
+    options: ["31 roti", "33 roti", "35 roti", "37 roti"],
+    answer: 2
+  },
+  {
+    text: "Ayah menanam jagung dalam 8 baris. Setiap baris ada 9 pohon. Sebanyak 12 pohon mati karena kekeringan. Berapa pohon jagung yang masih hidup?",
+    emoji: "🌽",
+    options: ["58 pohon", "60 pohon", "62 pohon", "64 pohon"],
+    answer: 1
+  },
+  {
+    text: "Seorang pedagang membawa 100 kg beras. Ia menjual 35 kg pada pagi hari dan 28 kg pada sore hari. Berapa kg beras yang belum terjual?",
+    emoji: "🌾",
+    options: ["32 kg", "36 kg", "37 kg", "40 kg"],
+    answer: 2
+  },
+  {
+    text: "Ada 4 kandang ayam. Kandang pertama berisi 15 ayam, kandang kedua 12 ayam, kandang ketiga 18 ayam, dan kandang keempat 11 ayam. Berapa total ayam seluruhnya?",
+    emoji: "🐔",
+    options: ["52 ayam", "54 ayam", "56 ayam", "58 ayam"],
+    answer: 2
+  },
+  {
+    text: "Aldo membaca buku 15 halaman setiap hari. Setelah 6 hari, berapa halaman yang sudah dibaca Aldo? Jika buku itu setebal 100 halaman, berapa halaman yang belum dibaca?",
+    emoji: "📖",
+    options: ["Sudah 90, belum 10", "Sudah 85, belum 15", "Sudah 90, belum 15", "Sudah 95, belum 5"],
+    answer: 1
+  },
+  {
+    text: "Sebuah bus pagi membawa 42 penumpang. Di halte pertama 8 penumpang turun dan 13 penumpang naik. Di halte kedua 5 penumpang turun. Berapa penumpang yang ada di bus sekarang?",
+    emoji: "🚌",
+    options: ["38 orang", "40 orang", "42 orang", "44 orang"],
+    answer: 2
+  }
+];
+
+let answered = new Array(questions.length).fill(-1);
+
+function buildQuiz() {
+  const form = document.getElementById('quizForm');
+  form.innerHTML = '';
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `card-${qi}`;
+
+    const letters = ['A','B','C','D'];
+    const optionsHTML = q.options.map((opt, oi) => `
+      <label class="option-label" id="lbl-${qi}-${oi}" onclick="selectOption(${qi}, ${oi})">
+        <input type="radio" name="q${qi}" value="${oi}">
+        <span class="option-dot" id="dot-${qi}-${oi}"></span>
+        <span class="opt-letter">${letters[oi]}</span>
+        <span>${opt}</span>
+      </label>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="q-header">
+        <span class="q-number">${qi+1}</span>
+        <span class="q-text">${q.text}</span>
+        <span class="q-emoji">${q.emoji}</span>
+      </div>
+      <div class="options">${optionsHTML}</div>
+    `;
+    form.appendChild(card);
+  });
+  updateProgress();
+}
+
+function selectOption(qi, oi) {
+  if (document.getElementById('btnSubmit').disabled) return; // already submitted
+  // deselect previous
+  const prev = answered[qi];
+  if (prev !== -1) {
+    document.getElementById(`lbl-${qi}-${prev}`).classList.remove('selected');
+  }
+  answered[qi] = oi;
+  document.getElementById(`lbl-${qi}-${oi}`).classList.add('selected');
+  document.getElementById(`card-${qi}`).classList.add('answered');
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = answered.filter(a => a !== -1).length;
+  const pct = (count / questions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${count} / ${questions.length} soal dijawab`;
+}
+
+function submitQuiz() {
+  const unanswered = answered.filter(a => a === -1).length;
+  if (unanswered > 0) {
+    alert(`⚠️ Masih ada ${unanswered} soal yang belum dijawab. Yuk selesaikan dulu!`);
+    return;
+  }
+
+  document.getElementById('btnSubmit').disabled = true;
+
+  let correct = 0;
+  questions.forEach((q, qi) => {
+    const userAns = answered[qi];
+    // highlight all options
+    q.options.forEach((_, oi) => {
+      const lbl = document.getElementById(`lbl-${qi}-${oi}`);
+      lbl.style.cursor = 'default';
+      if (oi === q.answer) {
+        lbl.classList.remove('selected');
+        lbl.classList.add('correct');
+      } else if (oi === userAns && userAns !== q.answer) {
+        lbl.classList.remove('selected');
+        lbl.classList.add('wrong');
+      }
+    });
+    if (userAns === q.answer) correct++;
+  });
+
+  const score = Math.round((correct / questions.length) * 100);
+  showResult(correct, score);
+}
+
+function showResult(correct, score) {
+  const panel = document.getElementById('resultPanel');
+  panel.style.display = 'block';
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('resultMsg').textContent = `Kamu menjawab ${correct} soal benar dari ${questions.length} soal.`;
+
+  let emoji, title, desc, msg;
+  if (score === 100) {
+    emoji = '🏆'; title = 'SEMPURNA!'; desc = 'Nilai: 100 — Luar Biasa!';
+    msg = 'Wah, semua jawaban benar! Kamu bintang matematika sejati! ⭐⭐⭐';
+  } else if (score >= 80) {
+    emoji = '🎉'; title = 'HEBAT SEKALI!'; desc = 'Nilai: ' + score + ' — Sangat Bagus!';
+    msg = 'Kamu sangat pintar! Sedikit lagi mencapai nilai sempurna. Terus semangat! 💪';
+  } else if (score >= 60) {
+    emoji = '👍'; title = 'BAGUS!'; desc = 'Nilai: ' + score + ' — Cukup Baik';
+    msg = 'Kamu sudah bekerja keras! Coba pelajari lagi soal yang salah, ya. 📚';
+  } else if (score >= 40) {
+    emoji = '😊'; title = 'TERUS BERLATIH!'; desc = 'Nilai: ' + score + ' — Perlu Berlatih';
+    msg = 'Jangan menyerah! Belajar lebih giat lagi dan coba lagi. Kamu pasti bisa! 🌟';
+  } else {
+    emoji = '💡'; title = 'SEMANGAT!'; desc = 'Nilai: ' + score + ' — Butuh Latihan Lebih';
+    msg = 'Tidak apa-apa! Setiap orang belajar dari kesalahan. Coba lagi dan kamu akan lebih baik! 🌈';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('scoreDesc').textContent = desc;
+  document.getElementById('resultMsg').textContent = msg;
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function retryQuiz() {
+  answered = new Array(questions.length).fill(-1);
+  document.getElementById('btnSubmit').disabled = false;
+  document.getElementById('resultPanel').style.display = 'none';
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
