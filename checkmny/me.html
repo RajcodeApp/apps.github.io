@@ -1630,29 +1630,35 @@
 
         // Render Dashboard Charts
         function renderDashboardCharts() {
-            const ctx = document.getElementById('incomeExpenseChart');
-            if (!ctx) return;
+            setTimeout(() => {
+                try {
+                    const ctx = document.getElementById('incomeExpenseChart');
+                    if (!ctx) return;
 
-            const months = getLast6Months();
-            const data = months.map(month => {
-                const monthTransactions = AppState.transactions.filter(t => {
-                    const tDate = new Date(t.date);
-                    return tDate.getMonth() === month.month && tDate.getFullYear() === month.year;
-                });
-                return {
-                    month: month.label,
-                    income: monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
-                    expense: monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
-                };
-            });
+                    const months = getLast6Months();
+                    const data = months.map(month => {
+                        const monthTransactions = AppState.transactions.filter(t => {
+                            const tDate = new Date(t.date);
+                            return tDate.getMonth() === month.month && tDate.getFullYear() === month.year;
+                        });
+                        return {
+                            month: month.label,
+                            income: monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                            expense: monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+                        };
+                    });
 
-            new SimpleBarChart(ctx, {
-                labels: data.map(d => d.month),
-                datasets: [
-                    { label: 'Income', data: data.map(d => d.income), color: '#10b981' },
-                    { label: 'Expense', data: data.map(d => d.expense), color: '#ef4444' }
-                ]
-            });
+                    new SimpleBarChart(ctx, {
+                        labels: data.map(d => d.month),
+                        datasets: [
+                            { label: 'Income', data: data.map(d => d.income), color: '#10b981' },
+                            { label: 'Expense', data: data.map(d => d.expense), color: '#ef4444' }
+                        ]
+                    });
+                } catch (error) {
+                    console.error('Chart error:', error);
+                }
+            }, 100);
         }
 
         // Transactions Page
@@ -1774,14 +1780,20 @@
         }
 
         function setupWalletListeners() {
-            const ctx = document.getElementById('walletChart');
-            if (ctx && AppState.wallets.length > 0) {
-                new SimplePieChart(ctx, {
-                    labels: AppState.wallets.map(w => w.name),
-                    data: AppState.wallets.map(w => w.balance),
-                    colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
-                });
-            }
+            setTimeout(() => {
+                try {
+                    const ctx = document.getElementById('walletChart');
+                    if (ctx && AppState.wallets.length > 0) {
+                        new SimplePieChart(ctx, {
+                            labels: AppState.wallets.map(w => w.name),
+                            data: AppState.wallets.map(w => w.balance),
+                            colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
+                        });
+                    }
+                } catch (error) {
+                    console.error('Wallet chart error:', error);
+                }
+            }, 100);
         }
 
         // Goals Page
@@ -2036,48 +2048,54 @@
         }
 
         function renderAnalyticsCharts() {
-            // Category Chart
-            const categoryCtx = document.getElementById('categoryChart');
-            if (categoryCtx) {
-                const expenses = getThisMonthTransactions().filter(t => t.type === 'expense');
-                const byCategory = {};
-                expenses.forEach(t => {
-                    byCategory[t.category] = (byCategory[t.category] || 0) + t.amount;
-                });
+            setTimeout(() => {
+                try {
+                    // Category Chart
+                    const categoryCtx = document.getElementById('categoryChart');
+                    if (categoryCtx) {
+                        const expenses = getThisMonthTransactions().filter(t => t.type === 'expense');
+                        const byCategory = {};
+                        expenses.forEach(t => {
+                            byCategory[t.category] = (byCategory[t.category] || 0) + t.amount;
+                        });
 
-                const labels = Object.keys(byCategory).map(catId => {
-                    const cat = [...CATEGORIES.income, ...CATEGORIES.expense].find(c => c.id === catId);
-                    return cat?.name[AppState.currentLang] || catId;
-                });
+                        const labels = Object.keys(byCategory).map(catId => {
+                            const cat = [...CATEGORIES.income, ...CATEGORIES.expense].find(c => c.id === catId);
+                            return cat?.name[AppState.currentLang] || catId;
+                        });
 
-                new SimplePieChart(categoryCtx, {
-                    labels,
-                    data: Object.values(byCategory),
-                    colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#6b7280']
-                });
-            }
+                        new SimplePieChart(categoryCtx, {
+                            labels,
+                            data: Object.values(byCategory),
+                            colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#6b7280']
+                        });
+                    }
 
-            // Trend Chart
-            const trendCtx = document.getElementById('trendChart');
-            if (trendCtx) {
-                const months = getLast6Months();
-                const data = months.map(month => {
-                    const monthTransactions = AppState.transactions.filter(t => {
-                        const tDate = new Date(t.date);
-                        return tDate.getMonth() === month.month && tDate.getFullYear() === month.year && t.type === 'expense';
-                    });
-                    return monthTransactions.reduce((sum, t) => sum + t.amount, 0);
-                });
+                    // Trend Chart
+                    const trendCtx = document.getElementById('trendChart');
+                    if (trendCtx) {
+                        const months = getLast6Months();
+                        const data = months.map(month => {
+                            const monthTransactions = AppState.transactions.filter(t => {
+                                const tDate = new Date(t.date);
+                                return tDate.getMonth() === month.month && tDate.getFullYear() === month.year && t.type === 'expense';
+                            });
+                            return monthTransactions.reduce((sum, t) => sum + t.amount, 0);
+                        });
 
-                new SimpleLineChart(trendCtx, {
-                    labels: months.map(m => m.label),
-                    data,
-                    color: '#ef4444'
-                });
-            }
+                        new SimpleLineChart(trendCtx, {
+                            labels: months.map(m => m.label),
+                            data,
+                            color: '#ef4444'
+                        });
+                    }
 
-            // Monthly Report
-            generateMonthlyReport();
+                    // Monthly Report
+                    generateMonthlyReport();
+                } catch (error) {
+                    console.error('Analytics charts error:', error);
+                }
+            }, 100);
         }
 
         function generateMonthlyReport() {
@@ -2850,6 +2868,10 @@
         // Simple Chart Library
         class SimpleBarChart {
             constructor(canvas, options) {
+                if (!canvas || !canvas.getContext) {
+                    console.error('Invalid canvas element');
+                    return;
+                }
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -2857,43 +2879,51 @@
             }
 
             render() {
-                const { labels, datasets } = this.options;
-                const width = this.canvas.offsetWidth;
-                const height = 300;
-                this.canvas.width = width;
-                this.canvas.height = height;
+                try {
+                    const { labels, datasets } = this.options;
+                    const width = this.canvas.offsetWidth || 600;
+                    const height = 300;
+                    this.canvas.width = width;
+                    this.canvas.height = height;
 
-                const padding = 40;
-                const chartWidth = width - padding * 2;
-                const chartHeight = height - padding * 2;
+                    const padding = 40;
+                    const chartWidth = width - padding * 2;
+                    const chartHeight = height - padding * 2;
 
-                const maxValue = Math.max(...datasets.flatMap(d => d.data));
-                const barWidth = chartWidth / labels.length / datasets.length - 10;
+                    const maxValue = Math.max(...datasets.flatMap(d => d.data), 1);
+                    const barWidth = chartWidth / labels.length / datasets.length - 10;
 
-                datasets.forEach((dataset, dsIndex) => {
-                    dataset.data.forEach((value, i) => {
-                        const barHeight = (value / maxValue) * chartHeight;
-                        const x = padding + i * (chartWidth / labels.length) + dsIndex * barWidth + 5;
-                        const y = height - padding - barHeight;
+                    datasets.forEach((dataset, dsIndex) => {
+                        dataset.data.forEach((value, i) => {
+                            const barHeight = (value / maxValue) * chartHeight;
+                            const x = padding + i * (chartWidth / labels.length) + dsIndex * barWidth + 5;
+                            const y = height - padding - barHeight;
 
-                        this.ctx.fillStyle = dataset.color;
-                        this.ctx.fillRect(x, y, barWidth, barHeight);
+                            this.ctx.fillStyle = dataset.color;
+                            this.ctx.fillRect(x, y, barWidth, barHeight);
+                        });
                     });
-                });
 
-                // Labels
-                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
-                this.ctx.font = '12px sans-serif';
-                this.ctx.textAlign = 'center';
-                labels.forEach((label, i) => {
-                    const x = padding + i * (chartWidth / labels.length) + chartWidth / labels.length / 2;
-                    this.ctx.fillText(label, x, height - 10);
-                });
+                    // Labels
+                    this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary') || '#6b7280';
+                    this.ctx.font = '12px sans-serif';
+                    this.ctx.textAlign = 'center';
+                    labels.forEach((label, i) => {
+                        const x = padding + i * (chartWidth / labels.length) + chartWidth / labels.length / 2;
+                        this.ctx.fillText(label, x, height - 10);
+                    });
+                } catch (error) {
+                    console.error('Bar chart render error:', error);
+                }
             }
         }
 
         class SimpleLineChart {
             constructor(canvas, options) {
+                if (!canvas || !canvas.getContext) {
+                    console.error('Invalid canvas element');
+                    return;
+                }
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -2901,55 +2931,63 @@
             }
 
             render() {
-                const { labels, data, color } = this.options;
-                const width = this.canvas.offsetWidth;
-                const height = 300;
-                this.canvas.width = width;
-                this.canvas.height = height;
+                try {
+                    const { labels, data, color } = this.options;
+                    const width = this.canvas.offsetWidth || 600;
+                    const height = 300;
+                    this.canvas.width = width;
+                    this.canvas.height = height;
 
-                const padding = 40;
-                const chartWidth = width - padding * 2;
-                const chartHeight = height - padding * 2;
+                    const padding = 40;
+                    const chartWidth = width - padding * 2;
+                    const chartHeight = height - padding * 2;
 
-                const maxValue = Math.max(...data);
-                const stepX = chartWidth / (data.length - 1);
+                    const maxValue = Math.max(...data, 1);
+                    const stepX = chartWidth / (data.length - 1 || 1);
 
-                this.ctx.strokeStyle = color;
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-
-                data.forEach((value, i) => {
-                    const x = padding + i * stepX;
-                    const y = height - padding - (value / maxValue) * chartHeight;
-                    if (i === 0) this.ctx.moveTo(x, y);
-                    else this.ctx.lineTo(x, y);
-                });
-
-                this.ctx.stroke();
-
-                // Points
-                data.forEach((value, i) => {
-                    const x = padding + i * stepX;
-                    const y = height - padding - (value / maxValue) * chartHeight;
-                    this.ctx.fillStyle = color;
+                    this.ctx.strokeStyle = color;
+                    this.ctx.lineWidth = 3;
                     this.ctx.beginPath();
-                    this.ctx.arc(x, y, 5, 0, Math.PI * 2);
-                    this.ctx.fill();
-                });
 
-                // Labels
-                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
-                this.ctx.font = '12px sans-serif';
-                this.ctx.textAlign = 'center';
-                labels.forEach((label, i) => {
-                    const x = padding + i * stepX;
-                    this.ctx.fillText(label, x, height - 10);
-                });
+                    data.forEach((value, i) => {
+                        const x = padding + i * stepX;
+                        const y = height - padding - (value / maxValue) * chartHeight;
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    });
+
+                    this.ctx.stroke();
+
+                    // Points
+                    data.forEach((value, i) => {
+                        const x = padding + i * stepX;
+                        const y = height - padding - (value / maxValue) * chartHeight;
+                        this.ctx.fillStyle = color;
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, 5, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    });
+
+                    // Labels
+                    this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary') || '#6b7280';
+                    this.ctx.font = '12px sans-serif';
+                    this.ctx.textAlign = 'center';
+                    labels.forEach((label, i) => {
+                        const x = padding + i * stepX;
+                        this.ctx.fillText(label, x, height - 10);
+                    });
+                } catch (error) {
+                    console.error('Line chart render error:', error);
+                }
             }
         }
 
         class SimplePieChart {
             constructor(canvas, options) {
+                if (!canvas || !canvas.getContext) {
+                    console.error('Invalid canvas element');
+                    return;
+                }
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -2957,51 +2995,70 @@
             }
 
             render() {
-                const { labels, data, colors } = this.options;
-                const width = this.canvas.offsetWidth;
-                const height = 300;
-                this.canvas.width = width;
-                this.canvas.height = height;
+                try {
+                    const { labels, data, colors } = this.options;
+                    const width = this.canvas.offsetWidth || 600;
+                    const height = 300;
+                    this.canvas.width = width;
+                    this.canvas.height = height;
 
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) / 3;
+                    const centerX = width / 2;
+                    const centerY = height / 2;
+                    const radius = Math.min(width, height) / 3;
 
-                const total = data.reduce((sum, val) => sum + val, 0);
-                let currentAngle = -Math.PI / 2;
+                    const total = data.reduce((sum, val) => sum + val, 0) || 1;
+                    let currentAngle = -Math.PI / 2;
 
-                data.forEach((value, i) => {
-                    const sliceAngle = (value / total) * Math.PI * 2;
-                    
-                    this.ctx.fillStyle = colors[i % colors.length];
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(centerX, centerY);
-                    this.ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
-                    this.ctx.closePath();
-                    this.ctx.fill();
+                    data.forEach((value, i) => {
+                        const sliceAngle = (value / total) * Math.PI * 2;
+                        
+                        this.ctx.fillStyle = colors[i % colors.length];
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(centerX, centerY);
+                        this.ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                        this.ctx.closePath();
+                        this.ctx.fill();
 
-                    currentAngle += sliceAngle;
-                });
+                        currentAngle += sliceAngle;
+                    });
 
-                // Legend
-                const legendY = height - 60;
-                labels.forEach((label, i) => {
-                    const x = 20 + (i % 3) * (width / 3);
-                    const y = legendY + Math.floor(i / 3) * 20;
+                    // Legend
+                    const legendY = height - 60;
+                    labels.forEach((label, i) => {
+                        const x = 20 + (i % 3) * (width / 3);
+                        const y = legendY + Math.floor(i / 3) * 20;
 
-                    this.ctx.fillStyle = colors[i % colors.length];
-                    this.ctx.fillRect(x, y, 15, 15);
+                        this.ctx.fillStyle = colors[i % colors.length];
+                        this.ctx.fillRect(x, y, 15, 15);
 
-                    this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary');
-                    this.ctx.font = '12px sans-serif';
-                    this.ctx.textAlign = 'left';
-                    this.ctx.fillText(label, x + 20, y + 12);
-                });
+                        this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary') || '#111827';
+                        this.ctx.font = '12px sans-serif';
+                        this.ctx.textAlign = 'left';
+                        this.ctx.fillText(label, x + 20, y + 12);
+                    });
+                } catch (error) {
+                    console.error('Pie chart render error:', error);
+                }
             }
         }
 
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                initApp();
+            } catch (error) {
+                console.error('Init error:', error);
+                // Fallback init
+                setTimeout(initApp, 100);
+            }
+        });
+
+        // Also try on window load as fallback
+        window.addEventListener('load', () => {
+            if (!AppState.transactions) {
+                initApp();
+            }
+        });
     </script>
 </body>
 </html>
