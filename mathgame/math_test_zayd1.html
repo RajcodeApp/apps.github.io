@@ -297,7 +297,7 @@
     <div class="container">
         <div class="header">
             <h1>📊 Diagnostic Test Matematika</h1>
-            <p>Kelas 11 SMA | 40 Soal Pilihan Ganda</p>
+            <p>Kelas 11 SMA | 25 Soal: Lingkaran, Sudut Lingkaran, Invers & Pecahan</p>
         </div>
 
         <!-- Start Section -->
@@ -305,7 +305,8 @@
             <div class="info-box">
                 <h3>Petunjuk Pengerjaan:</h3>
                 <ul>
-                    <li>Tes ini terdiri dari 40 soal pilihan ganda</li>
+                    <li>Tes ini terdiri dari 25 soal pilihan ganda</li>
+                    <li>Materi: Lingkaran, Sudut Lingkaran, Fungsi Invers, dan Pecahan</li>
                     <li>Tingkat kesulitan: Medium hingga Sangat Sulit</li>
                     <li>Pilih satu jawaban yang paling tepat untuk setiap soal</li>
                     <li>Anda dapat mengubah jawaban sebelum submit</li>
@@ -338,7 +339,7 @@
                 <h2>Hasil Test Anda</h2>
                 <div class="grade" id="gradeDisplay"></div>
                 <p>Nilai: <span id="scoreDisplay"></span>/100</p>
-                <p>Benar: <span id="correctDisplay"></span>/40</p>
+                <p>Benar: <span id="correctDisplay"></span>/25</p>
                 <p>Waktu: <span id="timeDisplay"></span></p>
             </div>
             <div class="feedback" id="feedbackDisplay"></div>
@@ -348,249 +349,159 @@
 
     <script>
         const questions = [
-            // MEDIUM (Soal 1-15)
+            // MEDIUM - Lingkaran Dasar (Soal 1-8)
             {
-                question: "Diketahui fungsi f(x) = 3x² - 5x + 2. Nilai f(2) adalah...",
-                options: ["4", "6", "8", "10"],
+                question: "Persamaan lingkaran dengan pusat (0, 0) dan jari-jari 5 adalah...",
+                options: ["x² + y² = 5", "x² + y² = 25", "x² + y² = 10", "x² + y² = 15"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Persamaan lingkaran dengan pusat (2, 3) dan jari-jari 4 adalah...",
+                options: ["(x-2)² + (y-3)² = 4", "(x-2)² + (y-3)² = 16", "(x+2)² + (y+3)² = 16", "(x-2)² + (y-3)² = 8"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Jari-jari lingkaran x² + y² - 6x - 8y = 0 adalah...",
+                options: ["3", "4", "5", "6"],
                 correct: 2,
                 difficulty: "medium"
             },
             {
-                question: "Jika log 2 = 0,301 dan log 3 = 0,477, maka nilai log 18 adalah...",
-                options: ["1,255", "1,556", "1,778", "2,079"],
-                correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Nilai dari lim (x→3) (x² - 9)/(x - 3) adalah...",
-                options: ["3", "6", "9", "0"],
+                question: "Pusat lingkaran (x-4)² + (y+3)² = 36 adalah...",
+                options: ["(4, 3)", "(4, -3)", "(-4, 3)", "(-4, -3)"],
                 correct: 1,
                 difficulty: "medium"
             },
             {
-                question: "Turunan pertama dari f(x) = 4x³ - 6x² + 2x - 1 adalah...",
-                options: ["12x² - 12x + 2", "12x² - 6x + 2", "4x² - 12x + 2", "12x³ - 12x² + 2x"],
-                correct: 0,
+                question: "Sudut keliling yang menghadap diameter lingkaran besarnya...",
+                options: ["45°", "60°", "90°", "180°"],
+                correct: 2,
                 difficulty: "medium"
             },
             {
-                question: "Jika sin α = 3/5 dan α di kuadran I, maka cos α adalah...",
-                options: ["3/5", "4/5", "5/4", "5/3"],
+                question: "Jika sudut pusat lingkaran 120°, maka sudut keliling yang menghadap busur yang sama adalah...",
+                options: ["30°", "60°", "90°", "120°"],
                 correct: 1,
                 difficulty: "medium"
             },
             {
-                question: "Suku ke-10 dari barisan aritmatika 5, 9, 13, 17, ... adalah...",
-                options: ["41", "43", "45", "47"],
-                correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Nilai x yang memenuhi persamaan 2^(x+1) = 16 adalah...",
-                options: ["2", "3", "4", "5"],
+                question: "Hasil dari (2/3) + (1/4) adalah...",
+                options: ["3/7", "11/12", "5/7", "2/12"],
                 correct: 1,
                 difficulty: "medium"
             },
             {
-                question: "Jika matriks A = [[2, 3], [1, 4]], maka determinan A adalah...",
-                options: ["3", "5", "7", "11"],
-                correct: 1,
-                difficulty: "medium"
-            },
-            {
-                question: "Integral dari ∫(3x² + 4x) dx adalah...",
-                options: ["x³ + 2x² + C", "3x³ + 4x² + C", "x³ + 4x² + C", "x³ + 2x + C"],
+                question: "Hasil dari (3/5) × (2/7) adalah...",
+                options: ["6/35", "5/12", "6/12", "5/35"],
                 correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Jika vektor a = (2, 3) dan b = (1, -2), maka a · b adalah...",
-                options: ["-4", "-2", "2", "4"],
-                correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Nilai dari cos 60° + sin 30° adalah...",
-                options: ["1/2", "1", "3/2", "2"],
-                correct: 1,
-                difficulty: "medium"
-            },
-            {
-                question: "Jumlah 5 suku pertama dari deret geometri 2, 6, 18, ... adalah...",
-                options: ["242", "244", "246", "248"],
-                correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Persamaan garis yang melalui titik (2, 3) dan bergradien 2 adalah...",
-                options: ["y = 2x - 1", "y = 2x + 1", "y = 2x - 3", "y = 2x + 3"],
-                correct: 0,
-                difficulty: "medium"
-            },
-            {
-                question: "Nilai dari ³log 27 adalah...",
-                options: ["2", "3", "4", "9"],
-                correct: 1,
-                difficulty: "medium"
-            },
-            {
-                question: "Jika f(x) = x² - 4x + 3, maka f(x) minimum pada x = ...",
-                options: ["1", "2", "3", "4"],
-                correct: 1,
                 difficulty: "medium"
             },
 
-            // HARD (Soal 16-30)
+            // HARD - Lingkaran & Sudut Lanjutan (Soal 9-17)
             {
-                question: "Nilai dari lim (x→0) (sin 3x)/(2x) adalah...",
-                options: ["1/2", "2/3", "3/2", "2"],
+                question: "Persamaan lingkaran yang melalui titik (3, 0), (0, 4), dan (0, 0) adalah...",
+                options: ["x² + y² - 3x - 4y = 0", "x² + y² + 3x + 4y = 0", "x² + y² - 6x - 8y = 0", "x² + y² = 25"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Persamaan garis singgung lingkaran x² + y² = 25 di titik (3, 4) adalah...",
+                options: ["3x + 4y = 25", "4x + 3y = 25", "3x - 4y = 25", "x + y = 7"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Panjang garis singgung dari titik (8, 6) ke lingkaran x² + y² = 25 adalah...",
+                options: ["5", "6", "√75", "√50"],
                 correct: 2,
                 difficulty: "hard"
             },
             {
-                question: "Diketahui f(x) = x³ - 6x² + 9x + 1. Titik stasioner fungsi tersebut adalah...",
-                options: ["x = 1 dan x = 2", "x = 1 dan x = 3", "x = 2 dan x = 3", "x = 1 dan x = 4"],
-                correct: 1,
-                difficulty: "hard"
-            },
-            {
-                question: "Jika matriks A = [[1, 2], [3, 4]] dan B = [[2, 0], [1, 3]], maka AB adalah...",
-                options: ["[[4, 6], [10, 12]]", "[[4, 4], [10, 10]]", "[[5, 7], [11, 13]]", "[[3, 5], [9, 11]]"],
-                correct: 0,
-                difficulty: "hard"
-            },
-            {
-                question: "Integral dari ∫(x² + 1)/(x) dx adalah...",
-                options: ["(x²/2) + ln|x| + C", "(x²/2) - ln|x| + C", "(x²/3) + ln|x| + C", "x² + ln|x| + C"],
-                correct: 0,
-                difficulty: "hard"
-            },
-            {
-                question: "Nilai maksimum dari fungsi f(x) = -x² + 4x - 1 adalah...",
-                options: ["2", "3", "4", "5"],
-                correct: 1,
-                difficulty: "hard"
-            },
-            {
-                question: "Jika tan x = 2 dan x di kuadran I, maka sin 2x adalah...",
-                options: ["3/5", "4/5", "2/3", "1/2"],
-                correct: 1,
-                difficulty: "hard"
-            },
-            {
-                question: "Penyelesaian dari persamaan ²log(x² - 3x) = 2 adalah...",
-                options: ["x = 4 atau x = -1", "x = 5 atau x = -2", "x = 3 atau x = 2", "x = 6 atau x = -3"],
-                correct: 0,
-                difficulty: "hard"
-            },
-            {
-                question: "Turunan kedua dari f(x) = sin(2x) adalah...",
-                options: ["-2sin(2x)", "-4sin(2x)", "-2cos(2x)", "-4cos(2x)"],
-                correct: 1,
-                difficulty: "hard"
-            },
-            {
-                question: "Jika deret geometri tak hingga memiliki suku pertama 8 dan rasio 1/2, maka jumlahnya adalah...",
-                options: ["12", "14", "16", "18"],
+                question: "Jika sudut keliling AOB = 40° dan sudut keliling ACB menghadap busur yang sama, maka besar sudut pusat yang menghadap busur AB adalah...",
+                options: ["40°", "60°", "80°", "120°"],
                 correct: 2,
                 difficulty: "hard"
             },
             {
-                question: "Luas daerah yang dibatasi kurva y = x² dan y = 4 adalah...",
-                options: ["16/3", "32/3", "64/3", "8/3"],
-                correct: 1,
-                difficulty: "hard"
-            },
-            {
-                question: "Nilai dari cos 75° (gunakan rumus trigonometri) adalah...",
-                options: ["(√6 - √2)/4", "(√6 + √2)/4", "(√3 - 1)/(2√2)", "(√3 + 1)/(2√2)"],
+                question: "Dalam lingkaran, jika panjang busur AB = 12 cm dan jari-jari = 10 cm, maka besar sudut pusat (dalam radian) adalah...",
+                options: ["1,2", "1,5", "2,0", "2,4"],
                 correct: 0,
                 difficulty: "hard"
             },
             {
-                question: "Jika f(x) = e^(2x), maka f'(x) adalah...",
-                options: ["e^(2x)", "2e^(2x)", "e^x", "2e^x"],
+                question: "Hasil dari (2/3) ÷ (4/9) adalah...",
+                options: ["1/2", "3/2", "2/3", "8/27"],
                 correct: 1,
                 difficulty: "hard"
             },
             {
-                question: "Persamaan lingkaran dengan pusat (3, -2) dan jari-jari 5 adalah...",
-                options: ["(x-3)² + (y+2)² = 25", "(x+3)² + (y-2)² = 25", "(x-3)² + (y-2)² = 25", "(x+3)² + (y+2)² = 25"],
+                question: "Bentuk sederhana dari (3/8 + 1/6) - 1/4 adalah...",
+                options: ["7/24", "11/24", "13/24", "5/24"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Hasil dari [(2/5) × (3/4)] ÷ (1/2) adalah...",
+                options: ["3/5", "4/5", "3/10", "6/5"],
+                correct: 3,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika f(x) = 2x + 3, maka invers f⁻¹(x) adalah...",
+                options: ["(x-3)/2", "(x+3)/2", "2x - 3", "(x-2)/3"],
                 correct: 0,
-                difficulty: "hard"
-            },
-            {
-                question: "Nilai dari lim (x→∞) (3x² + 2x - 1)/(x² - x + 2) adalah...",
-                options: ["1", "2", "3", "∞"],
-                correct: 2,
-                difficulty: "hard"
-            },
-            {
-                question: "Jika log₂ x + log₂ (x-6) = 4, maka nilai x adalah...",
-                options: ["6", "8", "10", "12"],
-                correct: 1,
                 difficulty: "hard"
             },
 
-            // VERY HARD (Soal 31-40)
+            // VERY HARD - Lingkaran, Sudut, Invers, Pecahan Kompleks (Soal 18-25)
             {
-                question: "Integral dari ∫x·e^x dx adalah...",
-                options: ["xe^x - e^x + C", "xe^x + e^x + C", "x²e^x + C", "e^x(x-1) + C"],
+                question: "Kedudukan lingkaran x² + y² - 4x - 6y + 9 = 0 dan x² + y² - 8x - 6y + 21 = 0 adalah...",
+                options: ["Berpotongan di 2 titik", "Bersinggungan luar", "Bersinggungan dalam", "Tidak berpotongan"],
                 correct: 0,
                 difficulty: "very-hard"
             },
             {
-                question: "Nilai dari lim (x→0) (1 - cos 2x)/x² adalah...",
-                options: ["1", "2", "1/2", "4"],
+                question: "Persamaan lingkaran yang berpusat di (3, -2) dan menyinggung garis 3x + 4y - 6 = 0 adalah...",
+                options: ["(x-3)² + (y+2)² = 9", "(x-3)² + (y+2)² = 1", "(x-3)² + (y+2)² = 4", "(x-3)² + (y+2)² = 25"],
                 correct: 1,
                 difficulty: "very-hard"
             },
             {
-                question: "Jika f(x) = (x² - 1)/(x - 1) untuk x ≠ 1, agar f kontinu di x = 1, maka f(1) harus sama dengan...",
-                options: ["0", "1", "2", "tidak terdefinisi"],
-                correct: 2,
+                question: "Luas tembereng lingkaran dengan jari-jari 14 cm dan sudut pusat 90° adalah... (π = 22/7)",
+                options: ["56 cm²", "98 cm²", "154 cm²", "56 cm²"],
+                correct: 1,
                 difficulty: "very-hard"
             },
             {
-                question: "Diketahui f(x) = x⁴ - 4x³ + 6. Interval dimana f(x) cekung ke atas adalah...",
-                options: ["x < 0 atau x > 2", "x < 1 atau x > 3", "0 < x < 2", "x > 0"],
+                question: "Dalam lingkaran, jika dua tali busur AB dan CD berpotongan di P, dengan PA = 4 cm, PB = 6 cm, dan PC = 3 cm, maka PD = ...",
+                options: ["6 cm", "8 cm", "10 cm", "12 cm"],
+                correct: 1,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Jika f(x) = (3x - 2)/(x + 5), maka f⁻¹(x) adalah...",
+                options: ["(-5x - 2)/(x - 3)", "(5x + 2)/(3 - x)", "(-5x + 2)/(x - 3)", "(5x - 2)/(x + 3)"],
                 correct: 0,
                 difficulty: "very-hard"
             },
             {
-                question: "Volume benda putar yang terjadi jika daerah yang dibatasi y = √x, x = 4, dan sumbu x diputar mengelilingi sumbu x adalah...",
-                options: ["8π", "16π", "4π", "32π"],
+                question: "Jika g(x) = √(2x + 3), maka g⁻¹(x) untuk x ≥ 0 adalah...",
+                options: ["(x² - 3)/2", "(x² + 3)/2", "2x² - 3", "x²/2 - 3"],
                 correct: 0,
                 difficulty: "very-hard"
             },
             {
-                question: "Jika A dan B adalah matriks 2×2 dengan det(A) = 3 dan det(B) = 4, maka det(2AB) adalah...",
-                options: ["12", "24", "48", "96"],
-                correct: 2,
-                difficulty: "very-hard"
-            },
-            {
-                question: "Nilai dari ∫₀^π sin³x dx adalah...",
-                options: ["2/3", "4/3", "1", "3/2"],
-                correct: 1,
-                difficulty: "very-hard"
-            },
-            {
-                question: "Jumlah deret: 1 + 1/2 + 1/4 + 1/8 + ... (sampai tak hingga) adalah...",
-                options: ["1", "2", "3", "4"],
-                correct: 1,
-                difficulty: "very-hard"
-            },
-            {
-                question: "Diketahui f(x) = ln(x² + 1). Turunan f'(x) adalah...",
-                options: ["2x/(x²+1)", "1/(x²+1)", "2x", "x/(x²+1)"],
+                question: "Hasil dari [((2/3)² - (1/4)²) / ((2/3) + (1/4))] adalah...",
+                options: ["5/12", "7/12", "11/24", "13/24"],
                 correct: 0,
                 difficulty: "very-hard"
             },
             {
-                question: "Nilai dari lim (x→0) (e^x - e^(-x))/(2x) adalah...",
-                options: ["0", "1", "2", "e"],
-                correct: 1,
+                question: "Bentuk pecahan dari 0,3̅6̅ (0,363636...) adalah...",
+                options: ["4/11", "36/99", "9/25", "11/30"],
+                correct: 0,
                 difficulty: "very-hard"
             }
         ];
