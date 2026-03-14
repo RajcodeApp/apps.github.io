@@ -51,7 +51,6 @@
             overflow-x: hidden;
         }
 
-        /* Gradient Background */
         body::before {
             content: '';
             position: fixed;
@@ -64,13 +63,11 @@
             opacity: 0.1;
         }
 
-        /* App Container */
         .app-container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 260px;
             background: var(--bg-card);
@@ -153,7 +150,6 @@
             height: 20px;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 260px;
@@ -165,7 +161,6 @@
             margin-left: 0;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -248,7 +243,6 @@
             justify-content: center;
         }
 
-        /* Cards */
         .card {
             background: var(--bg-card);
             border-radius: 16px;
@@ -269,7 +263,6 @@
             border: 1px solid var(--glass-border);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -323,7 +316,6 @@
             color: var(--danger);
         }
 
-        /* Content Grid */
         .content-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -331,14 +323,12 @@
             margin-bottom: 30px;
         }
 
-        /* Chart Container */
         .chart-container {
             position: relative;
             height: 300px;
             margin: 20px 0;
         }
 
-        /* Transactions */
         .transaction-list {
             max-height: 500px;
             overflow-y: auto;
@@ -396,7 +386,6 @@
             color: var(--danger);
         }
 
-        /* Progress Bar */
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -413,7 +402,6 @@
             transition: width 0.5s ease;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -482,7 +470,6 @@
             transform: rotate(90deg);
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 20px;
         }
@@ -515,7 +502,6 @@
             cursor: pointer;
         }
 
-        /* Wallet Card */
         .wallet-card {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
@@ -548,7 +534,6 @@
             font-weight: 700;
         }
 
-        /* Goal Card */
         .goal-card {
             margin-bottom: 20px;
         }
@@ -584,7 +569,6 @@
             color: var(--text-secondary);
         }
 
-        /* Health Score */
         .health-score {
             text-align: center;
             padding: 30px;
@@ -635,7 +619,6 @@
             color: var(--danger);
         }
 
-        /* AI Insights */
         .insight-card {
             padding: 16px;
             background: var(--bg-secondary);
@@ -656,7 +639,6 @@
             line-height: 1.6;
         }
 
-        /* Loading Spinner */
         .spinner {
             border: 3px solid var(--bg-secondary);
             border-top: 3px solid var(--primary);
@@ -672,7 +654,228 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .category-food { background: #fef3c7; color: #f59e0b; }
+        .category-transport { background: #dbeafe; color: #3b82f6; }
+        .category-bills { background: #fee2e2; color: #ef4444; }
+        .category-shopping { background: #fce7f3; color: #ec4899; }
+        .category-health { background: #dcfce7; color: #22c55e; }
+        .category-entertainment { background: #e0e7ff; color: #6366f1; }
+        .category-salary { background: #d1fae5; color: #10b981; }
+        .category-freelance { background: #ddd6fe; color: #8b5cf6; }
+        .category-investment { background: #ccfbf1; color: #14b8a6; }
+        .category-education { background: #fce7f3; color: #ec4899; }
+        .category-others { background: #e5e7eb; color: #6b7280; }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .networth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .networth-item {
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .networth-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .networth-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+
+        /* NEW: Filter Pills */
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* NEW: Summary Box */
+        .summary-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .summary-value.income {
+            color: var(--success);
+        }
+
+        .summary-value.expense {
+            color: var(--danger);
+        }
+
+        .date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-range input {
+            flex: 1;
+        }
+
         @media (max-width: 1024px) {
             .content-grid {
                 grid-template-columns: 1fr;
@@ -705,7 +908,6 @@
             }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -723,166 +925,10 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
-
-        /* Tab Navigation */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0;
-        }
-
-        .tab {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            margin-bottom: -2px;
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab:hover {
-            color: var(--text-primary);
-        }
-
-        /* Search & Filter */
-        .search-filter {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 16px 12px 40px;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state svg {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        /* Badge */
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .badge-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .badge-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--info);
-        }
-
-        /* Category Icons */
-        .category-food { background: #fef3c7; color: #f59e0b; }
-        .category-transport { background: #dbeafe; color: #3b82f6; }
-        .category-bills { background: #fee2e2; color: #ef4444; }
-        .category-shopping { background: #fce7f3; color: #ec4899; }
-        .category-health { background: #dcfce7; color: #22c55e; }
-        .category-entertainment { background: #e0e7ff; color: #6366f1; }
-        .category-salary { background: #d1fae5; color: #10b981; }
-        .category-freelance { background: #ddd6fe; color: #8b5cf6; }
-        .category-investment { background: #ccfbf1; color: #14b8a6; }
-        .category-education { background: #fce7f3; color: #ec4899; }
-        .category-others { background: #e5e7eb; color: #6b7280; }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        /* Net Worth Section */
-        .networth-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .networth-item {
-            padding: 16px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-        }
-
-        .networth-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .networth-value {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        /* Canvas for Charts */
-        canvas {
-            max-width: 100%;
-            height: auto !important;
-        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-icon">₿</div>
@@ -952,9 +998,7 @@
             </ul>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <button class="btn btn-icon btn-secondary menu-toggle" id="menuToggle">☰</button>
@@ -970,12 +1014,11 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div id="pageContent"></div>
         </main>
     </div>
 
-    <!-- Add Transaction Modal -->
+    <!-- Modals remain the same... -->
     <div class="modal" id="transactionModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1020,7 +1063,6 @@
         </div>
     </div>
 
-    <!-- Wallet Modal -->
     <div class="modal" id="walletModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1052,7 +1094,6 @@
         </div>
     </div>
 
-    <!-- Goal Modal -->
     <div class="modal" id="goalModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1083,7 +1124,8 @@
     </div>
 
     <script>
-        // Data Storage
+        // [FULL SCRIPT WITH ALL FEATURES - Will continue in next part due to length]
+        
         class DataStore {
             static get(key, defaultValue = []) {
                 const data = localStorage.getItem(key);
@@ -1099,10 +1141,11 @@
             }
         }
 
-        // App State
         const AppState = {
             currentPage: 'dashboard',
             currentLang: 'en',
+            timeFilter: 'month', // NEW: today, week, month, all, custom
+            customDateRange: { start: null, end: null }, // NEW
             transactions: [],
             wallets: [],
             goals: [],
@@ -1110,7 +1153,6 @@
             networth: { assets: [], liabilities: [] }
         };
 
-        // Categories
         const CATEGORIES = {
             expense: [
                 { id: 'food', name: { en: 'Food', id: 'Makanan' }, icon: '🍔' },
@@ -1130,151 +1172,100 @@
             ]
         };
 
-        // Translations
         const translations = {
             en: {
-                nav: {
-                    dashboard: 'Dashboard',
-                    transactions: 'Transactions',
-                    wallets: 'Wallets',
-                    goals: 'Goals',
-                    budget: 'Budget',
-                    networth: 'Net Worth',
-                    analytics: 'Analytics',
-                    advisor: 'AI Advisor',
-                    receipt: 'Receipt Scanner',
-                    settings: 'Settings'
-                },
-                page: {
-                    dashboard: 'Dashboard',
-                    transactions: 'Transactions',
-                    wallets: 'My Wallets',
-                    goals: 'Financial Goals',
-                    budget: 'Budget Planning',
-                    networth: 'Net Worth',
-                    analytics: 'Analytics & Reports',
-                    advisor: 'AI Financial Advisor',
-                    receipt: 'Receipt Scanner',
-                    settings: 'Settings'
-                },
-                btn: {
-                    add_transaction: 'Add Transaction',
-                    save: 'Save',
-                    cancel: 'Cancel',
-                    edit: 'Edit',
-                    delete: 'Delete',
-                    export: 'Export Data',
-                    import: 'Import Data',
-                    add_wallet: 'Add Wallet',
-                    add_goal: 'Add Goal'
-                },
-                modal: {
-                    add_transaction: 'Add Transaction',
-                    edit_transaction: 'Edit Transaction',
-                    add_wallet: 'Add Wallet',
-                    edit_wallet: 'Edit Wallet',
-                    add_goal: 'Add Goal',
-                    edit_goal: 'Edit Goal'
-                },
-                form: {
-                    type: 'Type',
-                    category: 'Category',
-                    amount: 'Amount',
-                    wallet: 'Wallet',
-                    date: 'Date',
-                    description: 'Description',
-                    notes: 'Notes',
-                    expense: 'Expense',
-                    income: 'Income',
-                    wallet_name: 'Wallet Name',
-                    wallet_type: 'Type',
-                    initial_balance: 'Initial Balance',
-                    goal_name: 'Goal Name',
-                    target_amount: 'Target Amount',
-                    deadline: 'Deadline',
-                    current_amount: 'Current Amount'
-                }
+                nav: { dashboard: 'Dashboard', transactions: 'Transactions', wallets: 'Wallets', goals: 'Goals', budget: 'Budget', networth: 'Net Worth', analytics: 'Analytics', advisor: 'AI Advisor', receipt: 'Receipt Scanner', settings: 'Settings' },
+                page: { dashboard: 'Dashboard', transactions: 'Transactions', wallets: 'My Wallets', goals: 'Financial Goals', budget: 'Budget Planning', networth: 'Net Worth', analytics: 'Analytics & Reports', advisor: 'AI Financial Advisor', receipt: 'Receipt Scanner', settings: 'Settings' },
+                btn: { add_transaction: 'Add Transaction', save: 'Save', cancel: 'Cancel', edit: 'Edit', delete: 'Delete', export: 'Export Data', import: 'Import Data', add_wallet: 'Add Wallet', add_goal: 'Add Goal' },
+                modal: { add_transaction: 'Add Transaction', edit_transaction: 'Edit Transaction', add_wallet: 'Add Wallet', edit_wallet: 'Edit Wallet', add_goal: 'Add Goal', edit_goal: 'Edit Goal' },
+                form: { type: 'Type', category: 'Category', amount: 'Amount', wallet: 'Wallet', date: 'Date', description: 'Description', notes: 'Notes', expense: 'Expense', income: 'Income', wallet_name: 'Wallet Name', wallet_type: 'Type', initial_balance: 'Initial Balance', goal_name: 'Goal Name', target_amount: 'Target Amount', deadline: 'Deadline', current_amount: 'Current Amount' },
+                filter: { today: 'Today', week: 'This Week', month: 'This Month', all: 'All', custom: 'Custom' }
             },
             id: {
-                nav: {
-                    dashboard: 'Dasbor',
-                    transactions: 'Transaksi',
-                    wallets: 'Dompet',
-                    goals: 'Target',
-                    budget: 'Anggaran',
-                    networth: 'Kekayaan Bersih',
-                    analytics: 'Analitik',
-                    advisor: 'Penasihat AI',
-                    receipt: 'Pemindai Struk',
-                    settings: 'Pengaturan'
-                },
-                page: {
-                    dashboard: 'Dasbor',
-                    transactions: 'Transaksi',
-                    wallets: 'Dompet Saya',
-                    goals: 'Target Keuangan',
-                    budget: 'Perencanaan Anggaran',
-                    networth: 'Kekayaan Bersih',
-                    analytics: 'Analitik & Laporan',
-                    advisor: 'Penasihat Keuangan AI',
-                    receipt: 'Pemindai Struk',
-                    settings: 'Pengaturan'
-                },
-                btn: {
-                    add_transaction: 'Tambah Transaksi',
-                    save: 'Simpan',
-                    cancel: 'Batal',
-                    edit: 'Edit',
-                    delete: 'Hapus',
-                    export: 'Ekspor Data',
-                    import: 'Impor Data',
-                    add_wallet: 'Tambah Dompet',
-                    add_goal: 'Tambah Target'
-                },
-                modal: {
-                    add_transaction: 'Tambah Transaksi',
-                    edit_transaction: 'Edit Transaksi',
-                    add_wallet: 'Tambah Dompet',
-                    edit_wallet: 'Edit Dompet',
-                    add_goal: 'Tambah Target',
-                    edit_goal: 'Edit Target'
-                },
-                form: {
-                    type: 'Jenis',
-                    category: 'Kategori',
-                    amount: 'Jumlah',
-                    wallet: 'Dompet',
-                    date: 'Tanggal',
-                    description: 'Deskripsi',
-                    notes: 'Catatan',
-                    expense: 'Pengeluaran',
-                    income: 'Pemasukan',
-                    wallet_name: 'Nama Dompet',
-                    wallet_type: 'Jenis',
-                    initial_balance: 'Saldo Awal',
-                    goal_name: 'Nama Target',
-                    target_amount: 'Target Jumlah',
-                    deadline: 'Tenggat Waktu',
-                    current_amount: 'Jumlah Saat Ini'
-                }
+                nav: { dashboard: 'Dasbor', transactions: 'Transaksi', wallets: 'Dompet', goals: 'Target', budget: 'Anggaran', networth: 'Kekayaan Bersih', analytics: 'Analitik', advisor: 'Penasihat AI', receipt: 'Pemindai Struk', settings: 'Pengaturan' },
+                page: { dashboard: 'Dasbor', transactions: 'Transaksi', wallets: 'Dompet Saya', goals: 'Target Keuangan', budget: 'Perencanaan Anggaran', networth: 'Kekayaan Bersih', analytics: 'Analitik & Laporan', advisor: 'Penasihat Keuangan AI', receipt: 'Pemindai Struk', settings: 'Pengaturan' },
+                btn: { add_transaction: 'Tambah Transaksi', save: 'Simpan', cancel: 'Batal', edit: 'Edit', delete: 'Hapus', export: 'Ekspor Data', import: 'Impor Data', add_wallet: 'Tambah Dompet', add_goal: 'Tambah Target' },
+                modal: { add_transaction: 'Tambah Transaksi', edit_transaction: 'Edit Transaksi', add_wallet: 'Tambah Dompet', edit_wallet: 'Edit Dompet', add_goal: 'Tambah Target', edit_goal: 'Edit Target' },
+                form: { type: 'Jenis', category: 'Kategori', amount: 'Jumlah', wallet: 'Dompet', date: 'Tanggal', description: 'Deskripsi', notes: 'Catatan', expense: 'Pengeluaran', income: 'Pemasukan', wallet_name: 'Nama Dompet', wallet_type: 'Jenis', initial_balance: 'Saldo Awal', goal_name: 'Nama Target', target_amount: 'Target Jumlah', deadline: 'Tenggat Waktu', current_amount: 'Jumlah Saat Ini' },
+                filter: { today: 'Hari Ini', week: 'Minggu Ini', month: 'Bulan Ini', all: 'Semua', custom: 'Kustom' }
             }
         };
 
-        // Initialize App
+        // NEW: Filter transactions by time period
+        function filterTransactionsByTime(transactions) {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            switch (AppState.timeFilter) {
+                case 'today':
+                    return transactions.filter(t => {
+                        const tDate = new Date(t.date);
+                        tDate.setHours(0, 0, 0, 0);
+                        return tDate.getTime() === now.getTime();
+                    });
+                
+                case 'week':
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    return transactions.filter(t => {
+                        const tDate = new Date(t.date);
+                        return tDate >= weekStart;
+                    });
+                
+                case 'month':
+                    return transactions.filter(t => {
+                        const tDate = new Date(t.date);
+                        return tDate.getMonth() === now.getMonth() && 
+                               tDate.getFullYear() === now.getFullYear();
+                    });
+                
+                case 'custom':
+                    if (!AppState.customDateRange.start || !AppState.customDateRange.end) {
+                        return transactions;
+                    }
+                    return transactions.filter(t => {
+                        const tDate = new Date(t.date);
+                        const start = new Date(AppState.customDateRange.start);
+                        const end = new Date(AppState.customDateRange.end);
+                        return tDate >= start && tDate <= end;
+                    });
+                
+                default: // 'all'
+                    return transactions;
+            }
+        }
+
+        // NEW: Set time filter
+        function setTimeFilter(filter) {
+            AppState.timeFilter = filter;
+            renderPage();
+        }
+
+        // NEW: Update custom date range
+        function updateCustomDateRange() {
+            const start = document.getElementById('customStartDate')?.value;
+            const end = document.getElementById('customEndDate')?.value;
+            
+            AppState.customDateRange = {
+                start: start || null,
+                end: end || null
+            };
+            
+            if (AppState.currentPage === 'transactions') {
+                updateTransactionList();
+            } else {
+                renderPage();
+            }
+        }
+
         function initApp() {
             loadData();
             setupEventListeners();
             updateCategoryOptions();
             updateWalletOptions();
             renderPage();
-            
-            // Import CSV data if first time
-            if (AppState.transactions.length === 0) {
-                importCSVData();
-            }
         }
 
-        // Load Data from LocalStorage
         function loadData() {
             AppState.transactions = DataStore.get('transactions', []);
             AppState.wallets = DataStore.get('wallets', []);
@@ -1292,152 +1283,27 @@
                 DataStore.set('wallets', AppState.wallets);
             }
             
-            // Apply saved theme
             const theme = DataStore.get('theme', 'light');
             document.documentElement.setAttribute('data-theme', theme);
             updateThemeIcon(theme);
-            
-            // Apply saved language
             applyTranslations(AppState.currentLang);
         }
 
-        // Import CSV Data
-        function importCSVData() {
-            const csvData = `Tanggal,Jenis,Kategori,Jumlah,Metode Pembayaran,Sumber,Deskripsi
-2026-02-28,Pemasukan,Gaji,15000000,bank,MODAL AWAL,Modal Awal
-2026-03-08,Pemasukan,Lainnya,796000,bank,Trading,Trading
-2026-03-08,Pengeluaran,Makanan,146000,bank,,Indomaret+makan
-2026-03-09,Pemasukan,Lainnya,1110000,bank,Trading,Trading
-2026-03-09,Pengeluaran,Transportasi,65000,bank,,PP GM Bekasi
-2026-03-09,Pengeluaran,Hiburan,60000,bank,,Nonton GM
-2026-03-09,Pengeluaran,Belanja,198000,bank,,Belanja Mama Miniso dan Kacamataku
-2026-03-09,Pengeluaran,Makanan,287000,bank,,Makan Steak 21 GM
-2026-03-10,Pengeluaran,Tagihan,100000,bank,,Utang Ke Bg Adam
-2026-03-10,Pengeluaran,Tagihan,150000,bank,,INDRIX
-2026-03-10,Pengeluaran,Belanja,120000,bank,,Belanja Mamak ke pasar
-2026-03-10,Pengeluaran,Lainnya,55000,bank,,Pangkas
-2026-03-10,Pengeluaran,Lainnya,100000,bank,,SUL
-2026-03-10,Pengeluaran,Lainnya,60000,bank,,Shopee Followers Mrs Gestun
-2026-03-10,Pengeluaran,Lainnya,60000,bank,,Paket Internet Mamak
-2026-03-10,Pengeluaran,Lainnya,70000,bank,,Beli kartu Telkomsel 2
-2026-03-10,Pengeluaran,Lainnya,150000,bank,,Ambil Cash
-2026-03-10,Pemasukan,Lainnya,1327000,bank,Trading,Closed Book for today
-2026-03-11,Pengeluaran,Lainnya,150000,cash,,INDRIX
-2026-03-11,Pengeluaran,Belanja,85000,cash,,Indomaret
-2026-03-11,Pengeluaran,Belanja,245000,cash,,Belanja Baju mamak
-2026-03-11,Pengeluaran,Lainnya,150000,cash,,Cicilan Indrix
-2026-03-11,Pengeluaran,Lainnya,37000,cash,,Beli komentar ig Mrs Gestun
-2026-03-11,Pemasukan,Lainnya,1317000,bank,Trading,Closed Book Today
-2026-03-12,Pengeluaran,Lainnya,150000,cash,,NDRIX
-2026-03-12,Pengeluaran,Tagihan,138000,cash,,Cicilan Untuk Tiket Plg emak
-2026-03-12,Pengeluaran,Transportasi,36000,cash,,Grab Cikarang
-2026-03-12,Pengeluaran,Makanan,55000,cash,,Bento
-2026-03-12,Pengeluaran,Transportasi,130000,cash,,Gocar Cikarang bekasi
-2026-03-12,Pemasukan,Lainnya,1252000,cash,TRADING,Closed Book For Today
-2026-03-13,Pengeluaran,Transportasi,29000,cash,,Taxi ke mega bekasi
-2026-03-13,Pengeluaran,Hiburan,70000,cash,,Tiket Bioskop
-2026-03-13,Pengeluaran,Makanan,74000,cash,,Beli Roti Breadlife
-2026-03-13,Pengeluaran,Hiburan,112000,cash,,Beliin baju mama
-2026-03-13,Pengeluaran,Transportasi,73000,cash,,Grab Pulang dari mega bekasi
-2026-03-13,Pengeluaran,Makanan,100000,cash,,Makan Zukut SSG
-2026-03-13,Pengeluaran,Lainnya,150000,cash,,INDRIX
-2026-03-13,Pengeluaran,Lainnya,180000,cash,,Cicilan tiket plg
-2026-03-13,Pemasukan,Lainnya,1888000,cash,TRADING,Closed Book`;
-
-            const lines = csvData.split('\n').slice(1); // Skip header
-            const categoryMapping = {
-                'Makanan': 'food',
-                'Transportasi': 'transport',
-                'Tagihan': 'bills',
-                'Belanja': 'shopping',
-                'Kesehatan': 'health',
-                'Hiburan': 'entertainment',
-                'Gaji': 'salary',
-                'Lainnya': 'others'
-            };
-
-            lines.forEach(line => {
-                if (!line.trim()) return;
-                
-                const match = line.match(/"([^"]+)"|([^,]+)/g);
-                if (!match || match.length < 5) return;
-                
-                const cleanValue = (val) => val ? val.replace(/^"|"$/g, '').trim() : '';
-                
-                const date = cleanValue(match[0]);
-                const type = cleanValue(match[1]) === 'Pemasukan' ? 'income' : 'expense';
-                const categoryIndo = cleanValue(match[2]);
-                const amount = parseFloat(cleanValue(match[3]));
-                const wallet = cleanValue(match[4]);
-                const source = cleanValue(match[5]);
-                const description = cleanValue(match[6]);
-
-                if (!date || !amount) return;
-
-                const category = categoryMapping[categoryIndo] || 'others';
-                
-                // Find or create wallet
-                let walletId = AppState.wallets.find(w => w.name.toLowerCase() === wallet.toLowerCase())?.id;
-                if (!walletId) {
-                    const newWallet = {
-                        id: Date.now() + Math.random(),
-                        name: wallet.charAt(0).toUpperCase() + wallet.slice(1),
-                        type: wallet === 'cash' ? 'cash' : 'bank',
-                        balance: 0
-                    };
-                    AppState.wallets.push(newWallet);
-                    walletId = newWallet.id;
-                }
-
-                const transaction = {
-                    id: Date.now() + Math.random(),
-                    type,
-                    category,
-                    amount,
-                    wallet: walletId,
-                    date,
-                    description: description || source || categoryIndo,
-                    notes: source ? `Source: ${source}` : ''
-                };
-
-                AppState.transactions.push(transaction);
-            });
-
-            // Update wallet balances
-            AppState.wallets.forEach(wallet => {
-                const walletTransactions = AppState.transactions.filter(t => t.wallet === wallet.id);
-                const income = walletTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-                const expense = walletTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-                wallet.balance = income - expense;
-            });
-
-            DataStore.set('transactions', AppState.transactions);
-            DataStore.set('wallets', AppState.wallets);
-        }
-
-        // Setup Event Listeners
         function setupEventListeners() {
-            // Navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const page = link.dataset.page;
-                    navigateTo(page);
+                    navigateTo(link.dataset.page);
                 });
             });
 
-            // Menu Toggle
             document.getElementById('menuToggle').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('active');
             });
 
-            // Theme Toggle
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-            // Language Toggle
             document.getElementById('langToggle').addEventListener('click', toggleLanguage);
 
-            // Add Transaction Button
             document.getElementById('addTransactionBtn').addEventListener('click', () => {
                 openModal('transactionModal');
                 document.getElementById('transactionForm').reset();
@@ -1445,22 +1311,22 @@
                 document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
             });
 
-            // Transaction Form
             document.getElementById('transactionForm').addEventListener('submit', handleTransactionSubmit);
             document.getElementById('transactionType').addEventListener('change', updateCategoryOptions);
-
-            // Wallet Form
             document.getElementById('walletForm').addEventListener('submit', handleWalletSubmit);
-
-            // Goal Form
             document.getElementById('goalForm').addEventListener('submit', handleGoalSubmit);
         }
 
-        // Navigation
         function navigateTo(page) {
             AppState.currentPage = page;
             
-            // Update active nav link
+            // Set default filter based on page
+            if (page === 'dashboard') {
+                AppState.timeFilter = 'month';
+            } else if (page === 'transactions') {
+                AppState.timeFilter = 'all';
+            }
+            
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
                 if (link.dataset.page === page) {
@@ -1468,21 +1334,17 @@
                 }
             });
 
-            // Update page title
             const titleKey = `page.${page}`;
             const title = translations[AppState.currentLang].page[page] || page;
             document.getElementById('pageTitle').textContent = title;
 
-            // Render page
             renderPage();
 
-            // Close sidebar on mobile
             if (window.innerWidth < 768) {
                 document.getElementById('sidebar').classList.remove('active');
             }
         }
 
-        // Render Page
         function renderPage() {
             const content = document.getElementById('pageContent');
             
@@ -1529,15 +1391,39 @@
             }
         }
 
-        // Dashboard
+        // DASHBOARD with time filters
         function renderDashboard() {
+            const filteredTransactions = filterTransactionsByTime(AppState.transactions);
             const stats = calculateStats();
-            const healthScore = calculateHealthScore();
-            const recentTransactions = AppState.transactions
+            const filteredStats = {
+                income: filteredTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                expenses: filteredTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
+            };
+            filteredStats.balance = filteredStats.income - filteredStats.expenses;
+
+            const recentTransactions = filteredTransactions
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 5);
 
+            const filterLabels = translations[AppState.currentLang].filter;
+
             return `
+                <!-- Time Filter Pills -->
+                <div class="filter-pills">
+                    <button class="filter-pill ${AppState.timeFilter === 'today' ? 'active' : ''}" onclick="setTimeFilter('today')">
+                        ${filterLabels.today}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'week' ? 'active' : ''}" onclick="setTimeFilter('week')">
+                        ${filterLabels.week}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'month' ? 'active' : ''}" onclick="setTimeFilter('month')">
+                        ${filterLabels.month}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'all' ? 'active' : ''}" onclick="setTimeFilter('all')">
+                        ${filterLabels.all}
+                    </button>
+                </div>
+
                 <div class="stats-grid">
                     <div class="card stat-card">
                         <div class="stat-label">Total Balance</div>
@@ -1548,22 +1434,22 @@
                     </div>
                     
                     <div class="card stat-card">
-                        <div class="stat-label">Total Income</div>
-                        <div class="stat-value" style="color: var(--success)">${formatCurrency(stats.totalIncome)}</div>
-                        <div class="stat-change positive">This month</div>
+                        <div class="stat-label">Income (${filterLabels[AppState.timeFilter]})</div>
+                        <div class="stat-value" style="color: var(--success)">${formatCurrency(filteredStats.income)}</div>
+                        <div class="stat-change positive">${filteredTransactions.filter(t => t.type === 'income').length} transactions</div>
                     </div>
                     
                     <div class="card stat-card">
-                        <div class="stat-label">Total Expenses</div>
-                        <div class="stat-value" style="color: var(--danger)">${formatCurrency(stats.totalExpenses)}</div>
-                        <div class="stat-change negative">This month</div>
+                        <div class="stat-label">Expenses (${filterLabels[AppState.timeFilter]})</div>
+                        <div class="stat-value" style="color: var(--danger)">${formatCurrency(filteredStats.expenses)}</div>
+                        <div class="stat-change negative">${filteredTransactions.filter(t => t.type === 'expense').length} transactions</div>
                     </div>
                     
                     <div class="card stat-card">
-                        <div class="stat-label">Savings Rate</div>
-                        <div class="stat-value">${stats.savingsRate.toFixed(1)}%</div>
-                        <div class="stat-change ${stats.savingsRate >= 20 ? 'positive' : 'negative'}">
-                            ${stats.savingsRate >= 20 ? 'Good!' : 'Can improve'}
+                        <div class="stat-label">Net (${filterLabels[AppState.timeFilter]})</div>
+                        <div class="stat-value" style="color: ${filteredStats.balance >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatCurrency(filteredStats.balance)}</div>
+                        <div class="stat-change ${filteredStats.balance >= 0 ? 'positive' : 'negative'}">
+                            ${filteredStats.balance >= 0 ? 'Surplus' : 'Deficit'}
                         </div>
                     </div>
                 </div>
@@ -1571,7 +1457,7 @@
                 <div class="content-grid">
                     <div>
                         <div class="card">
-                            <h3 style="margin-bottom: 20px;">Income vs Expenses</h3>
+                            <h3 style="margin-bottom: 20px;">Income vs Expenses (Last 6 Months)</h3>
                             <canvas id="incomeExpenseChart"></canvas>
                         </div>
 
@@ -1586,21 +1472,7 @@
                     <div>
                         <div class="card health-score">
                             <h3 style="margin-bottom: 20px;">Financial Health Score</h3>
-                            <div class="score-circle">
-                                <svg width="150" height="150">
-                                    <circle cx="75" cy="75" r="60" fill="none" stroke="var(--bg-secondary)" stroke-width="12"/>
-                                    <circle cx="75" cy="75" r="60" fill="none" stroke="${healthScore.color}" stroke-width="12"
-                                        stroke-dasharray="${2 * Math.PI * 60}" 
-                                        stroke-dashoffset="${2 * Math.PI * 60 * (1 - healthScore.score / 100)}"
-                                        transform="rotate(-90 75 75)"/>
-                                </svg>
-                                <div class="score-value">${healthScore.score}</div>
-                            </div>
-                            <div class="score-label">Your Score</div>
-                            <span class="score-status ${healthScore.status}">${healthScore.label}</span>
-                            <p style="margin-top: 15px; font-size: 14px; color: var(--text-secondary);">
-                                ${healthScore.message}
-                            </p>
+                            ${renderHealthScore()}
                         </div>
 
                         <div class="card" style="margin-top: 20px;">
@@ -1628,44 +1500,66 @@
             `;
         }
 
-        // Render Dashboard Charts
-        function renderDashboardCharts() {
-            setTimeout(() => {
-                try {
-                    const ctx = document.getElementById('incomeExpenseChart');
-                    if (!ctx) return;
-
-                    const months = getLast6Months();
-                    const data = months.map(month => {
-                        const monthTransactions = AppState.transactions.filter(t => {
-                            const tDate = new Date(t.date);
-                            return tDate.getMonth() === month.month && tDate.getFullYear() === month.year;
-                        });
-                        return {
-                            month: month.label,
-                            income: monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
-                            expense: monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
-                        };
-                    });
-
-                    new SimpleBarChart(ctx, {
-                        labels: data.map(d => d.month),
-                        datasets: [
-                            { label: 'Income', data: data.map(d => d.income), color: '#10b981' },
-                            { label: 'Expense', data: data.map(d => d.expense), color: '#ef4444' }
-                        ]
-                    });
-                } catch (error) {
-                    console.error('Chart error:', error);
-                }
-            }, 100);
+        function renderHealthScore() {
+            const healthScore = calculateHealthScore();
+            return `
+                <div class="score-circle">
+                    <svg width="150" height="150">
+                        <circle cx="75" cy="75" r="60" fill="none" stroke="var(--bg-secondary)" stroke-width="12"/>
+                        <circle cx="75" cy="75" r="60" fill="none" stroke="${healthScore.color}" stroke-width="12"
+                            stroke-dasharray="${2 * Math.PI * 60}" 
+                            stroke-dashoffset="${2 * Math.PI * 60 * (1 - healthScore.score / 100)}"
+                            transform="rotate(-90 75 75)"/>
+                    </svg>
+                    <div class="score-value">${healthScore.score}</div>
+                </div>
+                <div class="score-label">Your Score</div>
+                <span class="score-status ${healthScore.status}">${healthScore.label}</span>
+                <p style="margin-top: 15px; font-size: 14px; color: var(--text-secondary);">
+                    ${healthScore.message}
+                </p>
+            `;
         }
 
-        // Transactions Page
+        // TRANSACTIONS with filters
         function renderTransactions() {
-            const transactions = AppState.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const filterLabels = translations[AppState.currentLang].filter;
             
             return `
+                <div class="filter-pills">
+                    <button class="filter-pill ${AppState.timeFilter === 'today' ? 'active' : ''}" onclick="setTimeFilter('today')">
+                        ${filterLabels.today}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'week' ? 'active' : ''}" onclick="setTimeFilter('week')">
+                        ${filterLabels.week}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'month' ? 'active' : ''}" onclick="setTimeFilter('month')">
+                        ${filterLabels.month}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'all' ? 'active' : ''}" onclick="setTimeFilter('all')">
+                        ${filterLabels.all}
+                    </button>
+                    <button class="filter-pill ${AppState.timeFilter === 'custom' ? 'active' : ''}" onclick="setTimeFilter('custom')">
+                        ${filterLabels.custom}
+                    </button>
+                </div>
+
+                ${AppState.timeFilter === 'custom' ? `
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="date-range">
+                            <input type="date" class="form-input" id="customStartDate" 
+                                value="${AppState.customDateRange.start || ''}" 
+                                onchange="updateCustomDateRange()">
+                            <span>to</span>
+                            <input type="date" class="form-input" id="customEndDate" 
+                                value="${AppState.customDateRange.end || ''}" 
+                                onchange="updateCustomDateRange()">
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div id="transactionSummary"></div>
+
                 <div class="card">
                     <div class="search-filter">
                         <div class="search-box">
@@ -1685,11 +1579,72 @@
                         </select>
                     </div>
 
-                    <div class="transaction-list" id="transactionList">
-                        ${transactions.map(t => renderTransactionItem(t, true)).join('') || '<div class="empty-state">No transactions</div>'}
-                    </div>
+                    <div class="transaction-list" id="transactionList"></div>
                 </div>
             `;
+        }
+
+        function setupTransactionListeners() {
+            const searchInput = document.getElementById('searchTransactions');
+            const typeFilter = document.getElementById('filterType');
+            const categoryFilter = document.getElementById('filterCategory');
+
+            updateTransactionList();
+
+            searchInput.addEventListener('input', updateTransactionList);
+            typeFilter.addEventListener('change', updateTransactionList);
+            categoryFilter.addEventListener('change', updateTransactionList);
+        }
+
+        function updateTransactionList() {
+            const search = document.getElementById('searchTransactions')?.value.toLowerCase() || '';
+            const type = document.getElementById('filterType')?.value || '';
+            const category = document.getElementById('filterCategory')?.value || '';
+
+            let transactions = filterTransactionsByTime(AppState.transactions);
+
+            transactions = transactions.filter(t => {
+                const matchSearch = !search || t.description?.toLowerCase().includes(search);
+                const matchType = !type || t.type === type;
+                const matchCategory = !category || t.category === category;
+                return matchSearch && matchType && matchCategory;
+            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const income = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expenses = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+
+            const summaryEl = document.getElementById('transactionSummary');
+            if (summaryEl) {
+                summaryEl.innerHTML = `
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">Transactions</div>
+                            <div class="summary-value">${transactions.length}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Income</div>
+                            <div class="summary-value income">+${formatCurrency(income)}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Expenses</div>
+                            <div class="summary-value expense">-${formatCurrency(expenses)}</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Net</div>
+                            <div class="summary-value" style="color: ${income - expenses >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                                ${formatCurrency(income - expenses)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const listEl = document.getElementById('transactionList');
+            if (listEl) {
+                listEl.innerHTML = transactions.length > 0 ?
+                    transactions.map(t => renderTransactionItem(t, true)).join('') :
+                    '<div class="empty-state">No transactions found</div>';
+            }
         }
 
         function renderTransactionItem(transaction, showActions = false) {
@@ -1722,33 +1677,9 @@
             `;
         }
 
-        function setupTransactionListeners() {
-            const searchInput = document.getElementById('searchTransactions');
-            const typeFilter = document.getElementById('filterType');
-            const categoryFilter = document.getElementById('filterCategory');
+        // Continue with all remaining functions from original file...
+        // WALLETS, GOALS, BUDGET, NETWORTH, ANALYTICS, ADVISOR, RECEIPT, SETTINGS
 
-            const filterTransactions = () => {
-                const search = searchInput.value.toLowerCase();
-                const type = typeFilter.value;
-                const category = categoryFilter.value;
-
-                const filtered = AppState.transactions.filter(t => {
-                    const matchSearch = !search || t.description?.toLowerCase().includes(search);
-                    const matchType = !type || t.type === type;
-                    const matchCategory = !category || t.category === category;
-                    return matchSearch && matchType && matchCategory;
-                }).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                document.getElementById('transactionList').innerHTML = 
-                    filtered.map(t => renderTransactionItem(t, true)).join('') || '<div class="empty-state">No transactions found</div>';
-            };
-
-            searchInput.addEventListener('input', filterTransactions);
-            typeFilter.addEventListener('change', filterTransactions);
-            categoryFilter.addEventListener('change', filterTransactions);
-        }
-
-        // Wallets Page
         function renderWallets() {
             return `
                 <div style="margin-bottom: 20px;">
@@ -1796,7 +1727,6 @@
             }, 100);
         }
 
-        // Goals Page
         function renderGoals() {
             return `
                 <div style="margin-bottom: 20px;">
@@ -1841,11 +1771,8 @@
             `;
         }
 
-        function setupGoalListeners() {
-            // Goals are managed through modals
-        }
+        function setupGoalListeners() {}
 
-        // Budget Page
         function renderBudget() {
             const budget = AppState.budget || { type: 'fixed', categories: {} };
             const thisMonth = getThisMonthTransactions();
@@ -1954,11 +1881,26 @@
             `;
         }
 
-        function setupBudgetListeners() {
-            // Budget listeners handled inline
+        function setupBudgetListeners() {}
+
+        function setBudgetType(type) {
+            if (!AppState.budget) {
+                AppState.budget = { type, categories: {} };
+            } else {
+                AppState.budget.type = type;
+            }
+            DataStore.set('budget', AppState.budget);
+            renderPage();
         }
 
-        // Net Worth Page
+        function updateBudgetCategory(categoryId, amount) {
+            if (!AppState.budget) {
+                AppState.budget = { type: 'fixed', categories: {} };
+            }
+            AppState.budget.categories[categoryId] = parseFloat(amount) || 0;
+            DataStore.set('budget', AppState.budget);
+        }
+
         function renderNetWorth() {
             const networth = AppState.networth;
             const totalAssets = networth.assets.reduce((sum, a) => sum + a.amount, 0);
@@ -2023,11 +1965,37 @@
             `;
         }
 
-        function setupNetWorthListeners() {
-            // Handled inline
+        function setupNetWorthListeners() {}
+
+        function addNetworthItem(type) {
+            const name = prompt(`Enter ${type} name:`);
+            if (!name) return;
+            
+            const amount = parseFloat(prompt('Enter amount:'));
+            if (isNaN(amount)) return;
+
+            if (type === 'asset') {
+                AppState.networth.assets.push({ name, amount });
+            } else {
+                AppState.networth.liabilities.push({ name, amount });
+            }
+
+            DataStore.set('networth', AppState.networth);
+            renderPage();
         }
 
-        // Analytics Page
+        function deleteNetworthItem(type, index) {
+            if (confirm('Delete this item?')) {
+                if (type === 'asset') {
+                    AppState.networth.assets.splice(index, 1);
+                } else {
+                    AppState.networth.liabilities.splice(index, 1);
+                }
+                DataStore.set('networth', AppState.networth);
+                renderPage();
+            }
+        }
+
         function renderAnalytics() {
             return `
                 <div class="card">
@@ -2050,7 +2018,6 @@
         function renderAnalyticsCharts() {
             setTimeout(() => {
                 try {
-                    // Category Chart
                     const categoryCtx = document.getElementById('categoryChart');
                     if (categoryCtx) {
                         const expenses = getThisMonthTransactions().filter(t => t.type === 'expense');
@@ -2071,7 +2038,6 @@
                         });
                     }
 
-                    // Trend Chart
                     const trendCtx = document.getElementById('trendChart');
                     if (trendCtx) {
                         const months = getLast6Months();
@@ -2090,7 +2056,6 @@
                         });
                     }
 
-                    // Monthly Report
                     generateMonthlyReport();
                 } catch (error) {
                     console.error('Analytics charts error:', error);
@@ -2110,10 +2075,14 @@
                 insights.push('⚠️ Your savings rate is ' + stats.savingsRate.toFixed(1) + '%. Try to aim for at least 20%');
             }
             
-            if (stats.totalExpenses > stats.totalIncome) {
+            const thisMonth = getThisMonthTransactions();
+            const income = thisMonth.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expenses = thisMonth.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            
+            if (expenses > income) {
                 insights.push('🚨 You spent more than you earned this month. Consider reviewing your expenses.');
             } else {
-                insights.push('💰 You saved ' + formatCurrency(stats.totalIncome - stats.totalExpenses) + ' this month!');
+                insights.push('💰 You saved ' + formatCurrency(income - expenses) + ' this month!');
             }
 
             const topCategory = getTopSpendingCategory();
@@ -2128,7 +2097,6 @@
             `).join('');
         }
 
-        // AI Advisor Page
         function renderAdvisor() {
             const insights = generateAIInsights();
             
@@ -2166,10 +2134,9 @@
             const thisMonth = getThisMonthTransactions();
             const lastMonth = getLastMonthTransactions();
 
-            // Spending comparison
             const thisMonthExpense = thisMonth.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
             const lastMonthExpense = lastMonth.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const expenseChange = ((thisMonthExpense - lastMonthExpense) / lastMonthExpense * 100);
+            const expenseChange = lastMonthExpense > 0 ? ((thisMonthExpense - lastMonthExpense) / lastMonthExpense * 100) : 0;
 
             if (expenseChange > 10) {
                 insights.push({
@@ -2183,7 +2150,6 @@
                 });
             }
 
-            // Goal progress
             const nearGoals = AppState.goals.filter(g => (g.current / g.target) >= 0.8);
             if (nearGoals.length > 0) {
                 insights.push({
@@ -2192,7 +2158,6 @@
                 });
             }
 
-            // Savings rate
             if (stats.savingsRate < 10) {
                 insights.push({
                     icon: '⚠️',
@@ -2205,21 +2170,20 @@
                 });
             }
 
-            // Top spending category
             const topCategory = getTopSpendingCategory();
-            if (topCategory && topCategory.amount > stats.totalIncome * 0.3) {
+            const income = thisMonth.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            if (topCategory && topCategory.amount > income * 0.3) {
                 insights.push({
                     icon: '💳',
                     text: `You're spending a lot on ${topCategory.name}. Consider setting a budget limit.`
                 });
             }
 
-            // Emergency fund
             const totalBalance = AppState.wallets.reduce((sum, w) => sum + w.balance, 0);
-            const monthlyExpense = stats.totalExpenses;
-            const emergencyMonths = totalBalance / monthlyExpense;
+            const monthlyExpense = thisMonthExpense;
+            const emergencyMonths = monthlyExpense > 0 ? totalBalance / monthlyExpense : 0;
 
-            if (emergencyMonths < 3) {
+            if (emergencyMonths < 3 && monthlyExpense > 0) {
                 insights.push({
                     icon: '🚨',
                     text: `Your emergency fund covers only ${emergencyMonths.toFixed(1)} months of expenses. Aim for 3-6 months.`
@@ -2236,7 +2200,6 @@
             ];
         }
 
-        // Receipt Scanner Page
         function renderReceipt() {
             return `
                 <div class="card">
@@ -2271,12 +2234,10 @@
 
             const reader = new FileReader();
             reader.onload = (event) => {
-                // Show preview
                 document.getElementById('receiptPreview').innerHTML = `
                     <img src="${event.target.result}" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;">
                 `;
 
-                // Simulate OCR extraction
                 setTimeout(() => {
                     const simulatedData = {
                         store: 'Sample Store',
@@ -2318,7 +2279,26 @@
             reader.readAsDataURL(file);
         }
 
-        // Settings Page
+        function saveScannedReceipt() {
+            const transaction = {
+                id: Date.now(),
+                type: 'expense',
+                category: document.getElementById('scannedCategory').value,
+                amount: parseFloat(document.getElementById('scannedAmount').value),
+                wallet: AppState.wallets[0].id,
+                date: document.getElementById('scannedDate').value,
+                description: document.getElementById('scannedStore').value,
+                notes: 'Scanned from receipt'
+            };
+
+            AppState.transactions.push(transaction);
+            updateWalletBalances();
+            DataStore.set('transactions', AppState.transactions);
+            
+            alert('Receipt saved successfully!');
+            navigateTo('transactions');
+        }
+
         function renderSettings() {
             const theme = document.documentElement.getAttribute('data-theme');
             
@@ -2368,8 +2348,8 @@
                     <div class="card" style="margin-top: 30px; background: var(--bg-secondary);">
                         <h4 style="margin-bottom: 10px;">About FinTrack</h4>
                         <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
-                            Version 1.0.0<br>
-                            A complete personal finance tracker with AI insights, budget planning, and goal tracking.<br>
+                            Version 2.0.0 - Complete Edition<br>
+                            Full-featured personal finance manager with time filters, charts, AI insights, and comprehensive tracking.<br>
                             All data is stored locally in your browser.
                         </p>
                     </div>
@@ -2377,259 +2357,7 @@
             `;
         }
 
-        function setupSettingsListeners() {
-            // Settings handled inline
-        }
-
-        // Transaction Form Handlers
-        function handleTransactionSubmit(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('transactionId').value;
-            const transaction = {
-                id: id ? parseInt(id) : Date.now(),
-                type: document.getElementById('transactionType').value,
-                category: document.getElementById('transactionCategory').value,
-                amount: parseFloat(document.getElementById('transactionAmount').value),
-                wallet: parseInt(document.getElementById('transactionWallet').value),
-                date: document.getElementById('transactionDate').value,
-                description: document.getElementById('transactionDescription').value,
-                notes: document.getElementById('transactionNotes').value
-            };
-
-            if (id) {
-                // Update
-                const index = AppState.transactions.findIndex(t => t.id === parseInt(id));
-                AppState.transactions[index] = transaction;
-            } else {
-                // Create
-                AppState.transactions.push(transaction);
-            }
-
-            // Update wallet balance
-            updateWalletBalances();
-
-            DataStore.set('transactions', AppState.transactions);
-            closeModal('transactionModal');
-            renderPage();
-        }
-
-        function updateCategoryOptions() {
-            const type = document.getElementById('transactionType').value;
-            const categories = CATEGORIES[type] || [];
-            const select = document.getElementById('transactionCategory');
-            
-            select.innerHTML = categories.map(c => 
-                `<option value="${c.id}">${c.icon} ${c.name[AppState.currentLang]}</option>`
-            ).join('');
-        }
-
-        function updateWalletOptions() {
-            const select = document.getElementById('transactionWallet');
-            if (!select) return;
-            
-            select.innerHTML = AppState.wallets.map(w => 
-                `<option value="${w.id}">${w.name}</option>`
-            ).join('');
-        }
-
-        function updateWalletBalances() {
-            AppState.wallets.forEach(wallet => {
-                const walletTransactions = AppState.transactions.filter(t => t.wallet === wallet.id);
-                const income = walletTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-                const expense = walletTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-                wallet.balance = income - expense;
-            });
-            DataStore.set('wallets', AppState.wallets);
-        }
-
-        function editTransaction(id) {
-            const transaction = AppState.transactions.find(t => t.id === id);
-            if (!transaction) return;
-
-            document.getElementById('transactionId').value = transaction.id;
-            document.getElementById('transactionType').value = transaction.type;
-            updateCategoryOptions();
-            document.getElementById('transactionCategory').value = transaction.category;
-            document.getElementById('transactionAmount').value = transaction.amount;
-            document.getElementById('transactionWallet').value = transaction.wallet;
-            document.getElementById('transactionDate').value = transaction.date;
-            document.getElementById('transactionDescription').value = transaction.description || '';
-            document.getElementById('transactionNotes').value = transaction.notes || '';
-
-            openModal('transactionModal');
-        }
-
-        function deleteTransaction(id) {
-            if (confirm('Delete this transaction?')) {
-                AppState.transactions = AppState.transactions.filter(t => t.id !== id);
-                updateWalletBalances();
-                DataStore.set('transactions', AppState.transactions);
-                renderPage();
-            }
-        }
-
-        // Wallet Handlers
-        function handleWalletSubmit(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('walletId').value;
-            const wallet = {
-                id: id ? parseInt(id) : Date.now(),
-                name: document.getElementById('walletName').value,
-                type: document.getElementById('walletType').value,
-                balance: parseFloat(document.getElementById('walletBalance').value)
-            };
-
-            if (id) {
-                const index = AppState.wallets.findIndex(w => w.id === parseInt(id));
-                AppState.wallets[index] = wallet;
-            } else {
-                AppState.wallets.push(wallet);
-            }
-
-            DataStore.set('wallets', AppState.wallets);
-            closeModal('walletModal');
-            renderPage();
-            updateWalletOptions();
-        }
-
-        function editWallet(id) {
-            const wallet = AppState.wallets.find(w => w.id === id);
-            if (!wallet) return;
-
-            document.getElementById('walletId').value = wallet.id;
-            document.getElementById('walletName').value = wallet.name;
-            document.getElementById('walletType').value = wallet.type;
-            document.getElementById('walletBalance').value = wallet.balance;
-
-            openModal('walletModal');
-        }
-
-        function deleteWallet(id) {
-            if (confirm('Delete this wallet? Associated transactions will remain.')) {
-                AppState.wallets = AppState.wallets.filter(w => w.id !== id);
-                DataStore.set('wallets', AppState.wallets);
-                renderPage();
-                updateWalletOptions();
-            }
-        }
-
-        // Goal Handlers
-        function handleGoalSubmit(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('goalId').value;
-            const goal = {
-                id: id ? parseInt(id) : Date.now(),
-                name: document.getElementById('goalName').value,
-                target: parseFloat(document.getElementById('goalTarget').value),
-                deadline: document.getElementById('goalDeadline').value,
-                current: parseFloat(document.getElementById('goalCurrent').value) || 0
-            };
-
-            if (id) {
-                const index = AppState.goals.findIndex(g => g.id === parseInt(id));
-                AppState.goals[index] = goal;
-            } else {
-                AppState.goals.push(goal);
-            }
-
-            DataStore.set('goals', AppState.goals);
-            closeModal('goalModal');
-            renderPage();
-        }
-
-        function editGoal(id) {
-            const goal = AppState.goals.find(g => g.id === id);
-            if (!goal) return;
-
-            document.getElementById('goalId').value = goal.id;
-            document.getElementById('goalName').value = goal.name;
-            document.getElementById('goalTarget').value = goal.target;
-            document.getElementById('goalDeadline').value = goal.deadline;
-            document.getElementById('goalCurrent').value = goal.current;
-
-            openModal('goalModal');
-        }
-
-        function deleteGoal(id) {
-            if (confirm('Delete this goal?')) {
-                AppState.goals = AppState.goals.filter(g => g.id !== id);
-                DataStore.set('goals', AppState.goals);
-                renderPage();
-            }
-        }
-
-        // Net Worth Handlers
-        function addNetworthItem(type) {
-            const name = prompt(`Enter ${type} name:`);
-            if (!name) return;
-            
-            const amount = parseFloat(prompt('Enter amount:'));
-            if (isNaN(amount)) return;
-
-            if (type === 'asset') {
-                AppState.networth.assets.push({ name, amount });
-            } else {
-                AppState.networth.liabilities.push({ name, amount });
-            }
-
-            DataStore.set('networth', AppState.networth);
-            renderPage();
-        }
-
-        function deleteNetworthItem(type, index) {
-            if (confirm('Delete this item?')) {
-                if (type === 'asset') {
-                    AppState.networth.assets.splice(index, 1);
-                } else {
-                    AppState.networth.liabilities.splice(index, 1);
-                }
-                DataStore.set('networth', AppState.networth);
-                renderPage();
-            }
-        }
-
-        // Budget Handlers
-        function setBudgetType(type) {
-            if (!AppState.budget) {
-                AppState.budget = { type, categories: {} };
-            } else {
-                AppState.budget.type = type;
-            }
-            DataStore.set('budget', AppState.budget);
-            renderPage();
-        }
-
-        function updateBudgetCategory(categoryId, amount) {
-            if (!AppState.budget) {
-                AppState.budget = { type: 'fixed', categories: {} };
-            }
-            AppState.budget.categories[categoryId] = parseFloat(amount) || 0;
-            DataStore.set('budget', AppState.budget);
-        }
-
-        // Receipt Handler
-        function saveScannedReceipt() {
-            const transaction = {
-                id: Date.now(),
-                type: 'expense',
-                category: document.getElementById('scannedCategory').value,
-                amount: parseFloat(document.getElementById('scannedAmount').value),
-                wallet: AppState.wallets[0].id,
-                date: document.getElementById('scannedDate').value,
-                description: document.getElementById('scannedStore').value,
-                notes: 'Scanned from receipt'
-            };
-
-            AppState.transactions.push(transaction);
-            updateWalletBalances();
-            DataStore.set('transactions', AppState.transactions);
-            
-            alert('Receipt saved successfully!');
-            navigateTo('transactions');
-        }
+        function setupSettingsListeners() {}
 
         // Helper Functions
         function calculateStats() {
@@ -2643,7 +2371,7 @@
                 totalIncome: income,
                 totalExpenses: expenses,
                 savingsRate: income > 0 ? ((income - expenses) / income) * 100 : 0,
-                balanceChange: Math.random() * 20 - 10 // Simulated
+                balanceChange: Math.random() * 20 - 10
             };
         }
 
@@ -2651,29 +2379,26 @@
             const stats = calculateStats();
             let score = 50;
 
-            // Savings rate (30 points)
             if (stats.savingsRate >= 20) score += 30;
             else if (stats.savingsRate >= 10) score += 15;
 
-            // Expense ratio (20 points)
             if (stats.totalExpenses < stats.totalIncome * 0.7) score += 20;
             else if (stats.totalExpenses < stats.totalIncome * 0.9) score += 10;
 
-            // Emergency fund (20 points)
             const monthlyExpense = stats.totalExpenses;
-            const emergencyMonths = stats.totalBalance / monthlyExpense;
+            const emergencyMonths = monthlyExpense > 0 ? stats.totalBalance / monthlyExpense : 0;
             if (emergencyMonths >= 6) score += 20;
             else if (emergencyMonths >= 3) score += 10;
 
             score = Math.min(Math.max(score, 0), 100);
 
             let status, label, color, message;
-            if (score >= 71) {
+            if (score >= 70) {
                 status = 'healthy';
                 label = 'Healthy';
                 color = '#10b981';
                 message = 'Your finances are in great shape! Keep up the good work.';
-            } else if (score >= 41) {
+            } else if (score >= 40) {
                 status = 'moderate';
                 label = 'Moderate';
                 color = '#f59e0b';
@@ -2755,7 +2480,6 @@
             });
         }
 
-        // Modal Functions
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
         }
@@ -2764,7 +2488,6 @@
             document.getElementById(modalId).classList.remove('active');
         }
 
-        // Theme Functions
         function toggleTheme() {
             const current = document.documentElement.getAttribute('data-theme');
             const newTheme = current === 'dark' ? 'light' : 'dark';
@@ -2783,7 +2506,6 @@
             document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
         }
 
-        // Language Functions
         function toggleLanguage() {
             const newLang = AppState.currentLang === 'en' ? 'id' : 'en';
             changeLanguage(newLang);
@@ -2806,7 +2528,6 @@
             });
         }
 
-        // Data Management
         function exportData() {
             const data = {
                 transactions: AppState.transactions,
@@ -2865,13 +2586,217 @@
             }
         }
 
+        // Transaction Form Handlers
+        function handleTransactionSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('transactionId').value;
+            const transaction = {
+                id: id ? parseInt(id) : Date.now(),
+                type: document.getElementById('transactionType').value,
+                category: document.getElementById('transactionCategory').value,
+                amount: parseFloat(document.getElementById('transactionAmount').value),
+                wallet: parseInt(document.getElementById('transactionWallet').value),
+                date: document.getElementById('transactionDate').value,
+                description: document.getElementById('transactionDescription').value,
+                notes: document.getElementById('transactionNotes').value
+            };
+
+            if (id) {
+                const index = AppState.transactions.findIndex(t => t.id === parseInt(id));
+                AppState.transactions[index] = transaction;
+            } else {
+                AppState.transactions.push(transaction);
+            }
+
+            updateWalletBalances();
+            DataStore.set('transactions', AppState.transactions);
+            closeModal('transactionModal');
+            renderPage();
+        }
+
+        function updateCategoryOptions() {
+            const type = document.getElementById('transactionType').value;
+            const categories = CATEGORIES[type] || [];
+            const select = document.getElementById('transactionCategory');
+            
+            select.innerHTML = categories.map(c => 
+                `<option value="${c.id}">${c.icon} ${c.name[AppState.currentLang]}</option>`
+            ).join('');
+        }
+
+        function updateWalletOptions() {
+            const select = document.getElementById('transactionWallet');
+            if (!select) return;
+            
+            select.innerHTML = AppState.wallets.map(w => 
+                `<option value="${w.id}">${w.name}</option>`
+            ).join('');
+        }
+
+        function updateWalletBalances() {
+            AppState.wallets.forEach(wallet => {
+                const walletTransactions = AppState.transactions.filter(t => t.wallet === wallet.id);
+                const income = walletTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+                const expense = walletTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+                wallet.balance = income - expense;
+            });
+            DataStore.set('wallets', AppState.wallets);
+        }
+
+        function editTransaction(id) {
+            const transaction = AppState.transactions.find(t => t.id === id);
+            if (!transaction) return;
+
+            document.getElementById('transactionId').value = transaction.id;
+            document.getElementById('transactionType').value = transaction.type;
+            updateCategoryOptions();
+            document.getElementById('transactionCategory').value = transaction.category;
+            document.getElementById('transactionAmount').value = transaction.amount;
+            document.getElementById('transactionWallet').value = transaction.wallet;
+            document.getElementById('transactionDate').value = transaction.date;
+            document.getElementById('transactionDescription').value = transaction.description || '';
+            document.getElementById('transactionNotes').value = transaction.notes || '';
+
+            openModal('transactionModal');
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('Delete this transaction?')) {
+                AppState.transactions = AppState.transactions.filter(t => t.id !== id);
+                updateWalletBalances();
+                DataStore.set('transactions', AppState.transactions);
+                renderPage();
+            }
+        }
+
+        function handleWalletSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('walletId').value;
+            const wallet = {
+                id: id ? parseInt(id) : Date.now(),
+                name: document.getElementById('walletName').value,
+                type: document.getElementById('walletType').value,
+                balance: parseFloat(document.getElementById('walletBalance').value)
+            };
+
+            if (id) {
+                const index = AppState.wallets.findIndex(w => w.id === parseInt(id));
+                AppState.wallets[index] = wallet;
+            } else {
+                AppState.wallets.push(wallet);
+            }
+
+            DataStore.set('wallets', AppState.wallets);
+            closeModal('walletModal');
+            renderPage();
+            updateWalletOptions();
+        }
+
+        function editWallet(id) {
+            const wallet = AppState.wallets.find(w => w.id === id);
+            if (!wallet) return;
+
+            document.getElementById('walletId').value = wallet.id;
+            document.getElementById('walletName').value = wallet.name;
+            document.getElementById('walletType').value = wallet.type;
+            document.getElementById('walletBalance').value = wallet.balance;
+
+            openModal('walletModal');
+        }
+
+        function deleteWallet(id) {
+            if (confirm('Delete this wallet? Associated transactions will remain.')) {
+                AppState.wallets = AppState.wallets.filter(w => w.id !== id);
+                DataStore.set('wallets', AppState.wallets);
+                renderPage();
+                updateWalletOptions();
+            }
+        }
+
+        function handleGoalSubmit(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('goalId').value;
+            const goal = {
+                id: id ? parseInt(id) : Date.now(),
+                name: document.getElementById('goalName').value,
+                target: parseFloat(document.getElementById('goalTarget').value),
+                deadline: document.getElementById('goalDeadline').value,
+                current: parseFloat(document.getElementById('goalCurrent').value) || 0
+            };
+
+            if (id) {
+                const index = AppState.goals.findIndex(g => g.id === parseInt(id));
+                AppState.goals[index] = goal;
+            } else {
+                AppState.goals.push(goal);
+            }
+
+            DataStore.set('goals', AppState.goals);
+            closeModal('goalModal');
+            renderPage();
+        }
+
+        function editGoal(id) {
+            const goal = AppState.goals.find(g => g.id === id);
+            if (!goal) return;
+
+            document.getElementById('goalId').value = goal.id;
+            document.getElementById('goalName').value = goal.name;
+            document.getElementById('goalTarget').value = goal.target;
+            document.getElementById('goalDeadline').value = goal.deadline;
+            document.getElementById('goalCurrent').value = goal.current;
+
+            openModal('goalModal');
+        }
+
+        function deleteGoal(id) {
+            if (confirm('Delete this goal?')) {
+                AppState.goals = AppState.goals.filter(g => g.id !== id);
+                DataStore.set('goals', AppState.goals);
+                renderPage();
+            }
+        }
+
+        // Chart rendering
+        function renderDashboardCharts() {
+            setTimeout(() => {
+                try {
+                    const ctx = document.getElementById('incomeExpenseChart');
+                    if (!ctx) return;
+
+                    const months = getLast6Months();
+                    const data = months.map(month => {
+                        const monthTransactions = AppState.transactions.filter(t => {
+                            const tDate = new Date(t.date);
+                            return tDate.getMonth() === month.month && tDate.getFullYear() === month.year;
+                        });
+                        return {
+                            month: month.label,
+                            income: monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                            expense: monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+                        };
+                    });
+
+                    new SimpleBarChart(ctx, {
+                        labels: data.map(d => d.month),
+                        datasets: [
+                            { label: 'Income', data: data.map(d => d.income), color: '#10b981' },
+                            { label: 'Expense', data: data.map(d => d.expense), color: '#ef4444' }
+                        ]
+                    });
+                } catch (error) {
+                    console.error('Chart error:', error);
+                }
+            }, 100);
+        }
+
         // Simple Chart Library
         class SimpleBarChart {
             constructor(canvas, options) {
-                if (!canvas || !canvas.getContext) {
-                    console.error('Invalid canvas element');
-                    return;
-                }
+                if (!canvas || !canvas.getContext) return;
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -2904,7 +2829,6 @@
                         });
                     });
 
-                    // Labels
                     this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary') || '#6b7280';
                     this.ctx.font = '12px sans-serif';
                     this.ctx.textAlign = 'center';
@@ -2920,10 +2844,7 @@
 
         class SimpleLineChart {
             constructor(canvas, options) {
-                if (!canvas || !canvas.getContext) {
-                    console.error('Invalid canvas element');
-                    return;
-                }
+                if (!canvas || !canvas.getContext) return;
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -2958,7 +2879,6 @@
 
                     this.ctx.stroke();
 
-                    // Points
                     data.forEach((value, i) => {
                         const x = padding + i * stepX;
                         const y = height - padding - (value / maxValue) * chartHeight;
@@ -2968,7 +2888,6 @@
                         this.ctx.fill();
                     });
 
-                    // Labels
                     this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary') || '#6b7280';
                     this.ctx.font = '12px sans-serif';
                     this.ctx.textAlign = 'center';
@@ -2984,10 +2903,7 @@
 
         class SimplePieChart {
             constructor(canvas, options) {
-                if (!canvas || !canvas.getContext) {
-                    console.error('Invalid canvas element');
-                    return;
-                }
+                if (!canvas || !canvas.getContext) return;
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.options = options;
@@ -3022,7 +2938,6 @@
                         currentAngle += sliceAngle;
                     });
 
-                    // Legend
                     const legendY = height - 60;
                     labels.forEach((label, i) => {
                         const x = 20 + (i % 3) * (width / 3);
@@ -3042,18 +2957,16 @@
             }
         }
 
-        // Initialize on load
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 initApp();
             } catch (error) {
                 console.error('Init error:', error);
-                // Fallback init
                 setTimeout(initApp, 100);
             }
         });
 
-        // Also try on window load as fallback
         window.addEventListener('load', () => {
             if (!AppState.transactions) {
                 initApp();
