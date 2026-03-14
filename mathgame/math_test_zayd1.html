@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Test Matematika - Kelas 11 SMA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            margin: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .info-box ul li {
+            margin: 5px 0;
+        }
+
+        .quiz-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .difficulty {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .difficulty.medium {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .difficulty.hard {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .difficulty.very-hard {
+            background: #8b0000;
+            color: white;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .start-section {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn {
+            display: block;
+            margin: 30px auto;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .result-container {
+            display: none;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .score-display h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .score-display p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .grade {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .feedback h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            color: #333;
+            display: none;
+        }
+
+        .timer.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer {
+                position: static;
+                margin: 10px auto;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Diagnostic Test Matematika</h1>
+            <p>Kelas 11 SMA | 40 Soal Pilihan Ganda</p>
+        </div>
+
+        <!-- Start Section -->
+        <div class="start-section" id="startSection">
+            <div class="info-box">
+                <h3>Petunjuk Pengerjaan:</h3>
+                <ul>
+                    <li>Tes ini terdiri dari 40 soal pilihan ganda</li>
+                    <li>Tingkat kesulitan: Medium hingga Sangat Sulit</li>
+                    <li>Pilih satu jawaban yang paling tepat untuk setiap soal</li>
+                    <li>Anda dapat mengubah jawaban sebelum submit</li>
+                    <li>Klik tombol "Submit Test" setelah selesai mengerjakan</li>
+                    <li>Nilai akan ditampilkan otomatis setelah submit</li>
+                </ul>
+            </div>
+            <button class="btn" onclick="startTest()">Mulai Test</button>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer" id="timer">
+            ⏱️ <span id="timerDisplay">00:00</span>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-container" id="quizContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <form id="quizForm">
+                <!-- Questions will be inserted here -->
+            </form>
+            <button class="btn submit-btn" onclick="submitTest(event)">Submit Test</button>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-container" id="resultContainer">
+            <div class="score-display">
+                <h2>Hasil Test Anda</h2>
+                <div class="grade" id="gradeDisplay"></div>
+                <p>Nilai: <span id="scoreDisplay"></span>/100</p>
+                <p>Benar: <span id="correctDisplay"></span>/40</p>
+                <p>Waktu: <span id="timeDisplay"></span></p>
+            </div>
+            <div class="feedback" id="feedbackDisplay"></div>
+            <button class="btn" onclick="location.reload()">Ulangi Test</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // MEDIUM (Soal 1-15)
+            {
+                question: "Diketahui fungsi f(x) = 3x² - 5x + 2. Nilai f(2) adalah...",
+                options: ["4", "6", "8", "10"],
+                correct: 2,
+                difficulty: "medium"
+            },
+            {
+                question: "Jika log 2 = 0,301 dan log 3 = 0,477, maka nilai log 18 adalah...",
+                options: ["1,255", "1,556", "1,778", "2,079"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Nilai dari lim (x→3) (x² - 9)/(x - 3) adalah...",
+                options: ["3", "6", "9", "0"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Turunan pertama dari f(x) = 4x³ - 6x² + 2x - 1 adalah...",
+                options: ["12x² - 12x + 2", "12x² - 6x + 2", "4x² - 12x + 2", "12x³ - 12x² + 2x"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Jika sin α = 3/5 dan α di kuadran I, maka cos α adalah...",
+                options: ["3/5", "4/5", "5/4", "5/3"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Suku ke-10 dari barisan aritmatika 5, 9, 13, 17, ... adalah...",
+                options: ["41", "43", "45", "47"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Nilai x yang memenuhi persamaan 2^(x+1) = 16 adalah...",
+                options: ["2", "3", "4", "5"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Jika matriks A = [[2, 3], [1, 4]], maka determinan A adalah...",
+                options: ["3", "5", "7", "11"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Integral dari ∫(3x² + 4x) dx adalah...",
+                options: ["x³ + 2x² + C", "3x³ + 4x² + C", "x³ + 4x² + C", "x³ + 2x + C"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Jika vektor a = (2, 3) dan b = (1, -2), maka a · b adalah...",
+                options: ["-4", "-2", "2", "4"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Nilai dari cos 60° + sin 30° adalah...",
+                options: ["1/2", "1", "3/2", "2"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Jumlah 5 suku pertama dari deret geometri 2, 6, 18, ... adalah...",
+                options: ["242", "244", "246", "248"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Persamaan garis yang melalui titik (2, 3) dan bergradien 2 adalah...",
+                options: ["y = 2x - 1", "y = 2x + 1", "y = 2x - 3", "y = 2x + 3"],
+                correct: 0,
+                difficulty: "medium"
+            },
+            {
+                question: "Nilai dari ³log 27 adalah...",
+                options: ["2", "3", "4", "9"],
+                correct: 1,
+                difficulty: "medium"
+            },
+            {
+                question: "Jika f(x) = x² - 4x + 3, maka f(x) minimum pada x = ...",
+                options: ["1", "2", "3", "4"],
+                correct: 1,
+                difficulty: "medium"
+            },
+
+            // HARD (Soal 16-30)
+            {
+                question: "Nilai dari lim (x→0) (sin 3x)/(2x) adalah...",
+                options: ["1/2", "2/3", "3/2", "2"],
+                correct: 2,
+                difficulty: "hard"
+            },
+            {
+                question: "Diketahui f(x) = x³ - 6x² + 9x + 1. Titik stasioner fungsi tersebut adalah...",
+                options: ["x = 1 dan x = 2", "x = 1 dan x = 3", "x = 2 dan x = 3", "x = 1 dan x = 4"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika matriks A = [[1, 2], [3, 4]] dan B = [[2, 0], [1, 3]], maka AB adalah...",
+                options: ["[[4, 6], [10, 12]]", "[[4, 4], [10, 10]]", "[[5, 7], [11, 13]]", "[[3, 5], [9, 11]]"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Integral dari ∫(x² + 1)/(x) dx adalah...",
+                options: ["(x²/2) + ln|x| + C", "(x²/2) - ln|x| + C", "(x²/3) + ln|x| + C", "x² + ln|x| + C"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Nilai maksimum dari fungsi f(x) = -x² + 4x - 1 adalah...",
+                options: ["2", "3", "4", "5"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika tan x = 2 dan x di kuadran I, maka sin 2x adalah...",
+                options: ["3/5", "4/5", "2/3", "1/2"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Penyelesaian dari persamaan ²log(x² - 3x) = 2 adalah...",
+                options: ["x = 4 atau x = -1", "x = 5 atau x = -2", "x = 3 atau x = 2", "x = 6 atau x = -3"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Turunan kedua dari f(x) = sin(2x) adalah...",
+                options: ["-2sin(2x)", "-4sin(2x)", "-2cos(2x)", "-4cos(2x)"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika deret geometri tak hingga memiliki suku pertama 8 dan rasio 1/2, maka jumlahnya adalah...",
+                options: ["12", "14", "16", "18"],
+                correct: 2,
+                difficulty: "hard"
+            },
+            {
+                question: "Luas daerah yang dibatasi kurva y = x² dan y = 4 adalah...",
+                options: ["16/3", "32/3", "64/3", "8/3"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Nilai dari cos 75° (gunakan rumus trigonometri) adalah...",
+                options: ["(√6 - √2)/4", "(√6 + √2)/4", "(√3 - 1)/(2√2)", "(√3 + 1)/(2√2)"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika f(x) = e^(2x), maka f'(x) adalah...",
+                options: ["e^(2x)", "2e^(2x)", "e^x", "2e^x"],
+                correct: 1,
+                difficulty: "hard"
+            },
+            {
+                question: "Persamaan lingkaran dengan pusat (3, -2) dan jari-jari 5 adalah...",
+                options: ["(x-3)² + (y+2)² = 25", "(x+3)² + (y-2)² = 25", "(x-3)² + (y-2)² = 25", "(x+3)² + (y+2)² = 25"],
+                correct: 0,
+                difficulty: "hard"
+            },
+            {
+                question: "Nilai dari lim (x→∞) (3x² + 2x - 1)/(x² - x + 2) adalah...",
+                options: ["1", "2", "3", "∞"],
+                correct: 2,
+                difficulty: "hard"
+            },
+            {
+                question: "Jika log₂ x + log₂ (x-6) = 4, maka nilai x adalah...",
+                options: ["6", "8", "10", "12"],
+                correct: 1,
+                difficulty: "hard"
+            },
+
+            // VERY HARD (Soal 31-40)
+            {
+                question: "Integral dari ∫x·e^x dx adalah...",
+                options: ["xe^x - e^x + C", "xe^x + e^x + C", "x²e^x + C", "e^x(x-1) + C"],
+                correct: 0,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Nilai dari lim (x→0) (1 - cos 2x)/x² adalah...",
+                options: ["1", "2", "1/2", "4"],
+                correct: 1,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Jika f(x) = (x² - 1)/(x - 1) untuk x ≠ 1, agar f kontinu di x = 1, maka f(1) harus sama dengan...",
+                options: ["0", "1", "2", "tidak terdefinisi"],
+                correct: 2,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Diketahui f(x) = x⁴ - 4x³ + 6. Interval dimana f(x) cekung ke atas adalah...",
+                options: ["x < 0 atau x > 2", "x < 1 atau x > 3", "0 < x < 2", "x > 0"],
+                correct: 0,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Volume benda putar yang terjadi jika daerah yang dibatasi y = √x, x = 4, dan sumbu x diputar mengelilingi sumbu x adalah...",
+                options: ["8π", "16π", "4π", "32π"],
+                correct: 0,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Jika A dan B adalah matriks 2×2 dengan det(A) = 3 dan det(B) = 4, maka det(2AB) adalah...",
+                options: ["12", "24", "48", "96"],
+                correct: 2,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Nilai dari ∫₀^π sin³x dx adalah...",
+                options: ["2/3", "4/3", "1", "3/2"],
+                correct: 1,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Jumlah deret: 1 + 1/2 + 1/4 + 1/8 + ... (sampai tak hingga) adalah...",
+                options: ["1", "2", "3", "4"],
+                correct: 1,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Diketahui f(x) = ln(x² + 1). Turunan f'(x) adalah...",
+                options: ["2x/(x²+1)", "1/(x²+1)", "2x", "x/(x²+1)"],
+                correct: 0,
+                difficulty: "very-hard"
+            },
+            {
+                question: "Nilai dari lim (x→0) (e^x - e^(-x))/(2x) adalah...",
+                options: ["0", "1", "2", "e"],
+                correct: 1,
+                difficulty: "very-hard"
+            }
+        ];
+
+        let startTime;
+        let timerInterval;
+
+        function startTest() {
+            document.getElementById('startSection').style.display = 'none';
+            document.getElementById('quizContainer').classList.add('active');
+            document.getElementById('timer').classList.add('active');
+            
+            renderQuestions();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const form = document.getElementById('quizForm');
+            let html = '';
+
+            questions.forEach((q, index) => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Soal ${index + 1}</span>
+                            <span class="difficulty ${q.difficulty}">${getDifficultyText(q.difficulty)}</span>
+                        </div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, optIndex) => `
+                                <div class="option">
+                                    <input type="radio" id="q${index}_opt${optIndex}" name="q${index}" value="${optIndex}" onchange="updateProgress()">
+                                    <label for="q${index}_opt${optIndex}">${String.fromCharCode(65 + optIndex)}. ${opt}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            form.innerHTML = html;
+        }
+
+        function getDifficultyText(difficulty) {
+            const texts = {
+                'medium': 'Medium',
+                'hard': 'Sulit',
+                'very-hard': 'Sangat Sulit'
+            };
+            return texts[difficulty];
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function updateProgress() {
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answered / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function submitTest(event) {
+            event.preventDefault();
+            clearInterval(timerInterval);
+
+            let correct = 0;
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && parseInt(selected.value) === q.correct) {
+                    correct++;
+                }
+            });
+
+            const score = Math.round((correct / questions.length) * 100);
+            const elapsed = document.getElementById('timerDisplay').textContent;
+
+            displayResults(score, correct, elapsed);
+        }
+
+        function displayResults(score, correct, time) {
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('resultContainer').classList.add('active');
+            document.getElementById('timer').classList.remove('active');
+
+            // Grade calculation
+            let grade, feedback;
+            if (score >= 90) {
+                grade = 'A';
+                feedback = '<h3>Luar Biasa! 🌟</h3><p>Pemahaman matematika Anda sangat excellent! Pertahankan prestasi ini dan terus kembangkan kemampuan problem-solving Anda.</p>';
+            } else if (score >= 80) {
+                grade = 'B';
+                feedback = '<h3>Sangat Baik! 👏</h3><p>Anda memiliki pemahaman yang solid dalam matematika. Terus latihan pada soal-soal yang lebih challenging untuk mencapai level A.</p>';
+            } else if (score >= 70) {
+                grade = 'C';
+                feedback = '<h3>Baik! 👍</h3><p>Pemahaman dasar Anda sudah cukup baik. Perbanyak latihan pada materi kalkulus, fungsi, dan trigonometri untuk meningkatkan skor.</p>';
+            } else if (score >= 60) {
+                grade = 'D';
+                feedback = '<h3>Cukup</h3><p>Anda perlu lebih banyak latihan. Fokus pada konsep dasar dan perbanyak mengerjakan variasi soal untuk memperkuat pemahaman.</p>';
+            } else {
+                grade = 'E';
+                feedback = '<h3>Perlu Perbaikan</h3><p>Jangan menyerah! Mulai dari memahami konsep dasar, konsultasi dengan guru, dan latihan rutin akan sangat membantu peningkatan Anda.</p>';
+            }
+
+            document.getElementById('gradeDisplay').textContent = grade;
+            document.getElementById('scoreDisplay').textContent = score;
+            document.getElementById('correctDisplay').textContent = correct;
+            document.getElementById('timeDisplay').textContent = time;
+            document.getElementById('feedbackDisplay').innerHTML = feedback;
+        }
+    </script>
+</body>
+</html>
