@@ -646,6 +646,7 @@
 
         .invoice-logo  {
             width:120px;
+            height:80px;
             background: linear-gradient(135deg, #1c1917, #404040);
             border-radius: 12px;
             display: flex;
@@ -786,6 +787,10 @@
         .signature-box {
             text-align: center;
         }
+        .signature-img {
+    width: 120px;
+    margin-bottom: 8px;
+}
 
         .signature-line {
             width: 250px;
@@ -1407,12 +1412,17 @@
                     </div>
                 ` : ''}
 
-                <div class="invoice-signature">
-                    <div class="signature-box">
-                        <div class="signature-line"></div>
-                        <div class="signature-label">Authorized Signature</div>
-                    </div>
-                </div>
+           <div class="invoice-signature">
+    <div class="signature-box">
+        <img 
+          src="https://raw.githubusercontent.com/RajcodeApp/apps.github.io/refs/heads/main/invoices/rumetiqsigna.png" 
+          alt="Signature" 
+          class="signature-img"
+        >
+        <div class="signature-line"></div>
+        <div class="signature-label">Authorized Signature</div>
+    </div>
+</div>
             `;
         }
 
