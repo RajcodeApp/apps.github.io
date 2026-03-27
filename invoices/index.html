@@ -784,25 +784,30 @@
             justify-content: flex-end;
         }
 
-        .signature-box {
-            text-align: center;
-        }
-        .signature-img {
+       .signature-box {
+    position: relative;
+    width: 200px;
+    margin: auto;
+}
+.signature-img {
     width: 120px;
-    margin-bottom: 8px;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-        .signature-line {
-            width: 250px;
-            height: 80px;
-            border-bottom: 2px solid #1c1917;
-            margin-bottom: 0.5rem;
-        }
+.signature-line {
+    width: 100%;
+    height: 1px;
+    background: #000;
+    margin-top: 40px;
+}
 
-        .signature-label {
-            font-size: 0.875rem;
-            color: #57534e;
-        }
+.signature-label {
+    font-size: 12px;
+    color: #555;
+}
 
         /* ========== Empty State ========== */
         .empty-state {
