@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHANTOM TRACE — Mobile Intelligence System</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff88;
+    --green-dim: #00cc6a;
+    --green-dark: #003322;
+    --red: #ff2244;
+    --yellow: #ffcc00;
+    --cyan: #00eeff;
+    --bg: #020b06;
+    --panel: #050f08;
+    --border: #0a3020;
+    --text: #b0ffcc;
+    --dim: #3a7a55;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Scan lines overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,136,0.015) 2px,
+      rgba(0,255,136,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* CRT vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.8) 100%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 30px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .header::before {
+    content: '> SYSTEM ACTIVE // ENCRYPTION: AES-256 // VPN: ACTIVE';
+    display: block;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    animation: flicker 4s infinite;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,136,0.3);
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+  }
+
+  .logo span { color: var(--cyan); }
+
+  .subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--dim);
+    margin-top: 8px;
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 15px;
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 5px;
+    animation: blink 1s infinite;
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  /* Search Panel */
+  .search-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--green);
+    padding: 25px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .search-panel::before {
+    content: 'INPUT TERMINAL';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--panel);
+    padding: 0 10px;
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 3px;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .prompt-sign {
+    color: var(--green);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .phone-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--green-dim);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px;
+    padding: 8px 0;
+    outline: none;
+    letter-spacing: 3px;
+    caret-color: var(--green);
+  }
+
+  .phone-input::placeholder { color: var(--dim); font-size: 14px; letter-spacing: 1px; }
+
+  .phone-input:focus { border-bottom-color: var(--green); box-shadow: 0 2px 0 rgba(0,255,136,0.2); }
+
+  .trace-btn {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 12px 25px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .trace-btn:hover {
+    background: var(--green);
+    color: var(--bg);
+    box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,136,0.3);
+  }
+
+  .trace-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .trace-btn:disabled:hover { background: transparent; color: var(--green); box-shadow: none; }
+
+  /* Loading */
+  .loading {
+    display: none;
+    margin-top: 20px;
+  }
+
+  .loading.active { display: block; }
+
+  .loading-text {
+    color: var(--yellow);
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--green);
+  }
+
+  .log-lines {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--dim);
+    height: 60px;
+    overflow: hidden;
+  }
+
+  .log-line { animation: fadeIn 0.3s ease; }
+
+  /* Result */
+  .result-container {
+    display: none;
+  }
+
+  .result-container.active { display: block; animation: fadeIn 0.5s ease; }
+
+  .confidential-banner {
+    background: linear-gradient(90deg, var(--red), #880000, var(--red));
+    background-size: 200% 100%;
+    animation: banner-slide 2s linear infinite;
+    text-align: center;
+    padding: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: white;
+    margin-bottom: 3px;
+  }
+
+  .result-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0;
+    position: relative;
+  }
+
+  .result-header {
+    background: rgba(0,255,136,0.05);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .result-header-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--green);
+  }
+
+  .result-timestamp {
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .result-body {
+    padding: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .data-section {
+    padding: 20px;
+    border-right: 1px solid var(--border);
+  }
+
+  .data-section:last-child { border-right: none; }
+  .data-section:nth-child(n+3) { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .data-row {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .data-key {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .data-value {
+    color: var(--green);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0,255,136,0.4);
+  }
+
+  .data-value.highlight {
+    color: var(--yellow);
+    font-size: 16px;
+    text-shadow: 0 0 8px rgba(255,204,0,0.4);
+  }
+
+  .data-value.cyan {
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(0,238,255,0.4);
+  }
+
+  .data-value.red {
+    color: var(--red);
+    text-shadow: 0 0 8px rgba(255,34,68,0.4);
+  }
+
+  .maps-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 11px;
+    border: 1px solid var(--cyan);
+    padding: 4px 10px;
+    display: inline-block;
+    margin-top: 5px;
+    transition: all 0.2s;
+  }
+  .maps-link:hover { background: var(--cyan); color: var(--bg); }
+
+  .result-footer {
+    border-top: 1px solid var(--border);
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    background: rgba(0,255,136,0.02);
+  }
+
+  .classified-stamp {
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%) rotate(-15deg);
+    border: 3px solid rgba(255,34,68,0.3);
+    color: rgba(255,34,68,0.2);
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    padding: 5px 15px;
+    letter-spacing: 4px;
+    pointer-events: none;
+  }
+
+  /* Map visual */
+  .map-visual {
+    background: #020a06;
+    border: 1px solid var(--border);
+    height: 150px;
+    margin: 0 25px 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(0,255,136,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .map-ping {
+    width: 16px; height: 16px;
+    background: var(--red);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(255,34,68,0.5);
+    animation: ping 1.5s infinite;
+    position: relative;
+    z-index: 2;
+  }
+
+  .coord-text {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  /* Animations */
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.4; }
+    97% { opacity: 1; }
+    98% { opacity: 0.6; }
+  }
+
+  @keyframes glow-pulse {
+    from { text-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,136,0.3); }
+    to { text-shadow: 0 0 30px var(--green), 0 0 60px rgba(0,255,136,0.5), 0 0 80px rgba(0,255,136,0.2); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes banner-slide {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  @keyframes ping {
+    0% { box-shadow: 0 0 0 0 rgba(255,34,68,0.6); }
+    70% { box-shadow: 0 0 0 25px rgba(255,34,68,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,34,68,0); }
+  }
+
+  @keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  .corner-decor {
+    position: absolute;
+    width: 15px; height: 15px;
+    border-color: var(--green);
+    border-style: solid;
+  }
+  .corner-decor.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .corner-decor.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner-decor.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .corner-decor.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .error-msg {
+    display: none;
+    color: var(--red);
+    font-size: 11px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+  .error-msg.active { display: block; animation: fadeIn 0.3s; }
+
+  .clear-btn {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 8px 20px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    margin-top: 15px;
+  }
+  .clear-btn:hover { background: var(--red); color: white; }
+
+  .disclaimer {
+    text-align: center;
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px dashed rgba(58,122,85,0.3);
+  }
+
+  @media (max-width: 600px) {
+    .result-body { grid-template-columns: 1fr; }
+    .data-section { border-right: none; border-bottom: 1px solid var(--border); }
+    .logo { font-size: 24px; letter-spacing: 4px; }
+  }
+
+  /* ===== EDIT MODE ===== */
+  .edit-toolbar {
+    display: none;
+    background: rgba(255,204,0,0.05);
+    border: 1px solid rgba(255,204,0,0.3);
+    border-top: 2px solid var(--yellow);
+    padding: 12px 25px;
+    margin: 0 0 3px 0;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .edit-toolbar.visible { display: flex; animation: fadeIn 0.3s; }
+  .edit-toolbar-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    flex: 1;
+  }
+  .edit-toolbar-hint {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  .edit-mode-btn {
+    background: transparent;
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 7px 18px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+  }
+  .edit-mode-btn:hover, .edit-mode-btn.active {
+    background: var(--yellow);
+    color: var(--bg);
+  }
+  .save-btn {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .save-btn:hover { background: var(--green); color: var(--bg); }
+
+  /* Editable field styles */
+  .data-value[contenteditable="true"] {
+    outline: none;
+    border-bottom: 1px dashed var(--yellow);
+    padding-bottom: 2px;
+    cursor: text;
+    min-width: 50px;
+    display: inline-block;
+    transition: border-color 0.2s;
+  }
+  .data-value[contenteditable="true"]:focus {
+    border-bottom: 1px solid var(--yellow);
+    background: rgba(255,204,0,0.04);
+    box-shadow: 0 2px 8px rgba(255,204,0,0.1);
+  }
+  .data-value[contenteditable="true"]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--dim);
+    font-size: 11px;
+  }
+
+  /* Edit panel for complex fields */
+  .edit-panel {
+    display: none;
+    background: var(--panel);
+    border: 1px solid rgba(255,204,0,0.25);
+    border-top: 2px solid var(--yellow);
+    padding: 20px 25px;
+    margin: 3px 0;
+    position: relative;
+  }
+  .edit-panel.visible { display: block; animation: fadeIn 0.3s; }
+  .edit-panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+  }
+  @media (max-width: 600px) { .edit-grid { grid-template-columns: 1fr; } }
+
+  .edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .edit-field label {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .edit-field input, .edit-field select, .edit-field textarea {
+    background: rgba(0,255,136,0.03);
+    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--green-dim);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 7px 8px;
+    outline: none;
+    letter-spacing: 1px;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
+    border-color: var(--yellow);
+    background: rgba(255,204,0,0.03);
+    color: var(--yellow);
+  }
+  .edit-field select option { background: #050f08; color: var(--green); }
+  .edit-field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .edit-field.full { grid-column: 1 / -1; }
+
+  .edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    justify-content: flex-end;
+  }
+
+  .field-edited {
+    position: relative;
+  }
+  .field-edited::after {
+    content: '✎';
+    color: var(--yellow);
+    font-size: 9px;
+    margin-left: 5px;
+    opacity: 0.7;
+  }
+
+  .result-actions {
+    padding: 0 25px 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">PHAN<span>TOM</span> TRACE</div>
+    <div class="subtitle">MOBILE INTELLIGENCE & REGISTRATION LOOKUP SYSTEM v3.1</div>
+    <div class="status-bar">
+      <span><span class="status-dot"></span>SERVER: ACTIVE</span>
+      <span><span class="status-dot"></span>PROXY: ENCRYPTED</span>
+      <span><span class="status-dot"></span>DB: CONNECTED</span>
+    </div>
+  </div>
+
+  <!-- Search Panel -->
+  <div class="search-panel">
+    <div class="corner-decor tl"></div>
+    <div class="corner-decor tr"></div>
+    <div class="corner-decor bl"></div>
+    <div class="corner-decor br"></div>
+    <div class="input-group">
+      <span class="prompt-sign">▶</span>
+      <input type="text" class="phone-input" id="phoneInput" placeholder="Masukkan nomor HP (contoh: 08123456789)" maxlength="15" />
+      <button class="trace-btn" id="traceBtn" onclick="startTrace()">TRACE_</button>
+    </div>
+    <div class="error-msg" id="errorMsg">⚠ FORMAT NOMOR TIDAK VALID. GUNAKAN FORMAT: 08XXXXXXXXXX ATAU +62XXXXXXXXXX</div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+      <div class="loading-text" id="loadingText">▶ INITIATING TRACE SEQUENCE...</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="log-lines" id="logLines"></div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-container" id="resultContainer">
+    <div class="confidential-banner">&#9672; CONFIDENTIAL INFORMATION &#9672; AUTHORIZED ACCESS ONLY &#9672;</div>
+
+    <!-- Edit Toolbar -->
+    <div class="edit-toolbar" id="editToolbar">
+      <div class="edit-toolbar-label">&#10002; EDIT MODE ACTIVE</div>
+      <div class="edit-toolbar-hint">Klik langsung pada data untuk mengedit, atau gunakan form lengkap</div>
+      <button class="edit-mode-btn" onclick="openEditPanel()">&#9672; FORM EDIT LENGKAP</button>
+      <button class="edit-mode-btn save-btn" onclick="saveEdit()">&#10003; SIMPAN</button>
+      <button class="edit-mode-btn" style="border-color:var(--red);color:var(--red)" onclick="cancelEdit()">&#10005; BATAL</button>
+    </div>
+
+    <!-- Edit Panel Form -->
+    <div class="edit-panel" id="editPanel">
+      <div class="edit-panel-title">&#9672; FORM EDIT DATA — ISI SEMUA FIELD YANG INGIN DIUBAH</div>
+
+      <div style="font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:12px;">[ IDENTITAS ]</div>
+      <div class="edit-grid">
+        <div class="edit-field"><label>NAMA TERDAFTAR</label><input type="text" id="eNama" /></div>
+        <div class="edit-field"><label>NIK (16 DIGIT)</label><input type="text" id="eNik" maxlength="16" /></div>
+        <div class="edit-field"><label>TANGGAL LAHIR (DD/MM/YYYY)</label><input type="text" id="eTtl" /></div>
+        <div class="edit-field"><label>JENIS KELAMIN</label>
+          <select id="eJk"><option value="LAKI-LAKI">LAKI-LAKI</option><option value="PEREMPUAN">PEREMPUAN</option></select>
+        </div>
+      </div>
+
+      <div style="font-size:9px;color:var(--cyan);letter-spacing:2px;margin:16px 0 12px;">[ SIM CARD ]</div>
+      <div class="edit-grid">
+        <div class="edit-field"><label>IMSI</label><input type="text" id="eImsi" maxlength="15" /></div>
+        <div class="edit-field"><label>TGL REGISTRASI (DD-MM-YYYY HH:MM WIB)</label><input type="text" id="eRegDate" placeholder="15-08-2020 09:30 WIB" /></div>
+      </div>
+
+      <div style="font-size:9px;color:var(--cyan);letter-spacing:2px;margin:16px 0 12px;">[ DEVICE ]</div>
+      <div class="edit-grid">
+        <div class="edit-field"><label>IMEI (15 DIGIT)</label><input type="text" id="eImei" maxlength="15" /></div>
+        <div class="edit-field"><label>MEREK / MODEL HP</label><input type="text" id="eDevice" /></div>
+        <div class="edit-field"><label>STATUS MEREK</label>
+          <select id="eMerek">
+            <option value="&#10003; TERDAFTAR KOMINFO">&#10003; TERDAFTAR KOMINFO</option>
+            <option value="&#10007; TIDAK TERDAFTAR">&#10007; TIDAK TERDAFTAR</option>
+            <option value="&#9888; DALAM PROSES">&#9888; DALAM PROSES</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="font-size:9px;color:var(--cyan);letter-spacing:2px;margin:16px 0 12px;">[ LOKASI ]</div>
+      <div class="edit-grid">
+        <div class="edit-field full"><label>ALAMAT TERDAFTAR</label><textarea id="eAlamat" rows="2"></textarea></div>
+        <div class="edit-field"><label>LATITUDE</label><input type="text" id="eLat" placeholder="-8.5988" /></div>
+        <div class="edit-field"><label>LONGITUDE</label><input type="text" id="eLng" placeholder="116.1130" /></div>
+      </div>
+
+      <div class="edit-actions">
+        <button class="edit-mode-btn" style="border-color:var(--dim);color:var(--dim)" onclick="closeEditPanel()">TUTUP</button>
+        <button class="edit-mode-btn save-btn" onclick="applyFormEdit()">&#10003; TERAPKAN SEMUA</button>
+      </div>
+    </div>
+
+    <div class="result-panel">
+      <div class="corner-decor tl"></div>
+      <div class="corner-decor tr"></div>
+      <div class="corner-decor bl"></div>
+      <div class="corner-decor br"></div>
+
+      <div class="result-header">
+        <div class="result-header-title">◈ TRACE RESULT — SUBJECT PROFILE</div>
+        <div class="result-timestamp" id="resultTimestamp"></div>
+      </div>
+
+      <div class="result-body">
+        <!-- Col 1 -->
+        <div class="data-section">
+          <div class="section-label">IDENTITY</div>
+          <div class="data-row">
+            <div class="data-key">NAMA TERDAFTAR</div>
+            <div class="data-value highlight" id="rNama">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">NIK</div>
+            <div class="data-value" id="rNik">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">TANGGAL LAHIR</div>
+            <div class="data-value" id="rTtl">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">JENIS KELAMIN</div>
+            <div class="data-value" id="rJk">—</div>
+          </div>
+        </div>
+
+        <!-- Col 2 -->
+        <div class="data-section">
+          <div class="section-label">SIM CARD</div>
+          <div class="data-row">
+            <div class="data-key">MSISDN</div>
+            <div class="data-value cyan" id="rMsisdn">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">OPERATOR</div>
+            <div class="data-value" id="rOperator">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">IMSI</div>
+            <div class="data-value" id="rImsi">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">STATUS</div>
+            <div class="data-value" id="rStatus">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">TGL REGISTRASI</div>
+            <div class="data-value" id="rRegDate">—</div>
+          </div>
+        </div>
+
+        <!-- Col 3 -->
+        <div class="data-section">
+          <div class="section-label">DEVICE</div>
+          <div class="data-row">
+            <div class="data-key">IMEI</div>
+            <div class="data-value cyan" id="rImei">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">MEREK / MODEL</div>
+            <div class="data-value" id="rDevice">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">STATUS PENDAFTARAN MEREK</div>
+            <div class="data-value" id="rMerek">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">JARINGAN</div>
+            <div class="data-value" id="rNetwork">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">LAC-CI</div>
+            <div class="data-value" id="rLac">—</div>
+          </div>
+        </div>
+
+        <!-- Col 4 -->
+        <div class="data-section">
+          <div class="section-label">LOCATION</div>
+          <div class="data-row">
+            <div class="data-key">ALAMAT TERDAFTAR</div>
+            <div class="data-value" id="rAlamat" style="font-size:12px; line-height:1.6;">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">KOORDINAT</div>
+            <div class="data-value" id="rCoord">—</div>
+          </div>
+          <div class="data-row">
+            <div class="data-key">MAPS</div>
+            <a href="#" class="maps-link" id="rMaps" target="_blank">▶ OPEN MAPS</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Visual -->
+      <div class="map-visual">
+        <div class="map-ping"></div>
+        <div class="coord-text" id="mapCoord">LAT: — | LNG: —</div>
+      </div>
+
+      <div class="result-footer">
+        <span id="footerTrace">TRACE ID: —</span>
+        <span>SOURCE: KOMINFO REGISTRY + OPERATOR DB</span>
+        <span id="footerTime">—</span>
+      </div>
+
+      <div style="padding: 0 25px 20px; display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
+        <button class="edit-mode-btn" id="editToggleBtn" onclick="toggleEditMode()">&#10002; EDIT DATA</button>
+        <button class="clear-btn" onclick="clearResult()">&#9672; CLEAR TRACE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠ DISCLAIMER: APLIKASI INI ADALAH SIMULASI / DEMO UI. DATA YANG DITAMPILKAN ADALAH DATA DUMMY / ACAK DAN TIDAK BERASAL DARI DATABASE NYATA. TIDAK ADA DATA PRIBADI YANG DIAKSES ATAU DIKUMPULKAN.
+  </div>
+</div>
+
+<script>
+const operators = {
+  '0811': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0812': { name: 'Telkomsel', imsi: '51010', network: '5G / 4G LTE', mcc: '510' },
+  '0813': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0821': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0822': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0823': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0851': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0852': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0853': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0855': { name: 'Telkomsel', imsi: '51010', network: '4G LTE', mcc: '510' },
+  '0856': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0857': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0858': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0814': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0815': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0816': { name: 'Indosat Ooredoo', imsi: '51001', network: '4G LTE', mcc: '510' },
+  '0817': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0818': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0819': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0859': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0877': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0878': { name: 'XL Axiata', imsi: '51011', network: '4G LTE', mcc: '510' },
+  '0895': { name: '3 (Tri)', imsi: '51089', network: '4G LTE', mcc: '510' },
+  '0896': { name: '3 (Tri)', imsi: '51089', network: '4G LTE', mcc: '510' },
+  '0897': { name: '3 (Tri)', imsi: '51089', network: '4G LTE', mcc: '510' },
+  '0898': { name: '3 (Tri)', imsi: '51089', network: '4G LTE', mcc: '510' },
+  '0899': { name: '3 (Tri)', imsi: '51089', network: '4G LTE', mcc: '510' },
+  '0881': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0882': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0883': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0884': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0885': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0886': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0887': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0888': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+  '0889': { name: 'Smartfren', imsi: '51028', network: '4G LTE (VoLTE)', mcc: '510' },
+};
+
+const devices = [
+  { brand: 'Samsung', model: 'Galaxy S23 Ultra', tac: '35740711' },
+  { brand: 'Apple', model: 'iPhone 15 Pro', tac: '35200611' },
+  { brand: 'Xiaomi', model: 'Redmi Note 12', tac: '86861804' },
+  { brand: 'OPPO', model: 'Reno10 Pro', tac: '86370303' },
+  { brand: 'Vivo', model: 'V27 Pro', tac: '35932211' },
+  { brand: 'Realme', model: 'GT Neo 5', tac: '86469501' },
+  { brand: 'Samsung', model: 'Galaxy A54', tac: '35765411' },
+  { brand: 'Apple', model: 'iPhone 14', tac: '35338311' },
+  { brand: 'Xiaomi', model: 'POCO X5 Pro', tac: '86990704' },
+  { brand: 'OPPO', model: 'Find X6 Pro', tac: '86254503' },
+  { brand: 'OnePlus', model: 'OnePlus 11', tac: '86476702' },
+  { brand: 'Huawei', model: 'Nova 11', tac: '86490804' },
+];
+
+const names = ['Ahmad Fauzi', 'Siti Nurhaliza', 'Budi Santoso', 'Dewi Rahayu', 'Muhammad Rizki',
+  'Ani Susanti', 'Joko Widodo', 'Sri Wahyuni', 'Rudi Hartono', 'Linda Permata',
+  'Agus Setiawan', 'Rina Kusuma', 'Dedi Supriadi', 'Maya Anggraini', 'Hendra Gunawan',
+  'Fitri Handayani', 'Wahyu Nugroho', 'Noor Aini', 'Eko Prasetyo', 'Yuni Astuti'];
+
+const cities = [
+  { kota: 'Jakarta Selatan, DKI Jakarta', lat: -6.2607, lng: 106.8106, kel: 'Kel. Cipete Selatan, Kec. Cilandak' },
+  { kota: 'Surabaya, Jawa Timur', lat: -7.2575, lng: 112.7521, kel: 'Kel. Gubeng, Kec. Gubeng' },
+  { kota: 'Bandung, Jawa Barat', lat: -6.9175, lng: 107.6191, kel: 'Kel. Coblong, Kec. Coblong' },
+  { kota: 'Medan, Sumatera Utara', lat: 3.5952, lng: 98.6722, kel: 'Kel. Petisah Tengah, Kec. Medan Petisah' },
+  { kota: 'Makassar, Sulawesi Selatan', lat: -5.1477, lng: 119.4327, kel: 'Kel. Baru, Kec. Ujung Pandang' },
+  { kota: 'Semarang, Jawa Tengah', lat: -6.9932, lng: 110.4203, kel: 'Kel. Pleburan, Kec. Semarang Selatan' },
+  { kota: 'Yogyakarta, DI Yogyakarta', lat: -7.7956, lng: 110.3695, kel: 'Kel. Gondokusuman, Kec. Gondokusuman' },
+  { kota: 'Denpasar, Bali', lat: -8.6705, lng: 115.2126, kel: 'Kel. Renon, Kec. Denpasar Selatan' },
+];
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+function randDigits(n) { let s = ''; for (let i = 0; i < n; i++) s += randInt(0, 9); return s; }
+
+function generateNIK(year) {
+  const prov = String(randInt(11, 96)).padStart(2, '0');
+  const kab = String(randInt(1, 24)).padStart(2, '0');
+  const kec = String(randInt(1, 30)).padStart(2, '0');
+  const day = String(randInt(1, 28)).padStart(2, '0');
+  const month = String(randInt(1, 12)).padStart(2, '0');
+  const yr = String(year).slice(-2);
+  const seq = String(randInt(1, 9999)).padStart(4, '0');
+  return prov + kab + kec + day + month + yr + seq;
+}
+
+function normalizePhone(input) {
+  let phone = input.trim().replace(/[\s\-]/g, '');
+  if (phone.startsWith('+62')) phone = '0' + phone.slice(3);
+  if (phone.startsWith('62')) phone = '0' + phone.slice(2);
+  return phone;
+}
+
+function getPrefix(phone) {
+  return phone.slice(0, 4);
+}
+
+function startTrace() {
+  const raw = document.getElementById('phoneInput').value;
+  const phone = normalizePhone(raw);
+  const errEl = document.getElementById('errorMsg');
+
+  // Validate
+  if (!/^08\d{8,11}$/.test(phone)) {
+    errEl.className = 'error-msg active';
+    return;
+  }
+  errEl.className = 'error-msg';
+
+  const prefix = getPrefix(phone);
+  const opInfo = operators[prefix] || { name: 'Unknown Operator', imsi: '51000', network: '4G LTE', mcc: '510' };
+
+  document.getElementById('resultContainer').className = 'result-container';
+  document.getElementById('traceBtn').disabled = true;
+
+  const logs = [
+    '> CONNECTING TO OPERATOR GATEWAY...',
+    `> OPERATOR IDENTIFIED: ${opInfo.name.toUpperCase()}`,
+    '> QUERYING KOMINFO REGISTRATION DB...',
+    '> CROSS-REFERENCING IMEI DATABASE...',
+    '> FETCHING LOCATION DATA...',
+    '> DECRYPTING SUBSCRIBER PROFILE...',
+    '> COMPILING TRACE RESULTS...',
+  ];
+
+  const loading = document.getElementById('loading');
+  const progressFill = document.getElementById('progressFill');
+  const logLines = document.getElementById('logLines');
+  const loadingText = document.getElementById('loadingText');
+  loading.className = 'loading active';
+  logLines.innerHTML = '';
+  progressFill.style.width = '0%';
+
+  let step = 0;
+  const totalSteps = logs.length;
+  const interval = setInterval(() => {
+    if (step < totalSteps) {
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.textContent = logs[step];
+      logLines.appendChild(line);
+      logLines.scrollTop = logLines.scrollHeight;
+      progressFill.style.width = ((step + 1) / totalSteps * 100) + '%';
+      loadingText.textContent = logs[step];
+      step++;
+    } else {
+      clearInterval(interval);
+      setTimeout(() => {
+        loading.className = 'loading';
+        showResult(phone, opInfo);
+        document.getElementById('traceBtn').disabled = false;
+      }, 500);
+    }
+  }, 280);
+}
+
+function showResult(phone, opInfo) {
+  // Generate dummy data
+  const name = rand(names);
+  const birthYear = randInt(1965, 2003);
+  const birthDay = String(randInt(1, 28)).padStart(2, '0');
+  const birthMonth = String(randInt(1, 12)).padStart(2, '0');
+  const nik = generateNIK(birthYear);
+  const gender = Math.random() > 0.5 ? 'LAKI-LAKI' : 'PEREMPUAN';
+  const device = rand(devices);
+  const city = rand(cities);
+
+  const imei = device.tac + randDigits(8);
+  const imsi = opInfo.imsi + randDigits(10);
+  const lac = randInt(10000, 99999) + '-' + randInt(1, 9999);
+  const lat = (city.lat + (Math.random() - 0.5) * 0.05).toFixed(4);
+  const lng = (city.lng + (Math.random() - 0.5) * 0.05).toFixed(4);
+
+  // Registration date
+  const regYear = randInt(2017, 2023);
+  const regMonth = String(randInt(1, 12)).padStart(2, '0');
+  const regDay = String(randInt(1, 28)).padStart(2, '0');
+  const regDate = `${regDay}-${regMonth}-${regYear} ${String(randInt(8,18)).padStart(2,'0')}:${String(randInt(0,59)).padStart(2,'0')} WIB`;
+
+  const msisdn = '+62' + phone.slice(1);
+  const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+
+  const now = new Date();
+  const ts = now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false });
+  const traceId = 'TRC-' + Date.now().toString(36).toUpperCase();
+
+  // Fill fields
+  document.getElementById('rNama').textContent = name;
+  document.getElementById('rNik').textContent = nik;
+  document.getElementById('rTtl').textContent = `${birthDay}/${birthMonth}/${birthYear}`;
+  document.getElementById('rJk').textContent = gender;
+  document.getElementById('rMsisdn').textContent = msisdn;
+  document.getElementById('rOperator').textContent = opInfo.name.toUpperCase();
+  document.getElementById('rImsi').textContent = imsi;
+  document.getElementById('rStatus').textContent = '● AKTIF';
+  document.getElementById('rStatus').style.color = 'var(--green)';
+  document.getElementById('rRegDate').textContent = regDate;
+  document.getElementById('rImei').textContent = imei;
+  document.getElementById('rDevice').textContent = `${device.brand} ${device.model}`;
+  document.getElementById('rMerek').textContent = '✓ TERDAFTAR KOMINFO';
+  document.getElementById('rMerek').style.color = 'var(--green)';
+  document.getElementById('rNetwork').textContent = opInfo.network;
+  document.getElementById('rLac').textContent = lac;
+  document.getElementById('rAlamat').textContent = `${city.kel}, ${city.kota}`;
+  document.getElementById('rCoord').textContent = `${lat}, ${lng}`;
+
+  const mapsEl = document.getElementById('rMaps');
+  mapsEl.href = mapsUrl;
+  mapsEl.textContent = `▶ ${lat}, ${lng}`;
+
+  document.getElementById('mapCoord').textContent = `LAT: ${lat} | LNG: ${lng}`;
+  document.getElementById('resultTimestamp').textContent = ts + ' WIB';
+  document.getElementById('footerTrace').textContent = `TRACE ID: ${traceId}`;
+  document.getElementById('footerTime').textContent = `ELAPSED: ${randInt(800,2400)}ms`;
+
+  document.getElementById('resultContainer').className = 'result-container active';
+  document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+function clearResult() {
+  document.getElementById('resultContainer').className = 'result-container';
+  document.getElementById('phoneInput').value = '';
+  cancelEdit();
+  document.getElementById('phoneInput').focus();
+}
+
+// ===== EDIT MODE =====
+let editModeActive = false;
+const editableFields = ['rNama','rNik','rTtl','rJk','rImsi','rRegDate','rImei','rDevice','rAlamat','rCoord'];
+
+function toggleEditMode() {
+  if (editModeActive) {
+    saveEdit();
+  } else {
+    startEditMode();
+  }
+}
+
+function startEditMode() {
+  editModeActive = true;
+  document.getElementById('editToolbar').className = 'edit-toolbar visible';
+  document.getElementById('editToggleBtn').textContent = '\u2714 SELESAI EDIT';
+  document.getElementById('editToggleBtn').style.borderColor = 'var(--green)';
+  document.getElementById('editToggleBtn').style.color = 'var(--green)';
+
+  // Make fields editable
+  editableFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('data-original', el.textContent);
+      el.setAttribute('data-placeholder', 'Ketik di sini...');
+    }
+  });
+
+  // Prefill form
+  prefillForm();
+}
+
+function saveEdit() {
+  editModeActive = false;
+  document.getElementById('editToolbar').className = 'edit-toolbar';
+  document.getElementById('editPanel').className = 'edit-panel';
+  document.getElementById('editToggleBtn').textContent = '\u270E EDIT DATA';
+  document.getElementById('editToggleBtn').style.borderColor = 'var(--yellow)';
+  document.getElementById('editToggleBtn').style.color = 'var(--yellow)';
+
+  // Mark edited fields
+  editableFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.removeAttribute('contenteditable');
+      if (el.textContent !== el.getAttribute('data-original')) {
+        el.classList.add('field-edited');
+      }
+    }
+  });
+
+  // Update coords from display
+  updateCoordsFromDisplay();
+}
+
+function cancelEdit() {
+  editModeActive = false;
+  document.getElementById('editToolbar').className = 'edit-toolbar';
+  document.getElementById('editPanel').className = 'edit-panel';
+  document.getElementById('editToggleBtn').textContent = '\u270E EDIT DATA';
+  document.getElementById('editToggleBtn').style.borderColor = 'var(--yellow)';
+  document.getElementById('editToggleBtn').style.color = 'var(--yellow)';
+
+  // Restore originals
+  editableFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const orig = el.getAttribute('data-original');
+      if (orig !== null) el.textContent = orig;
+      el.removeAttribute('contenteditable');
+    }
+  });
+}
+
+function openEditPanel() {
+  prefillForm();
+  document.getElementById('editPanel').className = 'edit-panel visible';
+  document.getElementById('editPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeEditPanel() {
+  document.getElementById('editPanel').className = 'edit-panel';
+}
+
+function prefillForm() {
+  const getNullable = (id) => {
+    const el = document.getElementById(id);
+    return el ? el.textContent.trim() : '';
+  };
+  document.getElementById('eNama').value = getNullable('rNama');
+  document.getElementById('eNik').value = getNullable('rNik');
+  document.getElementById('eTtl').value = getNullable('rTtl');
+  document.getElementById('eImei').value = getNullable('rImei');
+  document.getElementById('eDevice').value = getNullable('rDevice');
+  document.getElementById('eAlamat').value = getNullable('rAlamat');
+  document.getElementById('eImsi').value = getNullable('rImsi');
+  document.getElementById('eRegDate').value = getNullable('rRegDate');
+
+  // Coords
+  const coordText = getNullable('rCoord');
+  const coordParts = coordText.split(',').map(s => s.trim());
+  if (coordParts.length >= 2) {
+    document.getElementById('eLat').value = coordParts[0];
+    document.getElementById('eLng').value = coordParts[1];
+  }
+
+  // Jenis kelamin
+  const jk = getNullable('rJk');
+  const jkSel = document.getElementById('eJk');
+  for (let i = 0; i < jkSel.options.length; i++) {
+    if (jkSel.options[i].value === jk) jkSel.selectedIndex = i;
+  }
+
+  // Merek status
+  const merek = getNullable('rMerek');
+  const merekSel = document.getElementById('eMerek');
+  for (let i = 0; i < merekSel.options.length; i++) {
+    if (merekSel.options[i].text.includes(merek) || merek.includes(merekSel.options[i].value)) {
+      merekSel.selectedIndex = i;
+    }
+  }
+}
+
+function applyFormEdit() {
+  const setField = (id, val, color) => {
+    if (val === null || val === undefined || val === '') return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    el.classList.add('field-edited');
+    if (color) el.style.color = color;
+  };
+
+  const nama    = document.getElementById('eNama').value.trim();
+  const nik     = document.getElementById('eNik').value.trim();
+  const ttl     = document.getElementById('eTtl').value.trim();
+  const jk      = document.getElementById('eJk').value;
+  const imsi    = document.getElementById('eImsi').value.trim();
+  const regDate = document.getElementById('eRegDate').value.trim();
+  const imei    = document.getElementById('eImei').value.trim();
+  const device  = document.getElementById('eDevice').value.trim();
+  const alamat  = document.getElementById('eAlamat').value.trim();
+  const lat     = document.getElementById('eLat').value.trim();
+  const lng     = document.getElementById('eLng').value.trim();
+  const merek   = document.getElementById('eMerek').value;
+
+  setField('rNama',    nama);
+  setField('rNik',     nik);
+  setField('rTtl',     ttl);
+  setField('rJk',      jk);
+  setField('rImsi',    imsi);
+  setField('rRegDate', regDate);
+  setField('rImei',    imei);
+  setField('rDevice',  device);
+  setField('rAlamat',  alamat);
+
+  // Merek with color
+  if (merek) {
+    const merekEl = document.getElementById('rMerek');
+    merekEl.textContent = merek;
+    merekEl.classList.add('field-edited');
+    merekEl.style.color = merek.includes('TIDAK') ? 'var(--red)' : merek.includes('PROSES') ? 'var(--yellow)' : 'var(--green)';
+  }
+
+  // Coordinates — update display + maps link
+  if (lat && lng) {
+    const latF = parseFloat(lat).toFixed(4);
+    const lngF = parseFloat(lng).toFixed(4);
+    setField('rCoord', latF + ', ' + lngF);
+    const mapsUrl = 'https://maps.google.com/?q=' + latF + ',' + lngF;
+    const mapsEl = document.getElementById('rMaps');
+    mapsEl.href = mapsUrl;
+    mapsEl.textContent = '\u25B6 ' + latF + ', ' + lngF;
+    mapsEl.classList.add('field-edited');
+    document.getElementById('mapCoord').textContent = 'LAT: ' + latF + ' | LNG: ' + lngF;
+  }
+
+  closeEditPanel();
+
+  // Flash green confirm
+  const toolbar = document.getElementById('editToolbar');
+  toolbar.style.background = 'rgba(0,255,136,0.08)';
+  toolbar.style.borderColor = 'var(--green)';
+  setTimeout(() => { toolbar.style.background = ''; toolbar.style.borderColor = ''; }, 1000);
+}
+
+function updateCoordsFromDisplay() {
+  // nothing extra needed, coords already in sync
+}
+
+// Enter key support
+document.getElementById('phoneInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') startTrace();
+});
+</script>
+</body>
+</html>
