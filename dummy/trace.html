@@ -958,30 +958,42 @@ const names = ['Ahmad Fauzi', 'Siti Nurhaliza', 'Budi Santoso', 'Dewi Rahayu', '
   'Agus Setiawan', 'Rina Kusuma', 'Dedi Supriadi', 'Maya Anggraini', 'Hendra Gunawan',
   'Fitri Handayani', 'Wahyu Nugroho', 'Noor Aini', 'Eko Prasetyo', 'Yuni Astuti'];
 
+// Cities with proper NIK codes (PPKKSS format)
+// PP = Provinsi, KK = Kabupaten/Kota, SS = Kecamatan
 const cities = [
-  { kota: 'Jakarta Selatan, DKI Jakarta', lat: -6.2607, lng: 106.8106, kel: 'Kel. Cipete Selatan, Kec. Cilandak' },
-  { kota: 'Surabaya, Jawa Timur', lat: -7.2575, lng: 112.7521, kel: 'Kel. Gubeng, Kec. Gubeng' },
-  { kota: 'Bandung, Jawa Barat', lat: -6.9175, lng: 107.6191, kel: 'Kel. Coblong, Kec. Coblong' },
-  { kota: 'Medan, Sumatera Utara', lat: 3.5952, lng: 98.6722, kel: 'Kel. Petisah Tengah, Kec. Medan Petisah' },
-  { kota: 'Makassar, Sulawesi Selatan', lat: -5.1477, lng: 119.4327, kel: 'Kel. Baru, Kec. Ujung Pandang' },
-  { kota: 'Semarang, Jawa Tengah', lat: -6.9932, lng: 110.4203, kel: 'Kel. Pleburan, Kec. Semarang Selatan' },
-  { kota: 'Yogyakarta, DI Yogyakarta', lat: -7.7956, lng: 110.3695, kel: 'Kel. Gondokusuman, Kec. Gondokusuman' },
-  { kota: 'Denpasar, Bali', lat: -8.6705, lng: 115.2126, kel: 'Kel. Renon, Kec. Denpasar Selatan' },
+  { kota: 'Jakarta Selatan, DKI Jakarta', lat: -6.2607, lng: 106.8106, kel: 'Kel. Cipete Selatan, Kec. Cilandak', nikCode: '317404' }, // DKI Jakarta - Jakarta Selatan - Cilandak
+  { kota: 'Surabaya, Jawa Timur', lat: -7.2575, lng: 112.7521, kel: 'Kel. Gubeng, Kec. Gubeng', nikCode: '357806' }, // Jawa Timur - Surabaya - Gubeng
+  { kota: 'Bandung, Jawa Barat', lat: -6.9175, lng: 107.6191, kel: 'Kel. Coblong, Kec. Coblong', nikCode: '327306' }, // Jawa Barat - Bandung - Coblong
+  { kota: 'Medan, Sumatera Utara', lat: 3.5952, lng: 98.6722, kel: 'Kel. Petisah Tengah, Kec. Medan Petisah', nikCode: '127108' }, // Sumut - Medan - Medan Petisah
+  { kota: 'Makassar, Sulawesi Selatan', lat: -5.1477, lng: 119.4327, kel: 'Kel. Baru, Kec. Ujung Pandang', nikCode: '737104' }, // Sulsel - Makassar - Ujung Pandang
+  { kota: 'Semarang, Jawa Tengah', lat: -6.9932, lng: 110.4203, kel: 'Kel. Pleburan, Kec. Semarang Selatan', nikCode: '337409' }, // Jateng - Semarang - Semarang Selatan
+  { kota: 'Yogyakarta, DI Yogyakarta', lat: -7.7956, lng: 110.3695, kel: 'Kel. Gondokusuman, Kec. Gondokusuman', nikCode: '347103' }, // DIY - Yogyakarta - Gondokusuman
+  { kota: 'Denpasar, Bali', lat: -8.6705, lng: 115.2126, kel: 'Kel. Renon, Kec. Denpasar Selatan', nikCode: '517103' }, // Bali - Denpasar - Denpasar Selatan
 ];
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
 function randDigits(n) { let s = ''; for (let i = 0; i < n; i++) s += randInt(0, 9); return s; }
 
-function generateNIK(year) {
-  const prov = String(randInt(11, 96)).padStart(2, '0');
-  const kab = String(randInt(1, 24)).padStart(2, '0');
-  const kec = String(randInt(1, 30)).padStart(2, '0');
-  const day = String(randInt(1, 28)).padStart(2, '0');
-  const month = String(randInt(1, 12)).padStart(2, '0');
-  const yr = String(year).slice(-2);
-  const seq = String(randInt(1, 9999)).padStart(4, '0');
-  return prov + kab + kec + day + month + yr + seq;
+// Generate NIK with proper Indonesian format
+// Format: PPKKSS DDMMYY NNNN
+// PP = Provinsi (2 digit), KK = Kabupaten/Kota (2 digit), SS = Kecamatan (2 digit)
+// DD = Tanggal lahir (untuk perempuan +40), MM = Bulan, YY = Tahun (2 digit)
+// NNNN = Nomor urut registrasi (4 digit)
+function generateNIK(birthDay, birthMonth, birthYear, gender, cityNikCode) {
+  const wilayahCode = cityNikCode; // 6 digit kode wilayah (PPKKSS)
+  
+  // Tanggal lahir - untuk perempuan ditambah 40
+  let dd = parseInt(birthDay);
+  if (gender === 'PEREMPUAN') dd += 40;
+  const ddStr = String(dd).padStart(2, '0');
+  
+  const mm = String(birthMonth).padStart(2, '0');
+  const yy = String(birthYear).slice(-2); // Ambil 2 digit terakhir tahun
+  
+  const seq = String(randInt(1, 9999)).padStart(4, '0'); // Nomor urut
+  
+  return wilayahCode + ddStr + mm + yy + seq;
 }
 
 function normalizePhone(input) {
@@ -1057,13 +1069,20 @@ function startTrace() {
 function showResult(phone, opInfo) {
   // Generate dummy data
   const name = rand(names);
+  const city = rand(cities);
+  
+  // Generate birth date
   const birthYear = randInt(1965, 2003);
   const birthDay = String(randInt(1, 28)).padStart(2, '0');
   const birthMonth = String(randInt(1, 12)).padStart(2, '0');
-  const nik = generateNIK(birthYear);
+  
+  // Generate gender
   const gender = Math.random() > 0.5 ? 'LAKI-LAKI' : 'PEREMPUAN';
+  
+  // Generate NIK with proper format
+  const nik = generateNIK(birthDay, birthMonth, birthYear, gender, city.nikCode);
+  
   const device = rand(devices);
-  const city = rand(cities);
 
   const imei = device.tac + randDigits(8);
   const imsi = opInfo.imsi + randDigits(10);
