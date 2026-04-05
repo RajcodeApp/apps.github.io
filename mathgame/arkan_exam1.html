@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Coding untuk Pemula</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f0f23;
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 200, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(128, 0, 255, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #ff00a8, #7000ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #a0a0c0;
+            font-weight: 400;
+        }
+
+        .quiz-wrapper {
+            background: rgba(20, 20, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideUp 0.8s ease;
+        }
+
+        .quiz-header {
+            padding: 30px 40px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 168, 0.1));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            color: #a0a0c0;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #ff00a8);
+            border-radius: 10px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #a0a0c0;
+            margin-top: 5px;
+        }
+
+        .quiz-body {
+            padding: 40px;
+        }
+
+        .question-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.6;
+            color: #00ff88;
+            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.05em;
+            color: #e0e0e0;
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover .option-label {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateX(8px);
+        }
+
+        .option-card input[type="radio"]:checked ~ .option-label {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 168, 0.2));
+            border-color: #00d4ff;
+            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .option-card input[type="radio"]:checked ~ .option-label .option-letter {
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            color: #fff;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 16px 30px;
+            font-size: 1.05em;
+            font-weight: 600;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-later {
+            background: rgba(255, 200, 0, 0.2);
+            border: 2px solid rgba(255, 200, 0, 0.5);
+            color: #ffc800;
+        }
+
+        .btn-later:hover {
+            background: rgba(255, 200, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 200, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-section {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #ff00a8, #7000ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-display {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 30px auto;
+        }
+
+        .score-circle-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #00d4ff 0%,
+                #ff00a8 var(--percentage),
+                rgba(255, 255, 255, 0.1) var(--percentage)
+            );
+            animation: rotateCircle 2s ease-out;
+        }
+
+        .score-circle-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: rgba(20, 20, 40, 0.9);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .score-total {
+            font-size: 1.2em;
+            color: #a0a0c0;
+            margin-top: 5px;
+        }
+
+        .score-message {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #fff;
+            margin: 30px 0;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        .result-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-stat-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .result-stat-label {
+            color: #a0a0c0;
+            font-size: 0.95em;
+        }
+
+        .stat-correct { color: #00ff88; }
+        .stat-wrong { color: #ff0066; }
+        .stat-skipped { color: #ffc800; }
+        .stat-percentage { 
+            background: linear-gradient(135deg, #00d4ff, #ff00a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateCircle {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .quiz-body {
+                padding: 25px;
+            }
+
+            .quiz-header {
+                padding: 25px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .result-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .question-text {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CODE MASTER QUIZ</h1>
+            <p>Test Your Python, JavaScript & Coding Knowledge</p>
+        </div>
+
+        <div class="quiz-wrapper">
+            <div id="quizSection">
+                <div class="quiz-header">
+                    <div class="progress-wrapper">
+                        <div class="progress-info">
+                            <span id="currentQuestion">Soal 1 dari 70</span>
+                            <span id="answeredCount">Terjawab: 0/70</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statAnswered">0</div>
+                            <div class="stat-label">Dijawab</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statSkipped">0</div>
+                            <div class="stat-label">Dilewati</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statRemaining">70</div>
+                            <div class="stat-label">Tersisa</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-body">
+                    <div class="question-badge" id="questionBadge">
+                        <span>📝</span>
+                        <span id="questionNumber">Soal 1</span>
+                    </div>
+
+                    <div class="question-text" id="questionText"></div>
+
+                    <div class="options-grid" id="optionsContainer"></div>
+
+                    <div class="button-group">
+                        <button class="btn btn-secondary" id="btnPrev" onclick="previousQuestion()">
+                            <span>← Prev</span>
+                        </button>
+                        <button class="btn btn-later" id="btnLater" onclick="skipQuestion()">
+                            <span>⏭ Jawab Nanti</span>
+                        </button>
+                        <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">
+                            <span>Next →</span>
+                        </button>
+                        <button class="btn btn-primary" id="btnSubmit" onclick="submitQuiz()" style="display: none;">
+                            <span>🏁 Selesai</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-title">🎉 QUIZ COMPLETED!</div>
+                
+                <div class="score-display" id="scoreDisplay">
+                    <div class="score-circle-bg"></div>
+                    <div class="score-circle-inner">
+                        <div class="score-number" id="scoreNumber">0</div>
+                        <div class="score-total">/ 70</div>
+                    </div>
+                </div>
+
+                <div class="score-message" id="scoreMessage"></div>
+
+                <div class="result-stats">
+                    <div class="result-stat">
+                        <div class="result-stat-value stat-correct" id="resultCorrect">0</div>
+                        <div class="result-stat-label">Jawaban Benar</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-stat-value stat-wrong" id="resultWrong">0</div>
+                        <div class="result-stat-label">Jawaban Salah</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-stat-value stat-skipped" id="resultSkipped">0</div>
+                        <div class="result-stat-label">Tidak Dijawab</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="result-stat-value stat-percentage" id="resultPercentage">0%</div>
+                        <div class="result-stat-label">Persentase</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="restartQuiz()">
+                    <span>🔄 Mulai Lagi</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Python Questions (1-25)
+            {
+                question: "Apa output dari kode Python berikut?<div class='code-block'>print(type(5))</div>",
+                options: ["<class 'int'>", "<class 'float'>", "<class 'str'>", "<class 'number'>"],
+                correct: 0
+            },
+            {
+                question: "Bagaimana cara membuat list di Python?",
+                options: ["list = {1, 2, 3}", "list = (1, 2, 3)", "list = [1, 2, 3]", "list = <1, 2, 3>"],
+                correct: 2
+            },
+            {
+                question: "Apa fungsi dari keyword 'def' di Python?",
+                options: ["Mendefinisikan variabel", "Mendefinisikan fungsi", "Mendefinisikan class", "Mendefinisikan loop"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari kode berikut?<div class='code-block'>print(3 ** 2)</div>",
+                options: ["6", "9", "5", "8"],
+                correct: 1
+            },
+            {
+                question: "Metode mana yang digunakan untuk menambahkan elemen ke list di Python?",
+                options: ["add()", "append()", "insert()", "push()"],
+                correct: 1
+            },
+            {
+                question: "Apa perbedaan antara '==' dan 'is' di Python?",
+                options: ["Tidak ada perbedaan", "== membandingkan nilai, is membandingkan identitas objek", "is membandingkan nilai, == membandingkan identitas", "Keduanya sama saja"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat dictionary di Python?",
+                options: ["dict = [key: value]", "dict = (key: value)", "dict = {key: value}", "dict = <key: value>"],
+                correct: 2
+            },
+            {
+                question: "Apa yang dimaksud dengan indentasi di Python?",
+                options: ["Komentar dalam kode", "Spasi di awal baris untuk menunjukkan blok kode", "Nama variabel", "Tipe data"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>print('Hello' + 'World')</div>",
+                options: ["Hello World", "HelloWorld", "Hello+World", "Error"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat komentar satu baris di Python?",
+                options: ["// komentar", "/* komentar */", "# komentar", "<!-- komentar -->"],
+                correct: 2
+            },
+            {
+                question: "Apa fungsi dari len() di Python?",
+                options: ["Menghitung panjang string atau list", "Mengubah tipe data", "Menghapus elemen", "Mengurutkan data"],
+                correct: 0
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>x = [1, 2, 3]\nprint(x[1])</div>",
+                options: ["1", "2", "3", "Error"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat string multi-line di Python?",
+                options: ["Menggunakan \\n", "Menggunakan triple quotes (''' atau \"\"\")", "Tidak bisa", "Menggunakan +"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dilakukan fungsi range(5)?",
+                options: ["Membuat list [1,2,3,4,5]", "Membuat list [0,1,2,3,4]", "Membuat list [1,2,3,4]", "Error"],
+                correct: 1
+            },
+            {
+                question: "Apa keyword untuk loop di Python yang mirip dengan 'foreach' di bahasa lain?",
+                options: ["while", "for", "loop", "each"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>print(bool(0))</div>",
+                options: ["True", "False", "0", "None"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara mengubah string menjadi integer di Python?",
+                options: ["int(string)", "str(string)", "parse(string)", "convert(string)"],
+                correct: 0
+            },
+            {
+                question: "Apa yang dimaksud dengan tuple di Python?",
+                options: ["List yang bisa diubah", "List yang tidak bisa diubah (immutable)", "Tipe dictionary", "Fungsi built-in"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>print(10 // 3)</div>",
+                options: ["3.33", "3", "4", "3.0"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara mengecek apakah suatu key ada dalam dictionary?",
+                options: ["key in dict", "key.exists(dict)", "dict.has(key)", "dict.contains(key)"],
+                correct: 0
+            },
+            {
+                question: "Apa fungsi dari 'break' dalam loop?",
+                options: ["Melanjutkan ke iterasi berikutnya", "Menghentikan loop", "Mengulang loop", "Membuat error"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>print('5' * 3)</div>",
+                options: ["15", "555", "53", "Error"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuka file untuk dibaca di Python?",
+                options: ["open('file.txt', 'r')", "read('file.txt')", "file.open('r')", "open.read('file.txt')"],
+                correct: 0
+            },
+            {
+                question: "Apa yang dilakukan method .split() pada string?",
+                options: ["Menggabungkan string", "Memisahkan string menjadi list", "Menghapus karakter", "Mengubah ke lowercase"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>x = [1,2,3]\ny = x\ny.append(4)\nprint(x)</div>",
+                options: ["[1,2,3]", "[1,2,3,4]", "[4]", "Error"],
+                correct: 1
+            },
+
+            // JavaScript Questions (26-50)
+            {
+                question: "Apa output dari kode JavaScript berikut?<div class='code-block'>console.log(typeof null);</div>",
+                options: ["'null'", "'object'", "'undefined'", "'number'"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara mendefinisikan variabel yang tidak bisa diubah di JavaScript (ES6)?",
+                options: ["var x = 5", "let x = 5", "const x = 5", "final x = 5"],
+                correct: 2
+            },
+            {
+                question: "Apa perbedaan antara '==' dan '===' di JavaScript?",
+                options: ["Tidak ada perbedaan", "== membandingkan nilai dan tipe, === hanya nilai", "=== membandingkan nilai dan tipe, == hanya nilai", "Keduanya sama"],
+                correct: 2
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log(1 + '1');</div>",
+                options: ["2", "'11'", "11", "Error"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat array di JavaScript?",
+                options: ["array = (1, 2, 3)", "array = {1, 2, 3}", "array = [1, 2, 3]", "array = <1, 2, 3>"],
+                correct: 2
+            },
+            {
+                question: "Apa fungsi dari 'addEventListener' di JavaScript?",
+                options: ["Membuat elemen HTML", "Menambahkan event handler ke elemen", "Menghapus elemen", "Mengubah CSS"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log(0.1 + 0.2 === 0.3);</div>",
+                options: ["true", "false", "undefined", "NaN"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara mengubah string menjadi number di JavaScript?",
+                options: ["Number(string) atau +string", "parseInt(string) saja", "string.toNumber()", "convert(string)"],
+                correct: 0
+            },
+            {
+                question: "Apa yang dimaksud dengan 'hoisting' di JavaScript?",
+                options: ["Proses kompilasi", "Deklarasi variabel/fungsi dipindahkan ke atas scope", "Optimasi kode", "Error handling"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log([] == []);</div>",
+                options: ["true", "false", "undefined", "null"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat function di JavaScript (arrow function)?",
+                options: ["function() => {}", "() => {}", "=> () {}", "func => {}"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari method '.map()' pada array?",
+                options: ["Memfilter array", "Membuat array baru dengan transformasi setiap elemen", "Mengurutkan array", "Menghapus elemen"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log('5' - 3);</div>",
+                options: ["'53'", "2", "'2'", "NaN"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara mengecek apakah variabel adalah array di JavaScript?",
+                options: ["typeof variable === 'array'", "Array.isArray(variable)", "variable instanceof array", "variable.isArray()"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dilakukan 'JSON.parse()'?",
+                options: ["Mengubah object ke JSON string", "Mengubah JSON string ke object", "Memvalidasi JSON", "Menghapus JSON"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log(!!'false');</div>",
+                options: ["true", "false", "undefined", "'false'"],
+                correct: 0
+            },
+            {
+                question: "Bagaimana cara mendapatkan elemen HTML berdasarkan ID?",
+                options: ["document.getById('id')", "document.getElementById('id')", "document.querySelector('id')", "document.get('id')"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'setTimeout()'?",
+                options: ["Menjalankan kode setelah delay waktu tertentu", "Menghentikan eksekusi", "Mengulang kode", "Menghitung waktu"],
+                correct: 0
+            },
+            {
+                question: "Apa perbedaan 'let' dan 'var' di JavaScript?",
+                options: ["Tidak ada perbedaan", "let memiliki block scope, var function scope", "var lebih baru dari let", "let tidak bisa diubah"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log([1,2,3].length);</div>",
+                options: ["2", "3", "4", "undefined"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara menggabungkan dua array di JavaScript?",
+                options: ["array1 + array2", "array1.concat(array2)", "array1.merge(array2)", "array1.join(array2)"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dimaksud dengan 'callback function'?",
+                options: ["Fungsi yang dipanggil otomatis", "Fungsi yang dikirim sebagai argumen ke fungsi lain", "Fungsi rekursif", "Fungsi built-in"],
+                correct: 1
+            },
+            {
+                question: "Apa output dari:<div class='code-block'>console.log(3 > 2 > 1);</div>",
+                options: ["true", "false", "undefined", "Error"],
+                correct: 1
+            },
+            {
+                question: "Bagaimana cara membuat object di JavaScript?",
+                options: ["object = [key: value]", "object = {key: value}", "object = (key: value)", "object = <key: value>"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'return' dalam function?",
+                options: ["Menghentikan function dan mengembalikan nilai", "Mengulang function", "Menghapus function", "Membuat error"],
+                correct: 0
+            },
+
+            // General Coding Knowledge (51-70)
+            {
+                question: "Apa kepanjangan dari HTML?",
+                options: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"],
+                correct: 0
+            },
+            {
+                question: "Apa fungsi dari CSS?",
+                options: ["Membuat logika program", "Menyimpan data", "Mengatur tampilan dan style halaman web", "Menghubungkan database"],
+                correct: 2
+            },
+            {
+                question: "Apa yang dimaksud dengan 'variable' dalam programming?",
+                options: ["Nilai yang selalu tetap", "Wadah untuk menyimpan data", "Fungsi built-in", "Tipe data"],
+                correct: 1
+            },
+            {
+                question: "Apa itu 'loop' dalam programming?",
+                options: ["Struktur yang mengulang kode berkali-kali", "Fungsi untuk menghapus data", "Tipe data", "Error"],
+                correct: 0
+            },
+            {
+                question: "Apa yang dimaksud dengan 'if statement'?",
+                options: ["Perulangan", "Kondisi untuk membuat keputusan", "Fungsi", "Variabel"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'debugging'?",
+                options: ["Menulis kode baru", "Mencari dan memperbaiki error dalam kode", "Menghapus kode", "Mengkompilasi kode"],
+                correct: 1
+            },
+            {
+                question: "Apa kepanjangan dari API?",
+                options: ["Application Programming Interface", "Automated Program Interface", "Application Process Integration", "Advanced Programming Interface"],
+                correct: 0
+            },
+            {
+                question: "Apa yang dimaksud dengan 'syntax error'?",
+                options: ["Error logika", "Error penulisan kode yang salah", "Error saat runtime", "Error koneksi"],
+                correct: 1
+            },
+            {
+                question: "Apa itu 'array' dalam programming?",
+                options: ["Fungsi khusus", "Kumpulan data dalam satu variabel", "Tipe loop", "Operator matematika"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'function' dalam programming?",
+                options: ["Menyimpan data", "Blok kode yang dapat digunakan berulang kali", "Menghapus variabel", "Membuat error"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dimaksud dengan 'string'?",
+                options: ["Angka", "Teks atau karakter", "Boolean", "Array"],
+                correct: 1
+            },
+            {
+                question: "Apa itu 'integer'?",
+                options: ["Bilangan desimal", "Bilangan bulat", "Teks", "Boolean"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'return' dalam function?",
+                options: ["Mengulang function", "Mengembalikan nilai dari function", "Menghapus function", "Membuat error"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dimaksud dengan 'boolean'?",
+                options: ["Tipe data angka", "Tipe data yang hanya bernilai true atau false", "Tipe data teks", "Tipe data array"],
+                correct: 1
+            },
+            {
+                question: "Apa itu 'algorithm'?",
+                options: ["Bahasa pemrograman", "Langkah-langkah untuk menyelesaikan masalah", "Tipe data", "Editor kode"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'comment' dalam kode?",
+                options: ["Menjalankan kode", "Memberikan catatan/keterangan yang tidak dieksekusi", "Menghapus kode", "Membuat error"],
+                correct: 1
+            },
+            {
+                question: "Apa kepanjangan dari IDE?",
+                options: ["Internet Development Environment", "Integrated Development Environment", "Interactive Design Editor", "Internal Data Editor"],
+                correct: 1
+            },
+            {
+                question: "Apa yang dimaksud dengan 'null'?",
+                options: ["Angka 0", "Nilai kosong/tidak ada nilai", "True", "String kosong"],
+                correct: 1
+            },
+            {
+                question: "Apa itu 'compiler'?",
+                options: ["Text editor", "Program yang mengubah kode ke bahasa mesin", "Database", "Browser"],
+                correct: 1
+            },
+            {
+                question: "Apa fungsi dari 'git'?",
+                options: ["Menjalankan kode", "Version control system untuk tracking perubahan kode", "Membuat website", "Database"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let skippedQuestions = new Set();
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            const letters = ['A', 'B', 'C', 'D'];
+            
+            document.getElementById('questionNumber').textContent = `Soal ${currentQuestionIndex + 1}`;
+            document.getElementById('questionText').innerHTML = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                
+                const isChecked = userAnswers[currentQuestionIndex] === index;
+                
+                optionCard.innerHTML = `
+                    <input type="radio" name="answer" id="option${index}" value="${index}" 
+                        ${isChecked ? 'checked' : ''}>
+                    <label class="option-label" for="option${index}">
+                        <div class="option-letter">${letters[index]}</div>
+                        <div>${option}</div>
+                    </label>
+                `;
+                
+                optionCard.querySelector('input').addEventListener('change', () => {
+                    userAnswers[currentQuestionIndex] = index;
+                    skippedQuestions.delete(currentQuestionIndex);
+                    updateStats();
+                });
+                
+                optionsContainer.appendChild(optionCard);
+            });
+
+            updateStats();
+            updateButtons();
+            updateQuestionBadge();
+        }
+
+        function updateQuestionBadge() {
+            const badge = document.getElementById('questionBadge');
+            if (userAnswers[currentQuestionIndex] !== null) {
+                badge.innerHTML = '<span>✅</span><span id="questionNumber">Soal ' + (currentQuestionIndex + 1) + '</span>';
+            } else if (skippedQuestions.has(currentQuestionIndex)) {
+                badge.innerHTML = '<span>⏭</span><span id="questionNumber">Soal ' + (currentQuestionIndex + 1) + '</span>';
+            } else {
+                badge.innerHTML = '<span>📝</span><span id="questionNumber">Soal ' + (currentQuestionIndex + 1) + '</span>';
+            }
+        }
+
+        function updateStats() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const skippedCount = skippedQuestions.size;
+            const remainingCount = questions.length - answeredCount;
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+            document.getElementById('answeredCount').textContent = `Terjawab: ${answeredCount}/${questions.length}`;
+            
+            document.getElementById('statAnswered').textContent = answeredCount;
+            document.getElementById('statSkipped').textContent = skippedCount;
+            document.getElementById('statRemaining').textContent = remainingCount;
+        }
+
+        function updateButtons() {
+            document.getElementById('btnPrev').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('btnNext').style.display = 'none';
+                document.getElementById('btnLater').style.display = 'none';
+                document.getElementById('btnSubmit').style.display = 'block';
+            } else {
+                document.getElementById('btnNext').style.display = 'block';
+                document.getElementById('btnLater').style.display = 'block';
+                document.getElementById('btnSubmit').style.display = 'none';
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function skipQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                skippedQuestions.add(currentQuestionIndex);
+            }
+            nextQuestion();
+        }
+
+        function submitQuiz() {
+            const unansweredCount = userAnswers.filter(a => a === null).length;
+            
+            if (unansweredCount > 0) {
+                if (!confirm(`Anda masih memiliki ${unansweredCount} soal yang belum dijawab. Soal yang tidak dijawab akan dihitung sebagai salah. Lanjutkan submit?`)) {
+                    return;
+                }
+            }
+
+            let correctCount = 0;
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = questions.filter((q, i) => userAnswers[i] !== null && userAnswers[i] !== q.correct).length;
+            const skippedCount = userAnswers.filter(a => a === null).length;
+            const percentage = ((correctCount / questions.length) * 100).toFixed(1);
+
+            // Update score circle
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.style.setProperty('--percentage', percentage + '%');
+
+            document.getElementById('scoreNumber').textContent = correctCount;
+            document.getElementById('resultCorrect').textContent = correctCount;
+            document.getElementById('resultWrong').textContent = wrongCount;
+            document.getElementById('resultSkipped').textContent = skippedCount;
+            document.getElementById('resultPercentage').textContent = percentage + '%';
+
+            let message = '';
+            if (percentage >= 90) {
+                message = '🔥 AMAZING! You are a Coding Master!';
+            } else if (percentage >= 75) {
+                message = '🌟 EXCELLENT! Great Job!';
+            } else if (percentage >= 60) {
+                message = '👍 GOOD! Keep Learning!';
+            } else if (percentage >= 40) {
+                message = '💪 NOT BAD! You can do better!';
+            } else {
+                message = '📚 Keep Practicing! Never Give Up!';
+            }
+
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            skippedQuestions = new Set();
+            document.getElementById('quizSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            displayQuestion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize quiz
+        displayQuestion();
+    </script>
+</body>
+</html>
