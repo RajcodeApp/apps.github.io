@@ -3,766 +3,991 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Matematika Kelas 6 SD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Math Challenge - Level 6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.15);
-            --shadow-lg: 0 20px 50px -10px rgba(99, 102, 241, 0.25);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff006e;
+            --neon-yellow: #ffbe0b;
+            --dark-bg: #0a0e27;
+            --darker-bg: #050816;
+            --card-bg: #1a1f3a;
+            --accent: #8338ec;
+            --text: #e0e7ff;
+            --text-dim: #94a3b8;
         }
 
-        body::before {
-            content: '';
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--darker-bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        .bg-animation {
             position: fixed;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: bgMove 20s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
             pointer-events: none;
         }
 
-        @keyframes bgMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 40px 20px;
             position: relative;
             z-index: 1;
         }
 
-        .header {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 40px;
+        /* Header dengan style futuristic */
+        .main-header {
             text-align: center;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 30px;
-            animation: slideDown 0.6s ease-out;
+            margin-bottom: 60px;
+            position: relative;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
         }
 
-        .header h1 {
-            font-family: 'Fredoka', sans-serif;
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-weight: 700;
+        .main-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink), var(--neon-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            position: relative;
+            text-transform: uppercase;
         }
 
-        .header p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
-
-        .info-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 20px 30px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            animation: slideUp 0.6s ease-out 0.2s both;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .timer {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: var(--primary);
+        .subtitle {
             font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-top: 10px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
-        .timer-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .progress-info {
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .progress-bar-container {
-            background: #e2e8f0;
-            height: 8px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            animation: slideUp 0.6s ease-out 0.3s both;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0%;
-            transition: width 0.4s ease;
-            border-radius: 10px;
-        }
-
-        .quiz-container {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.6s ease-out 0.4s both;
-        }
-
-        .question-card {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .question-card.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .question-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .question-number {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.3rem;
-            font-family: 'Fredoka', sans-serif;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .question-topic {
-            background: #fef3c7;
-            color: #d97706;
-            padding: 8px 16px;
+        /* Start Screen */
+        .start-screen {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 243, 255, 0.2);
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .question-text {
-            font-size: 1.25rem;
-            color: var(--text-dark);
-            margin-bottom: 30px;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        .options {
-            display: grid;
-            gap: 15px;
-        }
-
-        .option {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 20px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 60px 50px;
             position: relative;
             overflow: hidden;
         }
 
-        .option::before {
+        .start-screen::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
-            transition: width 0.3s ease;
-        }
-
-        .option:hover {
-            border-color: var(--primary);
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.15);
-        }
-
-        .option:hover::before {
             width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(255, 0, 110, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .option.selected {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+        .start-screen:hover::before {
+            opacity: 1;
         }
 
-        .option-label {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: white;
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .welcome-text {
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--primary);
-            font-family: 'Fredoka', sans-serif;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .option.selected .option-label {
-            background: var(--primary);
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .info-card {
+            background: rgba(0, 243, 255, 0.05);
+            border-left: 3px solid var(--neon-blue);
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            background: rgba(0, 243, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .info-title {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent));
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.3rem;
+            font-weight: 700;
             color: white;
-            border-color: var(--primary);
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);
+            margin-top: 30px;
         }
 
-        .option-text {
-            flex: 1;
-            font-size: 1.05rem;
-            color: var(--text-dark);
-            position: relative;
-            z-index: 1;
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.6);
         }
 
-        .navigation {
+        /* Quiz Interface */
+        .quiz-wrapper {
+            display: none;
+        }
+
+        .quiz-wrapper.active {
+            display: block;
+        }
+
+        /* Top Stats Bar */
+        .stats-bar {
             display: flex;
             justify-content: space-between;
-            margin-top: 40px;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
             gap: 15px;
         }
 
-        .btn {
-            padding: 16px 32px;
-            border: none;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--accent));
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        .stat-content .label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        .stat-content .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-blue);
         }
 
-        .btn-secondary {
-            background: #f1f5f9;
-            color: var(--text-dark);
+        /* Progress Track */
+        .progress-track {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
         }
 
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .progress-bar-bg {
+            background: rgba(0, 243, 255, 0.1);
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
         }
 
-        .results {
-            display: none;
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, white);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Question Card - Redesign Total */
+        .question-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+
+        .question-sidebar {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .section-badge {
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent));
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        .results.active {
-            display: block;
-            animation: zoomIn 0.6s ease-out;
+        .section-name {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
         }
 
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .score-circle {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .score-value {
-            font-size: 4rem;
-            font-weight: 700;
-            font-family: 'Fredoka', sans-serif;
-            line-height: 1;
-        }
-
-        .score-label {
+        .section-title {
             font-size: 1.1rem;
-            opacity: 0.9;
+            font-weight: 700;
             margin-top: 5px;
         }
 
-        .result-summary {
+        .question-num-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .current-num {
+            font-size: 4rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .total-num {
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        .difficulty-indicator {
+            margin-top: 25px;
+        }
+
+        .difficulty-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .difficulty-bars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .diff-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(0, 243, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .diff-bar.active {
+            background: linear-gradient(90deg, var(--neon-yellow), var(--neon-pink));
+        }
+
+        .question-main {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+        }
+
+        .question-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: var(--text);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-item {
+            background: rgba(0, 243, 255, 0.03);
+            border: 2px solid rgba(0, 243, 255, 0.2);
+            padding: 20px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .option-item:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.08);
+            transform: translateX(8px);
+        }
+
+        .option-item.selected {
+            border-color: var(--neon-pink);
+            background: rgba(255, 0, 110, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+        }
+
+        .option-letter {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(131, 56, 236, 0.2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .option-letter {
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent));
+            color: white;
+        }
+
+        .option-text {
+            font-size: 1.1rem;
+            flex: 1;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 18px 30px;
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, var(--neon-blue), var(--accent));
+            border: none;
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .nav-btn.primary:hover {
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+
+        /* Results */
+        .results-container {
+            display: none;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .score-display {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .score-number {
+            font-size: 8rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink), var(--neon-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .results-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 40px;
         }
 
-        .summary-card {
-            background: var(--bg-main);
-            padding: 25px;
-            border-radius: 16px;
-            border: 2px solid var(--border);
+        .result-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
         }
 
-        .summary-card .icon {
-            font-size: 2rem;
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .result-card .number {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
             margin-bottom: 10px;
         }
 
-        .summary-card .value {
-            font-size: 2rem;
-            font-weight: 700;
-            font-family: 'Fredoka', sans-serif;
-            margin-bottom: 5px;
+        .result-card .desc {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
 
-        .summary-card .label {
-            color: var(--text-light);
-            font-size: 0.95rem;
+        .result-card.correct {
+            border-color: var(--neon-blue);
         }
 
-        .summary-card.correct {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.05);
+        .result-card.correct .number {
+            color: var(--neon-blue);
         }
 
-        .summary-card.correct .icon { color: var(--success); }
-        .summary-card.correct .value { color: var(--success); }
-
-        .summary-card.wrong {
-            border-color: var(--danger);
-            background: rgba(239, 68, 68, 0.05);
+        .result-card.wrong {
+            border-color: var(--neon-pink);
         }
 
-        .summary-card.wrong .icon { color: var(--danger); }
-        .summary-card.wrong .value { color: var(--danger); }
-
-        .summary-card.unanswered {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.05);
+        .result-card.wrong .number {
+            color: var(--neon-pink);
         }
 
-        .summary-card.unanswered .icon { color: var(--warning); }
-        .summary-card.unanswered .value { color: var(--warning); }
+        .result-card.skip {
+            border-color: var(--neon-yellow);
+        }
 
-        .weakness-analysis {
-            text-align: left;
-            background: #fef3c7;
-            padding: 30px;
-            border-radius: 16px;
+        .result-card.skip .number {
+            color: var(--neon-yellow);
+        }
+
+        .analysis-section {
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 0, 110, 0.3);
+            border-radius: 20px;
+            padding: 40px;
             margin-bottom: 30px;
-            border: 2px solid #fbbf24;
         }
 
-        .weakness-analysis h3 {
-            color: #d97706;
-            margin-bottom: 20px;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .analysis-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--neon-pink);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .weakness-item {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+            background: rgba(255, 0, 110, 0.05);
+            border-left: 4px solid var(--neon-pink);
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #fde68a;
         }
 
         .weakness-topic {
+            font-size: 1.2rem;
             font-weight: 600;
-            color: var(--text-dark);
         }
 
-        .weakness-details {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .wrong-answers {
-            text-align: left;
-            background: #fee2e2;
-            padding: 30px;
-            border-radius: 16px;
-            border: 2px solid #fca5a5;
-        }
-
-        .wrong-answers h3 {
-            color: #dc2626;
-            margin-bottom: 20px;
-            font-family: 'Fredoka', sans-serif;
+        .weakness-count {
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-pink);
         }
 
-        .wrong-answer-item {
-            background: white;
-            padding: 15px 20px;
+        .errors-section {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .errors-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .error-item {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 20px;
             border-radius: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #fecaca;
+            margin-bottom: 15px;
         }
 
-        .wrong-question-number {
-            display: inline-block;
-            background: var(--danger);
+        .error-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .error-num {
+            background: linear-gradient(135deg, var(--neon-blue), var(--accent));
             color: white;
-            padding: 4px 12px;
+            padding: 8px 15px;
             border-radius: 8px;
             font-weight: 700;
-            margin-right: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .error-topic {
+            background: rgba(255, 190, 11, 0.2);
+            color: var(--neon-yellow);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 0.9rem;
         }
 
-        .wrong-topic-label {
-            display: inline-block;
-            background: #fef3c7;
-            color: #d97706;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
+        .error-question {
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .retry-btn {
+            background: linear-gradient(135deg, var(--neon-pink), var(--accent));
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.6);
+        }
+
+        .question-card {
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
+            .main-title {
+                font-size: 2.5rem;
             }
 
-            .quiz-container {
-                padding: 25px;
-            }
-
-            .result-summary {
+            .question-container {
                 grid-template-columns: 1fr;
             }
 
-            .info-bar {
+            .question-sidebar {
+                position: static;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
                 flex-direction: column;
                 gap: 15px;
             }
 
-            .navigation {
-                flex-direction: column;
+            .score-number {
+                font-size: 5rem;
             }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        .emoji {
-            font-size: 1.2em;
-        }
-
-        .start-screen {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .start-screen h2 {
-            font-family: 'Fredoka', sans-serif;
-            font-size: 2rem;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-        }
-
-        .start-screen p {
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .start-instructions {
-            background: var(--bg-main);
-            padding: 30px;
-            border-radius: 16px;
-            margin: 30px 0;
-            text-align: left;
-        }
-
-        .start-instructions ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .start-instructions li {
-            padding: 12px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .start-instructions li::before {
-            content: '✓';
-            background: var(--primary);
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
+    <div class="bg-animation"></div>
+    <div class="grid-overlay"></div>
+
     <div class="container">
-        <div class="header">
-            <h1>📚 Ujian Matematika Kelas 6 SD</h1>
-            <p>Ayo kerjakan dengan teliti dan semangat!</p>
+        <div class="main-header">
+            <div class="glitch-wrapper">
+                <h1 class="main-title">MATH ARENA</h1>
+            </div>
+            <p class="subtitle">Challenge Level 6</p>
         </div>
 
-        <div class="quiz-container">
-            <div class="start-screen active" id="startScreen">
-                <h2>Selamat Datang! 🎉</h2>
-                <p>Ujian ini terdiri dari <strong>40 soal matematika</strong> untuk menguji kemampuanmu</p>
-                
-                <div class="start-instructions">
-                    <ul>
-                        <li>Waktu mengerjakan: 60 menit</li>
-                        <li>Total 40 soal dari berbagai materi</li>
-                        <li>Pilih satu jawaban yang paling tepat</li>
-                        <li>Kamu bisa kembali ke soal sebelumnya</li>
-                        <li>Di akhir akan ada laporan lengkap dan analisis kelemahan</li>
-                    </ul>
+        <!-- Start Screen -->
+        <div class="start-screen active" id="startScreen">
+            <h2 class="welcome-text">Siap Menghadapi 40 Tantangan Matematika?</h2>
+            <p style="color: var(--text-dim); font-size: 1.1rem; margin-bottom: 30px;">
+                Ujian ini dirancang dengan tingkat kesulitan bertahap dari sedang hingga sangat sulit
+            </p>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">⏱️</div>
+                    <div class="info-title">Durasi</div>
+                    <div class="info-value">60:00</div>
                 </div>
-
-                <button class="btn btn-primary" onclick="startQuiz()" style="margin: 0 auto;">
-                    <span>Mulai Ujian</span>
-                    <span class="emoji">🚀</span>
-                </button>
-            </div>
-
-            <div id="quizContent" style="display: none;">
-                <div class="info-bar">
-                    <div class="timer">
-                        <div class="timer-icon">⏱️</div>
-                        <span id="timer">60:00</span>
-                    </div>
-                    <div class="progress-info">
-                        Soal <span id="currentQuestion">1</span> dari <span id="totalQuestions">40</span>
-                    </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <div class="info-title">Total Soal</div>
+                    <div class="info-value">40</div>
                 </div>
-
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar"></div>
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <div class="info-title">Materi</div>
+                    <div class="info-value">6</div>
                 </div>
-
-                <div id="questionsContainer"></div>
-
-                <div class="navigation">
-                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">
-                        <span>⬅️</span>
-                        <span>Sebelumnya</span>
-                    </button>
-                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
-                        <span>Selanjutnya</span>
-                        <span>➡️</span>
-                    </button>
-                    <button class="btn btn-primary" id="finishBtn" style="display: none;" onclick="finishQuiz()">
-                        <span>Selesai</span>
-                        <span>✅</span>
-                    </button>
+                <div class="info-card">
+                    <div class="info-icon">📈</div>
+                    <div class="info-title">Tingkat</div>
+                    <div class="info-value">MEDIUM → HARD</div>
                 </div>
             </div>
 
-            <div class="results" id="results"></div>
+            <button class="start-btn" onclick="startQuiz()">
+                Launch Challenge
+            </button>
+        </div>
+
+        <!-- Quiz Wrapper -->
+        <div class="quiz-wrapper" id="quizWrapper">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-content">
+                        <div class="label">Time Left</div>
+                        <div class="value" id="timer">60:00</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <div class="label">Answered</div>
+                        <div class="value" id="answeredCount">0/40</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress-label">Overall Progress</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-sidebar">
+                    <div class="section-badge">
+                        <div class="section-name">Materi</div>
+                        <div class="section-title" id="sectionTitle">—</div>
+                    </div>
+
+                    <div class="question-num-display">
+                        <div class="current-num" id="currentNum">01</div>
+                        <div class="total-num">dari 40 soal</div>
+                    </div>
+
+                    <div class="difficulty-indicator">
+                        <div class="difficulty-label">Tingkat Kesulitan</div>
+                        <div class="difficulty-bars" id="difficultyBars">
+                            <div class="diff-bar"></div>
+                            <div class="diff-bar"></div>
+                            <div class="diff-bar"></div>
+                            <div class="diff-bar"></div>
+                            <div class="diff-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-main">
+                    <div id="questionsContainer"></div>
+
+                    <div class="nav-controls">
+                        <button class="nav-btn" id="prevBtn" onclick="previousQuestion()">
+                            ← Previous
+                        </button>
+                        <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">
+                            Next →
+                        </button>
+                        <button class="nav-btn primary" id="finishBtn" style="display: none;" onclick="finishQuiz()">
+                            Finish Test
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-container" id="resultsContainer">
         </div>
     </div>
 
     <script>
+        // Soal dengan tingkat kesulitan dari sedang ke sangat sulit
         const questions = [
-            // Bilangan Bulat & Operasi Hitung (10 soal)
-            {topic: "Bilangan Bulat", question: "Hasil dari -15 + 23 - 8 = ...", options: ["0", "6", "8", "10"], correct: 0},
-            {topic: "Bilangan Bulat", question: "(-12) × 5 = ...", options: ["-60", "60", "-17", "17"], correct: 0},
-            {topic: "Bilangan Bulat", question: "72 : (-9) = ...", options: ["-8", "8", "-9", "9"], correct: 0},
-            {topic: "Bilangan Bulat", question: "(-6) × (-7) = ...", options: ["42", "-42", "13", "-13"], correct: 0},
-            {topic: "Operasi Hitung", question: "125 + 75 × 2 - 50 = ...", options: ["275", "350", "225", "250"], correct: 0},
-            {topic: "Operasi Hitung", question: "(144 : 12) + (15 × 3) = ...", options: ["57", "67", "47", "77"], correct: 0},
-            {topic: "Operasi Hitung", question: "250 - (80 : 4) + 35 = ...", options: ["265", "255", "275", "245"], correct: 0},
-            {topic: "Operasi Hitung", question: "18 + 12 × 5 - 20 = ...", options: ["58", "130", "150", "38"], correct: 0},
-            {topic: "Bilangan Bulat", question: "KPK dari 12 dan 18 adalah ...", options: ["36", "6", "72", "24"], correct: 0},
-            {topic: "Bilangan Bulat", question: "FPB dari 24 dan 36 adalah ...", options: ["12", "6", "8", "4"], correct: 0},
+            // BAGIAN 1: BILANGAN BULAT & OPERASI (Sedang)
+            {section: "Bilangan Bulat & Operasi", topic: "Operasi Bilangan Bulat", difficulty: 2, question: "Hitunglah: (-18) + 35 - (-12) × 2 = ...", options: ["41", "31", "-7", "5"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "Operasi Bilangan Bulat", difficulty: 2, question: "Hasil dari: 144 : (-12) + (-5) × 6 = ...", options: ["-42", "-30", "18", "42"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "KPK dan FPB", difficulty: 3, question: "KPK dari 18, 24, dan 30 adalah ...", options: ["360", "180", "720", "90"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "KPK dan FPB", difficulty: 3, question: "FPB dari 48, 72, dan 96 adalah ...", options: ["24", "12", "16", "8"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "Operasi Hitung Campuran", difficulty: 3, question: "(256 : 16) × (12 + 8) - 75 = ...", options: ["245", "320", "195", "275"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "Operasi Hitung Campuran", difficulty: 3, question: "125 + 75 × 8 : 6 - 50 = ...", options: ["175", "225", "150", "200"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "Pangkat dan Akar", difficulty: 4, question: "√144 + 5³ - 4² = ...", options: ["121", "141", "137", "129"], correct: 0},
+            {section: "Bilangan Bulat & Operasi", topic: "Bilangan Berpangkat", difficulty: 4, question: "2⁵ × 2³ : 2⁴ = ...", options: ["16", "32", "8", "64"], correct: 0},
 
-            // Pecahan (8 soal)
-            {topic: "Pecahan", question: "2/5 + 3/5 = ...", options: ["1", "5/5", "5/10", "1/5"], correct: 0},
-            {topic: "Pecahan", question: "3/4 - 1/2 = ...", options: ["1/4", "2/4", "1/2", "2/6"], correct: 0},
-            {topic: "Pecahan", question: "2/3 × 3/4 = ...", options: ["1/2", "6/12", "2/4", "5/7"], correct: 0},
-            {topic: "Pecahan", question: "4/5 : 2/3 = ...", options: ["6/5", "8/15", "12/10", "2/5"], correct: 0},
-            {topic: "Pecahan", question: "0,75 dalam bentuk pecahan paling sederhana adalah ...", options: ["3/4", "75/100", "6/8", "15/20"], correct: 0},
-            {topic: "Pecahan", question: "25% sama dengan pecahan ...", options: ["1/4", "1/2", "2/5", "1/5"], correct: 0},
-            {topic: "Pecahan", question: "3/5 dari 100 adalah ...", options: ["60", "50", "75", "80"], correct: 0},
-            {topic: "Pecahan", question: "2 1/2 + 1 3/4 = ...", options: ["4 1/4", "3 3/4", "4 1/2", "3 1/4"], correct: 0},
+            // BAGIAN 2: PECAHAN & DESIMAL (Sedang → Sulit)
+            {section: "Pecahan & Desimal", topic: "Operasi Pecahan", difficulty: 2, question: "3/4 + 5/6 - 2/3 = ...", options: ["11/12", "1", "5/6", "7/12"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Operasi Pecahan", difficulty: 3, question: "2 3/5 × 1 1/4 : 1/2 = ...", options: ["6 1/2", "5 2/5", "7", "6"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Pecahan Campuran", difficulty: 3, question: "(1 2/3 + 2 1/4) × 3/5 = ...", options: ["2 7/20", "2 1/2", "3", "1 3/4"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Desimal", difficulty: 3, question: "0,125 + 3/8 - 0,25 = ...", options: ["0,25", "0,375", "0,5", "0,125"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Persen", difficulty: 3, question: "35% dari 240 ditambah 60% dari 150 = ...", options: ["174", "156", "180", "162"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Pecahan Kompleks", difficulty: 4, question: "5/6 dari (3/4 × 160) - 2/5 dari 75 = ...", options: ["70", "80", "90", "60"], correct: 0},
+            {section: "Pecahan & Desimal", topic: "Operasi Campuran", difficulty: 4, question: "Jika 3/8 bagian dari suatu bilangan adalah 120, maka 5/6 dari bilangan itu adalah ...", options: ["267", "280", "300", "240"], correct: 0},
 
-            // Geometri & Pengukuran (10 soal)
-            {topic: "Geometri", question: "Luas persegi panjang dengan panjang 12 cm dan lebar 8 cm adalah ...", options: ["96 cm²", "40 cm²", "20 cm²", "48 cm²"], correct: 0},
-            {topic: "Geometri", question: "Keliling persegi dengan sisi 9 cm adalah ...", options: ["36 cm", "81 cm", "18 cm", "27 cm"], correct: 0},
-            {topic: "Geometri", question: "Luas segitiga dengan alas 10 cm dan tinggi 6 cm adalah ...", options: ["30 cm²", "60 cm²", "16 cm²", "120 cm²"], correct: 0},
-            {topic: "Geometri", question: "Keliling lingkaran dengan diameter 14 cm (π = 22/7) adalah ...", options: ["44 cm", "154 cm", "88 cm", "22 cm"], correct: 0},
-            {topic: "Geometri", question: "Luas lingkaran dengan jari-jari 7 cm (π = 22/7) adalah ...", options: ["154 cm²", "44 cm²", "308 cm²", "88 cm²"], correct: 0},
-            {topic: "Geometri", question: "Volume kubus dengan rusuk 5 cm adalah ...", options: ["125 cm³", "25 cm³", "75 cm³", "100 cm³"], correct: 0},
-            {topic: "Pengukuran", question: "Volume balok dengan panjang 8 cm, lebar 5 cm, dan tinggi 4 cm adalah ...", options: ["160 cm³", "17 cm³", "80 cm³", "320 cm³"], correct: 0},
-            {topic: "Pengukuran", question: "3,5 km = ... meter", options: ["3500", "350", "35000", "35"], correct: 0},
-            {topic: "Pengukuran", question: "2,5 jam = ... menit", options: ["150", "125", "250", "200"], correct: 0},
-            {topic: "Pengukuran", question: "4500 gram = ... kg", options: ["4,5", "45", "0,45", "450"], correct: 0},
+            // BAGIAN 3: GEOMETRI & PENGUKURAN (Sulit)
+            {section: "Geometri & Pengukuran", topic: "Luas Bangun Datar", difficulty: 3, question: "Luas persegi panjang dengan panjang 15 cm dan lebar 8 cm, kemudian luasnya diperbesar 2 kali. Berapa luas setelah diperbesar?", options: ["240 cm²", "120 cm²", "180 cm²", "200 cm²"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Keliling Bangun Datar", difficulty: 3, question: "Keliling persegi sama dengan keliling persegi panjang yang berukuran 20 cm × 12 cm. Luas persegi tersebut adalah ...", options: ["256 cm²", "400 cm²", "324 cm²", "196 cm²"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Lingkaran", difficulty: 4, question: "Sebuah lingkaran memiliki keliling 88 cm. Luas lingkaran tersebut adalah ... (π = 22/7)", options: ["616 cm²", "484 cm²", "588 cm²", "704 cm²"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Gabungan Bangun", difficulty: 4, question: "Sebuah taman berbentuk persegi panjang 20m × 15m. Di tengahnya ada kolam berbentuk lingkaran dengan diameter 8m. Luas taman yang tidak tergenang air adalah ... (π = 3,14)", options: ["249,76 m²", "250,24 m²", "240 m²", "260 m²"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Volume Kubus", difficulty: 4, question: "Volume kubus A adalah 1.728 cm³. Jika panjang rusuk kubus B adalah 2 kali rusuk kubus A, maka volume kubus B adalah ...", options: ["13.824 cm³", "3.456 cm³", "6.912 cm³", "10.368 cm³"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Volume Balok", difficulty: 4, question: "Sebuah bak air berbentuk balok dengan ukuran 120 cm × 80 cm × 60 cm. Jika diisi air 3/4 bagian, volume air dalam bak adalah ...", options: ["432 liter", "576 liter", "360 liter", "480 liter"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Konversi Satuan", difficulty: 3, question: "2,5 km² = ... dam²", options: ["2.500", "250", "25.000", "250.000"], correct: 0},
+            {section: "Geometri & Pengukuran", topic: "Satuan Volume", difficulty: 4, question: "Sebuah drum berisi 250 liter minyak. Jika setiap hari digunakan 12.500 cm³, minyak akan habis dalam ... hari", options: ["20", "25", "15", "30"], correct: 0},
 
-            // Perbandingan & Skala (5 soal)
-            {topic: "Perbandingan", question: "Perbandingan umur Ani dan Budi adalah 3:4. Jika umur Ani 12 tahun, umur Budi adalah ...", options: ["16 tahun", "15 tahun", "18 tahun", "20 tahun"], correct: 0},
-            {topic: "Perbandingan", question: "Jarak pada peta 4 cm. Jika skala 1:100.000, jarak sebenarnya adalah ...", options: ["4 km", "400 m", "40 km", "4000 m"], correct: 0},
-            {topic: "Perbandingan", question: "Sebuah foto berukuran 3 cm × 4 cm diperbesar 5 kali. Ukuran foto setelah diperbesar adalah ...", options: ["15 cm × 20 cm", "8 cm × 9 cm", "30 cm × 40 cm", "12 cm × 16 cm"], correct: 0},
-            {topic: "Perbandingan", question: "Perbandingan uang Doni dan Eka adalah 5:7. Jika selisihnya Rp 20.000, uang Eka adalah ...", options: ["Rp 70.000", "Rp 50.000", "Rp 60.000", "Rp 80.000"], correct: 0},
-            {topic: "Perbandingan", question: "Jika 4 kg mangga harganya Rp 60.000, maka harga 7 kg mangga adalah ...", options: ["Rp 105.000", "Rp 84.000", "Rp 120.000", "Rp 90.000"], correct: 0},
+            // BAGIAN 4: PERBANDINGAN & SKALA (Sulit)
+            {section: "Perbandingan & Skala", topic: "Perbandingan Senilai", difficulty: 4, question: "Perbandingan uang Andi, Budi, dan Citra adalah 3:4:5. Jika jumlah uang mereka Rp 600.000, selisih uang Citra dan Andi adalah ...", options: ["Rp 100.000", "Rp 150.000", "Rp 120.000", "Rp 80.000"], correct: 0},
+            {section: "Perbandingan & Skala", topic: "Perbandingan Berbalik Nilai", difficulty: 4, question: "15 pekerja dapat menyelesaikan pekerjaan dalam 20 hari. Jika pekerjaan harus selesai dalam 12 hari, tambahan pekerja yang dibutuhkan adalah ...", options: ["10", "5", "8", "12"], correct: 0},
+            {section: "Perbandingan & Skala", topic: "Skala Peta", difficulty: 4, question: "Jarak Jakarta-Bandung pada peta adalah 7,5 cm dengan skala 1:2.000.000. Jarak sebenarnya adalah ...", options: ["150 km", "140 km", "160 km", "120 km"], correct: 0},
+            {section: "Perbandingan & Skala", topic: "Perbandingan Bertingkat", difficulty: 5, question: "Perbandingan umur Ayah dan Ibu adalah 7:6. Perbandingan umur Ibu dan Anak adalah 5:2. Jika umur Ayah 42 tahun, umur Anak adalah ...", options: ["14 tahun 24 hari", "14 tahun", "15 tahun", "12 tahun"], correct: 0},
+            {section: "Perbandingan & Skala", topic: "Masalah Campuran", difficulty: 5, question: "Sebuah campuran terdiri dari 3 bagian pasir dan 5 bagian semen dengan berat total 120 kg. Jika ditambah 15 kg pasir, perbandingan pasir dan semen menjadi ...", options: ["1:1", "2:3", "3:4", "4:5"], correct: 0},
 
-            // Statistika (4 soal)
-            {topic: "Statistika", question: "Nilai ulangan: 7, 8, 9, 7, 9, 8, 10. Rata-ratanya adalah ...", options: ["8", "7", "9", "8,5"], correct: 0},
-            {topic: "Statistika", question: "Data: 5, 7, 9, 7, 6, 7, 8. Modus dari data tersebut adalah ...", options: ["7", "8", "6", "9"], correct: 0},
-            {topic: "Statistika", question: "Data tinggi badan (cm): 140, 145, 150, 145, 155. Mediannya adalah ...", options: ["145", "150", "147", "140"], correct: 0},
-            {topic: "Statistika", question: "Jangkauan dari data 12, 15, 10, 18, 14, 16 adalah ...", options: ["8", "6", "10", "12"], correct: 0},
+            // BAGIAN 5: STATISTIKA (Sedang → Sulit)
+            {section: "Statistika", topic: "Rata-rata", difficulty: 3, question: "Nilai rata-rata 8 siswa adalah 75. Jika ditambah 2 siswa dengan nilai 80 dan 90, rata-rata menjadi ...", options: ["78", "77", "79", "76"], correct: 0},
+            {section: "Statistika", topic: "Median", difficulty: 4, question: "Data berat badan (kg): 45, 52, 48, 55, 50, 47, 53, 49, 51. Median data tersebut adalah ...", options: ["50", "49", "51", "48"], correct: 0},
+            {section: "Statistika", topic: "Modus", difficulty: 3, question: "Data nilai: 7, 8, 6, 9, 7, 8, 7, 9, 8, 7, 6. Modus dari data tersebut adalah ...", options: ["7", "8", "6 dan 7", "7 dan 8"], correct: 0},
+            {section: "Statistika", topic: "Rata-rata Gabungan", difficulty: 5, question: "Rata-rata nilai kelas A (30 siswa) adalah 75 dan kelas B (20 siswa) adalah 80. Rata-rata gabungan kedua kelas adalah ...", options: ["77", "77,5", "76,5", "78"], correct: 0},
+            {section: "Statistika", topic: "Jangkauan dan Statistik", difficulty: 4, question: "Data: 15, 22, 18, 25, 20, 17, 23, 19. Jangkauan data tersebut adalah ...", options: ["10", "8", "12", "7"], correct: 0},
 
-            // Soal Cerita & Penerapan (3 soal)
-            {topic: "Soal Cerita", question: "Bu Siti membeli 5 kg jeruk seharga Rp 75.000. Harga 1 kg jeruk adalah ...", options: ["Rp 15.000", "Rp 12.500", "Rp 20.000", "Rp 10.000"], correct: 0},
-            {topic: "Soal Cerita", question: "Sebuah bak mandi berisi 240 liter air. Jika digunakan 3/5 bagian, sisa air adalah ... liter", options: ["96", "144", "120", "80"], correct: 0},
-            {topic: "Soal Cerita", question: "Pak Budi berangkat pukul 07.30 dan tiba pukul 09.45. Lama perjalanan adalah ...", options: ["2 jam 15 menit", "2 jam 30 menit", "1 jam 45 menit", "2 jam"], correct: 0}
+            // BAGIAN 6: SOAL CERITA KOMPLEKS (Sangat Sulit)
+            {section: "Soal Cerita & Penerapan", topic: "Kecepatan", difficulty: 5, question: "Mobil A berangkat dari kota P ke kota Q dengan kecepatan 60 km/jam. 30 menit kemudian, mobil B menyusul dengan kecepatan 80 km/jam. Mobil B akan menyusul mobil A setelah ... jam sejak mobil B berangkat", options: ["1,5", "2", "1", "2,5"], correct: 0},
+            {section: "Soal Cerita & Penerapan", topic: "Debit", difficulty: 5, question: "Sebuah kolam dapat penuh dalam 3 jam jika diisi dengan 2 kran. Jika hanya 1 kran yang digunakan, kolam akan penuh dalam ... jam", options: ["6", "5", "4", "4,5"], correct: 0},
+            {section: "Soal Cerita & Penerapan", topic: "Untung Rugi", difficulty: 5, question: "Seorang pedagang membeli 40 kg mangga seharga Rp 400.000. Sebanyak 10 kg busuk. Jika sisanya dijual Rp 15.000/kg, maka pedagang akan ...", options: ["Rugi Rp 50.000", "Untung Rp 50.000", "Impas", "Rugi Rp 100.000"], correct: 0},
+            {section: "Soal Cerita & Penerapan", topic: "Bunga Tabungan", difficulty: 5, question: "Andi menabung Rp 5.000.000 dengan bunga 12% per tahun. Setelah 9 bulan, jumlah uang Andi menjadi ...", options: ["Rp 5.450.000", "Rp 5.500.000", "Rp 5.600.000", "Rp 5.400.000"], correct: 0},
+            {section: "Soal Cerita & Penerapan", topic: "Perbandingan Waktu", difficulty: 5, question: "Pak Budi berangkat dari rumah pukul 06.45 dengan kecepatan 40 km/jam. Jarak rumah ke kantor 50 km. Dia tiba di kantor pukul ...", options: ["08.00", "08.15", "07.50", "08.10"], correct: 0},
+            {section: "Soal Cerita & Penerapan", topic: "Masalah Campuran", difficulty: 5, question: "Sebuah toko memberikan diskon 20% untuk semua barang, kemudian diskon tambahan 10% untuk member. Jika harga awal suatu barang Rp 500.000, harga yang harus dibayar member adalah ...", options: ["Rp 360.000", "Rp 350.000", "Rp 400.000", "Rp 380.000"], correct: 0},
         ];
 
         let currentQuestionIndex = 0;
         let userAnswers = new Array(questions.length).fill(null);
-        let timeLeft = 3600; // 60 menit dalam detik
+        let timeLeft = 3600;
         let timerInterval;
 
         function startQuiz() {
             document.getElementById('startScreen').classList.remove('active');
-            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('quizWrapper').classList.add('active');
             renderQuestions();
             showQuestion(0);
             startTimer();
@@ -771,27 +996,23 @@
         function renderQuestions() {
             const container = document.getElementById('questionsContainer');
             questions.forEach((q, index) => {
-                const questionCard = document.createElement('div');
-                questionCard.className = 'question-card';
-                questionCard.id = `question-${index}`;
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                questionDiv.id = `question-${index}`;
                 
-                questionCard.innerHTML = `
-                    <div class="question-header">
-                        <div class="question-number">${index + 1}</div>
-                        <div class="question-topic">${q.topic}</div>
-                    </div>
+                questionDiv.innerHTML = `
                     <div class="question-text">${q.question}</div>
-                    <div class="options">
+                    <div class="options-grid">
                         ${q.options.map((option, optIndex) => `
-                            <div class="option" onclick="selectOption(${index}, ${optIndex})">
-                                <div class="option-label">${String.fromCharCode(65 + optIndex)}</div>
+                            <div class="option-item" onclick="selectOption(${index}, ${optIndex})">
+                                <div class="option-letter">${String.fromCharCode(65 + optIndex)}</div>
                                 <div class="option-text">${option}</div>
                             </div>
                         `).join('')}
                     </div>
                 `;
                 
-                container.appendChild(questionCard);
+                container.appendChild(questionDiv);
             });
         }
 
@@ -800,33 +1021,56 @@
             document.getElementById(`question-${index}`).classList.add('active');
             
             currentQuestionIndex = index;
-            document.getElementById('currentQuestion').textContent = index + 1;
+            const q = questions[index];
             
-            // Update button visibility
+            // Update sidebar
+            document.getElementById('sectionTitle').textContent = q.section;
+            document.getElementById('currentNum').textContent = String(index + 1).padStart(2, '0');
+            
+            // Update difficulty bars
+            const bars = document.querySelectorAll('.diff-bar');
+            bars.forEach((bar, i) => {
+                if (i < q.difficulty) {
+                    bar.classList.add('active');
+                } else {
+                    bar.classList.remove('active');
+                }
+            });
+            
+            // Update navigation
             document.getElementById('prevBtn').disabled = index === 0;
             document.getElementById('nextBtn').style.display = index === questions.length - 1 ? 'none' : 'flex';
             document.getElementById('finishBtn').style.display = index === questions.length - 1 ? 'flex' : 'none';
             
-            // Update progress bar
+            // Update progress
             const progress = ((index + 1) / questions.length) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
             
-            // Restore selected answer if any
+            // Restore selection
             if (userAnswers[index] !== null) {
                 const questionCard = document.getElementById(`question-${index}`);
-                const options = questionCard.querySelectorAll('.option');
+                const options = questionCard.querySelectorAll('.option-item');
                 options[userAnswers[index]].classList.add('selected');
             }
+            
+            updateAnsweredCount();
         }
 
         function selectOption(questionIndex, optionIndex) {
             userAnswers[questionIndex] = optionIndex;
             
             const questionCard = document.getElementById(`question-${questionIndex}`);
-            const options = questionCard.querySelectorAll('.option');
+            const options = questionCard.querySelectorAll('.option-item');
             
             options.forEach(opt => opt.classList.remove('selected'));
             options[optionIndex].classList.add('selected');
+            
+            updateAnsweredCount();
+        }
+
+        function updateAnsweredCount() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            document.getElementById('answeredCount').textContent = `${answered}/40`;
         }
 
         function nextQuestion() {
@@ -865,7 +1109,7 @@
             let wrongCount = 0;
             let unansweredCount = 0;
             let wrongAnswers = [];
-            let topicErrors = {};
+            let sectionErrors = {};
 
             questions.forEach((q, index) => {
                 if (userAnswers[index] === null) {
@@ -876,59 +1120,54 @@
                     wrongCount++;
                     wrongAnswers.push({
                         number: index + 1,
+                        section: q.section,
                         topic: q.topic,
                         question: q.question
                     });
                     
-                    topicErrors[q.topic] = (topicErrors[q.topic] || 0) + 1;
+                    sectionErrors[q.section] = (sectionErrors[q.section] || 0) + 1;
                 }
             });
 
             const score = Math.round((correctCount / questions.length) * 100);
             
-            // Generate weakness analysis
-            const weaknesses = Object.entries(topicErrors)
+            const weaknesses = Object.entries(sectionErrors)
                 .sort((a, b) => b[1] - a[1])
-                .map(([topic, count]) => ({topic, count}));
+                .map(([section, count]) => ({section, count}));
 
             let resultsHTML = `
-                <div class="score-circle">
-                    <div class="score-value">${score}</div>
-                    <div class="score-label">Nilai Akhir</div>
+                <div class="score-display">
+                    <div class="score-number">${score}</div>
+                    <div class="score-label">Your Score</div>
                 </div>
 
-                <div class="result-summary">
-                    <div class="summary-card correct">
-                        <div class="icon">✅</div>
-                        <div class="value">${correctCount}</div>
-                        <div class="label">Benar</div>
+                <div class="results-grid">
+                    <div class="result-card correct">
+                        <div class="icon">✓</div>
+                        <div class="number">${correctCount}</div>
+                        <div class="desc">Correct</div>
                     </div>
-                    <div class="summary-card wrong">
-                        <div class="icon">❌</div>
-                        <div class="value">${wrongCount}</div>
-                        <div class="label">Salah</div>
+                    <div class="result-card wrong">
+                        <div class="icon">✗</div>
+                        <div class="number">${wrongCount}</div>
+                        <div class="desc">Wrong</div>
                     </div>
-                    <div class="summary-card unanswered">
-                        <div class="icon">⚠️</div>
-                        <div class="value">${unansweredCount}</div>
-                        <div class="label">Tidak Dijawab</div>
+                    <div class="result-card skip">
+                        <div class="icon">—</div>
+                        <div class="number">${unansweredCount}</div>
+                        <div class="desc">Skipped</div>
                     </div>
                 </div>
             `;
 
             if (weaknesses.length > 0) {
                 resultsHTML += `
-                    <div class="weakness-analysis">
-                        <h3>🎯 Analisis Kelemahan</h3>
+                    <div class="analysis-section">
+                        <h3 class="analysis-title">⚠️ Area Yang Perlu Diperkuat</h3>
                         ${weaknesses.map(w => `
                             <div class="weakness-item">
-                                <div>
-                                    <div class="weakness-topic">${w.topic}</div>
-                                    <div class="weakness-details">Perlu latihan lebih banyak</div>
-                                </div>
-                                <div style="font-weight: 700; color: #d97706; font-size: 1.2rem;">
-                                    ${w.count} kesalahan
-                                </div>
+                                <div class="weakness-topic">${w.section}</div>
+                                <div class="weakness-count">${w.count} kesalahan</div>
                             </div>
                         `).join('')}
                     </div>
@@ -937,13 +1176,15 @@
 
             if (wrongAnswers.length > 0) {
                 resultsHTML += `
-                    <div class="wrong-answers">
-                        <h3>📝 Soal yang Salah</h3>
+                    <div class="errors-section">
+                        <h3 class="errors-title">📋 Detail Jawaban Salah</h3>
                         ${wrongAnswers.map(w => `
-                            <div class="wrong-answer-item">
-                                <span class="wrong-question-number">Soal ${w.number}</span>
-                                <span class="wrong-topic-label">${w.topic}</span>
-                                <div style="margin-top: 8px; color: var(--text-light);">${w.question}</div>
+                            <div class="error-item">
+                                <div class="error-header">
+                                    <span class="error-num">#${w.number}</span>
+                                    <span class="error-topic">${w.topic}</span>
+                                </div>
+                                <div class="error-question">${w.question}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -951,14 +1192,14 @@
             }
 
             resultsHTML += `
-                <button class="btn btn-primary" onclick="location.reload()" style="margin: 30px auto 0; display: flex;">
-                    <span>🔄 Coba Lagi</span>
+                <button class="retry-btn" onclick="location.reload()">
+                    Retry Challenge
                 </button>
             `;
 
-            document.getElementById('results').innerHTML = resultsHTML;
-            document.getElementById('quizContent').style.display = 'none';
-            document.getElementById('results').classList.add('active');
+            document.getElementById('resultsContainer').innerHTML = resultsHTML;
+            document.getElementById('quizWrapper').classList.remove('active');
+            document.getElementById('resultsContainer').classList.add('active');
         }
     </script>
 </body>
