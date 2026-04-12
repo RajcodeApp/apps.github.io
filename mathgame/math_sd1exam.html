@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olimpiade Matematika Kelas 1 SD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .trophy-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .level-menengah {
+            background: #ffa500;
+        }
+
+        .level-susah {
+            background: #ff4757;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .result-container {
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3em;
+            color: #667eea;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+
+        .score-message {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .review-section {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #e0e0e0;
+        }
+
+        .review-item.correct {
+            border-left-color: #51cf66;
+        }
+
+        .review-item.wrong {
+            border-left-color: #ff6b6b;
+        }
+
+        .review-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .review-answer {
+            margin: 5px 0;
+        }
+
+        .correct-answer {
+            color: #51cf66;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #667eea;
+            margin: 20px 0;
+            font-size: 1.8em;
+        }
+
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .question-text {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <div class="header">
+                <div class="trophy-icon">🏆</div>
+                <h1>Olimpiade Matematika</h1>
+                <h2>Kelas 1 SD</h2>
+            </div>
+            
+            <div class="instructions">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📋 Petunjuk Ujian:</h3>
+                <ul>
+                    <li>Terdapat <strong>20 soal</strong> olimpiade matematika</li>
+                    <li>Waktu mengerjakan: <strong>20 menit</strong></li>
+                    <li>Soal terdiri dari level <span class="level-badge level-menengah">Menengah</span> dan <span class="level-badge level-susah">Susah</span></li>
+                    <li>Pilih satu jawaban yang paling benar</li>
+                    <li>Kamu bisa kembali ke soal sebelumnya</li>
+                    <li>Di akhir akan ada skor dan pembahasan</li>
+                </ul>
+            </div>
+            
+            <button class="button" onclick="startQuiz()">🚀 Mulai Ujian</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="header">
+                <h1>🏆 Olimpiade Matematika</h1>
+            </div>
+
+            <div class="timer" id="timer">⏰ Waktu: 20:00</div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">
+                    <span id="progressText">0/20</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number">
+                    Soal <span id="questionNum">1</span>
+                    <span class="level-badge" id="levelBadge">Menengah</span>
+                </div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <div class="navigation">
+                <button class="button" id="prevBtn" onclick="previousQuestion()" disabled>⬅️ Sebelumnya</button>
+                <button class="button" id="nextBtn" onclick="nextQuestion()" disabled>Selanjutnya ➡️</button>
+                <button class="button hidden" id="finishBtn" onclick="finishQuiz()">✅ Selesai</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden">
+            <div class="result-container">
+                <div class="trophy-icon" id="resultIcon">🏆</div>
+                <h1 style="color: #667eea;">Hasil Ujian</h1>
+                <div class="score-display" id="scoreDisplay">0/20</div>
+                <div class="score-message" id="scoreMessage"></div>
+                
+                <div class="review-section">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">📊 Review Jawaban:</h2>
+                    <div id="reviewContainer"></div>
+                </div>
+                
+                <button class="button" onclick="restartQuiz()" style="margin-top: 30px;">🔄 Ulangi Ujian</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Level Menengah (Soal 1-10)
+            {
+                question: "Ani punya 15 permen. Dia memberi 7 permen kepada adiknya. Lalu, ibu memberi Ani 12 permen lagi. Berapa permen Ani sekarang?",
+                options: ["18 permen", "20 permen", "22 permen", "24 permen"],
+                correct: 1,
+                level: "Menengah"
+            },
+            {
+                question: "Ada 3 keranjang buah. Setiap keranjang berisi 8 apel. Berapa total apel di semua keranjang?",
+                options: ["21 apel", "24 apel", "26 apel", "28 apel"],
+                correct: 1,
+                level: "Menengah"
+            },
+            {
+                question: "Budi berangkat sekolah pukul 06:30. Perjalanan ke sekolah membutuhkan 25 menit. Pukul berapa Budi sampai di sekolah?",
+                options: ["06:45", "06:50", "06:55", "07:00"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Dalam sebuah kotak ada 20 kelereng. 12 kelereng berwarna merah, sisanya berwarna biru. Berapa selisih kelereng merah dan biru?",
+                options: ["2 kelereng", "4 kelereng", "6 kelereng", "8 kelereng"],
+                correct: 1,
+                level: "Menengah"
+            },
+            {
+                question: "Sinta membeli 2 buku seharga Rp 5.000 per buku dan 1 pensil seharga Rp 2.000. Berapa total uang yang harus dibayar Sinta?",
+                options: ["Rp 10.000", "Rp 11.000", "Rp 12.000", "Rp 13.000"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Dalam satu minggu ada 7 hari. Berapa hari dalam 3 minggu?",
+                options: ["14 hari", "18 hari", "21 hari", "24 hari"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Rudi punya 18 kancing. Dia membagi sama rata kepada 3 temannya. Berapa kancing yang diterima setiap teman?",
+                options: ["4 kancing", "5 kancing", "6 kancing", "7 kancing"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Pola bilangan: 2, 4, 6, 8, ... Bilangan ke-7 dalam pola ini adalah?",
+                options: ["12", "13", "14", "15"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Sebuah pita panjangnya 50 cm. Dipotong 15 cm, lalu dipotong lagi 12 cm. Berapa sisa pita sekarang?",
+                options: ["20 cm", "21 cm", "23 cm", "25 cm"],
+                correct: 2,
+                level: "Menengah"
+            },
+            {
+                question: "Dalam sebuah kandang ada 5 ayam. Setiap ayam punya 2 kaki. Berapa total kaki ayam di kandang?",
+                options: ["8 kaki", "10 kaki", "12 kaki", "14 kaki"],
+                correct: 1,
+                level: "Menengah"
+            },
+            
+            // Level Susah (Soal 11-20)
+            {
+                question: "Andi punya uang Rp 20.000. Dia membeli 3 buku @ Rp 4.000 dan 2 pensil @ Rp 1.500. Berapa sisa uang Andi?",
+                options: ["Rp 5.000", "Rp 6.000", "Rp 7.000", "Rp 8.000"],
+                correct: 0,
+                level: "Susah"
+            },
+            {
+                question: "Ada 24 anak dalam kelas. 1/3 nya adalah laki-laki. Berapa jumlah anak perempuan?",
+                options: ["8 anak", "12 anak", "14 anak", "16 anak"],
+                correct: 3,
+                level: "Susah"
+            },
+            {
+                question: "Umur Ayah 36 tahun, umur Ibu 32 tahun, dan umur kakak 12 tahun. Berapa tahun lagi umur kakak setengah dari umur Ayah?",
+                options: ["4 tahun", "5 tahun", "6 tahun", "7 tahun"],
+                correct: 2,
+                level: "Susah"
+            },
+            {
+                question: "Pola: ★ ○ ★ ○ ○ ★ ○ ○ ○ ★ ... Bentuk ke-13 adalah?",
+                options: ["★", "○", "★ dan ○", "Tidak ada"],
+                correct: 1,
+                level: "Susah"
+            },
+            {
+                question: "Tono naik bus dari halte A ke halte D. Dari A ke B jarak 8 km, B ke C jarak 12 km, C ke D jarak 15 km. Berapa total jarak yang ditempuh?",
+                options: ["30 km", "32 km", "35 km", "38 km"],
+                correct: 2,
+                level: "Susah"
+            },
+            {
+                question: "Dalam kotak ada 15 bola merah, 10 bola biru, dan 5 bola hijau. Berapa bola yang harus diambil agar jumlah bola merah = bola biru + bola hijau?",
+                options: ["Tidak perlu", "Ambil 5 merah", "Tambah 5 biru", "Tidak bisa"],
+                correct: 0,
+                level: "Susah"
+            },
+            {
+                question: "Lisa, Mia, dan Nina punya 45 permen. Jika dibagi sama rata, berapa permen yang diterima masing-masing? Jika Lisa memberi 5 permennya ke Mia, berapa permen Mia sekarang?",
+                options: ["15 permen", "18 permen", "20 permen", "22 permen"],
+                correct: 2,
+                level: "Susah"
+            },
+            {
+                question: "Sebuah toko buka dari pukul 08:00 sampai 17:00. Jika istirahat 1 jam (12:00-13:00), berapa jam toko buka dalam sehari?",
+                options: ["7 jam", "8 jam", "9 jam", "10 jam"],
+                correct: 1,
+                level: "Susah"
+            },
+            {
+                question: "Dani punya 7 kotak, setiap kotak berisi 6 pensil. Dia memberi 18 pensil ke temannya. Berapa pensil Dani sekarang?",
+                options: ["20 pensil", "22 pensil", "24 pensil", "26 pensil"],
+                correct: 2,
+                level: "Susah"
+            },
+            {
+                question: "Bilangan ganjil antara 10 dan 30 ada berapa? (tidak termasuk 10 dan 30)",
+                options: ["8 bilangan", "9 bilangan", "10 bilangan", "11 bilangan"],
+                correct: 2,
+                level: "Susah"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timeLeft = 1200; // 20 menit dalam detik
+        let timerInterval;
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').innerHTML = 
+                    `⏰ Waktu: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            
+            document.getElementById('questionNum').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const levelBadge = document.getElementById('levelBadge');
+            levelBadge.textContent = question.level;
+            levelBadge.className = 'level-badge level-' + question.level.toLowerCase();
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                
+                if (userAnswers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionDiv.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            updateProgress();
+            updateNavigation();
+        }
+
+        function selectAnswer(answerIndex) {
+            userAnswers[currentQuestion] = answerIndex;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.toggle('selected', index === answerIndex);
+            });
+            
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('finishBtn').disabled = false;
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const finishBtn = document.getElementById('finishBtn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.classList.add('hidden');
+                finishBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                finishBtn.classList.add('hidden');
+            }
+            
+            nextBtn.disabled = userAnswers[currentQuestion] === null;
+        }
+
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${answeredCount}/${questions.length}`;
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            showResults();
+        }
+
+        function showResults() {
+            let score = 0;
+            const reviewContainer = document.getElementById('reviewContainer');
+            reviewContainer.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                if (isCorrect) score++;
+                
+                const reviewItem = document.createElement('div');
+                reviewItem.className = `review-item ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                let reviewHTML = `
+                    <div class="review-question">
+                        ${isCorrect ? '✅' : '❌'} Soal ${index + 1}: ${question.question}
+                    </div>
+                `;
+                
+                if (isCorrect) {
+                    reviewHTML += `
+                        <div class="review-answer correct-answer">
+                            ✓ Jawaban kamu benar: ${question.options[question.correct]}
+                        </div>
+                    `;
+                } else {
+                    reviewHTML += `
+                        <div class="review-answer wrong-answer">
+                            ✗ Jawaban kamu: ${userAnswer !== null ? question.options[userAnswer] : 'Tidak dijawab'}
+                        </div>
+                        <div class="review-answer correct-answer">
+                            ✓ Jawaban yang benar: ${question.options[question.correct]}
+                        </div>
+                    `;
+                }
+                
+                reviewItem.innerHTML = reviewHTML;
+                reviewContainer.appendChild(reviewItem);
+            });
+            
+            document.getElementById('scoreDisplay').textContent = `${score}/20`;
+            
+            const percentage = (score / questions.length) * 100;
+            let message = '';
+            let icon = '';
+            
+            if (percentage >= 90) {
+                message = '🌟 Luar Biasa! Kamu Juara Olimpiade! 🌟';
+                icon = '🏆';
+            } else if (percentage >= 75) {
+                message = '⭐ Hebat Sekali! Pertahankan! ⭐';
+                icon = '🥇';
+            } else if (percentage >= 60) {
+                message = '👍 Bagus! Terus berlatih ya! 👍';
+                icon = '🥈';
+            } else {
+                message = '💪 Semangat! Belajar lagi ya! 💪';
+                icon = '📚';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('resultIcon').textContent = icon;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            timeLeft = 1200;
+            
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
